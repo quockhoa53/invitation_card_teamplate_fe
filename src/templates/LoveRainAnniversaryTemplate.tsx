@@ -181,13 +181,25 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     if (!ctx) return;
 
     let animationFrameId: number;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+
+    const calculateDimensions = () => {
+      const parent = canvas.parentElement;
+      const pw = parent?.clientWidth || 0;
+      const ph = parent?.clientHeight || 0;
+      const w = isPreview ? (pw || 390) : Math.max(pw, window.innerWidth);
+      const h = isPreview ? (ph || 650) : Math.max(ph, window.innerHeight);
+      return { w, h };
+    };
+
+    let { w: width, h: height } = calculateDimensions();
+    canvas.width = width;
+    canvas.height = height;
 
     const handleResize = () => {
-      if (!canvas || !canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
+      if (!canvas) return;
+      const dim = calculateDimensions();
+      width = canvas.width = dim.w;
+      height = canvas.height = dim.h;
     };
     window.addEventListener('resize', handleResize);
 
@@ -455,7 +467,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-full overflow-hidden bg-[#030611] text-white font-sans select-none">
+    <div className={`relative w-full h-full ${isPreview ? 'min-h-full' : 'min-h-screen'} overflow-hidden bg-[#030611] text-white font-sans select-none`}>
       {/* 60-120fps Neon Falling Words & Hearts Canvas */}
       <canvas
         ref={canvasRef}

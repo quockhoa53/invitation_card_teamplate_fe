@@ -147,12 +147,14 @@ export const DynamicCodeRenderer: React.FC<DynamicCodeRendererProps> = ({
   `;
 
   return (
-    <iframe
-      ref={iframeRef}
-      srcDoc={fullHtmlDocument}
-      title={title || 'Template Preview'}
-      className="w-full h-full border-0 bg-transparent block"
-      sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-    />
+    <div className="w-full h-full relative flex-1 min-h-0">
+      <iframe
+        ref={iframeRef}
+        srcDoc={fullHtmlDocument}
+        title={title || 'Template Preview'}
+        className="w-full h-full border-0 bg-transparent block absolute inset-0"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+      />
+    </div>
   );
 };

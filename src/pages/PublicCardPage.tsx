@@ -174,20 +174,22 @@ export const PublicCardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
-      <TemplateRenderer
-        slug={card.template.slug}
-        category={card.template.category}
-        templateType={card.template.templateType}
-        customHtml={card.template.customHtml}
-        customCss={card.template.customCss}
-        customJs={card.template.customJs}
-        customData={card.customData}
-        title={card.title}
-        wishes={card.wishes || []}
-        onSendWish={handleSendWish}
-        isPreview={false}
-      />
+    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-slate-950 flex flex-col">
+      <div className="flex-1 w-full h-full relative">
+        <TemplateRenderer
+          slug={card.template.slug}
+          category={card.template.category}
+          templateType={card.template.templateType}
+          customHtml={card.template.customHtml}
+          customCss={card.template.customCss}
+          customJs={card.template.customJs}
+          customData={card.customData}
+          title={card.title}
+          wishes={card.wishes || []}
+          onSendWish={handleSendWish}
+          isPreview={false}
+        />
+      </div>
     </div>
   );
 };
