@@ -262,8 +262,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
           )}
         </div>
 
-        {/* Device Switcher (Mobile 📱 vs Desktop 💻) */}
-        <div className={`flex items-center p-0.5 rounded-xl border shrink-0 ${
+        {/* Device Switcher (Mobile 📱 vs Desktop 💻) - Only visible on sm and up */}
+        <div className={`hidden sm:flex items-center p-0.5 rounded-xl border shrink-0 ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-stone-100 border-stone-200'
         }`}>
           <button
@@ -294,6 +294,12 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
             <span>Desktop</span>
           </button>
         </div>
+      </div>
+
+      {/* Quick Interactive Prompt Hint for Mobile */}
+      <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-semibold text-rose-500 animate-pulse py-0.5">
+        <Sparkles className="w-3.5 h-3.5" />
+        <span>Chạm vào màn hình thiệp để tương tác mở quà & thổi nến</span>
       </div>
 
       {/* Frame Container */}
