@@ -90,9 +90,9 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-amber-500/20 text-rose-500 border border-rose-500/30 flex items-center justify-center mx-auto shadow-inner">
             <Mail className="w-7 h-7" />
           </div>
-          <h3 className="font-editorial text-2xl sm:text-3xl font-bold">Xác Thực Mã OTP Gmail</h3>
+          <h3 className="font-editorial text-2xl sm:text-3xl font-bold">Xác Thực 2 Bước (2FA)</h3>
           <p className={`text-xs max-w-xs mx-auto leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Mã xác thực 6 số đã được gửi tới hòm thư <strong>Gmail</strong> của bạn. Vui lòng kiểm tra hộp thư đến hoặc mục Spam.
+            Nhập mã xác thực 6 số gửi về <strong>Gmail</strong> hoặc từ ứng dụng <strong>Google Authenticator</strong> của bạn.
           </p>
         </div>
 
