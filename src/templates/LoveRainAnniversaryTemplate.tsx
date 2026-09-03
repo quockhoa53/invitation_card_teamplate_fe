@@ -170,33 +170,51 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     };
     window.addEventListener('resize', handleResize);
 
-    // Pre-allocated falling items pool
-    const itemCount = isPreview ? 28 : 50;
+    // Stratified lane distribution to guarantee uniform coverage without empty voids
+    const numColumns = Math.max(5, Math.floor(width / 75));
+    const itemsPerCol = isPreview ? 8 : 11;
+    const totalItems = numColumns * itemsPerCol;
     const items: FallingItem[] = [];
 
-    for (let i = 0; i < itemCount; i++) {
-      const isHeart = Math.random() < 0.28;
-      const layer = Math.random() < 0.25 ? 2 : Math.random() < 0.6 ? 1 : 0;
-      const size = layer === 2 ? Math.floor(Math.random() * 8 + 26) : layer === 1 ? Math.floor(Math.random() * 6 + 17) : Math.floor(Math.random() * 4 + 13);
-      const speed = layer === 2 ? Math.random() * 0.8 + 1.2 : layer === 1 ? Math.random() * 0.5 + 0.8 : Math.random() * 0.3 + 0.5;
-      const text = wordsList[Math.floor(Math.random() * wordsList.length)];
+    for (let col = 0; col < numColumns; col++) {
+      for (let row = 0; row < itemsPerCol; row++) {
+        const isHeart = Math.random() < 0.3;
+        const layer = Math.random() < 0.25 ? 2 : Math.random() < 0.65 ? 1 : 0;
+        const size = layer === 2
+          ? Math.floor(Math.random() * 6 + 24)
+          : layer === 1
+          ? Math.floor(Math.random() * 5 + 16)
+          : Math.floor(Math.random() * 3 + 12);
+        const speed = layer === 2
+          ? Math.random() * 0.6 + 1.1
+          : layer === 1
+          ? Math.random() * 0.4 + 0.75
+          : Math.random() * 0.3 + 0.45;
+        const text = wordsList[Math.floor(Math.random() * wordsList.length)];
 
-      items.push({
-        x: Math.random() * width,
-        y: Math.random() * height * 1.2 - height * 0.2,
-        text,
-        isHeart,
-        heartType: Math.random() < 0.5 ? 'outline' : Math.random() < 0.8 ? 'filled' : 'sparkle',
-        size,
-        speed,
-        rotation: (Math.random() - 0.5) * 0.35,
-        rotationSpeed: (Math.random() - 0.5) * 0.012,
-        opacity: layer === 2 ? 0.96 : layer === 1 ? 0.78 : 0.48,
-        layer,
-        swayAmplitude: Math.random() * 14 + 4,
-        swaySpeed: Math.random() * 0.02 + 0.01,
-        swayOffset: Math.random() * Math.PI * 2,
-      });
+        // Spread evenly across lanes and heights with subtle organic jitter
+        const colWidth = width / numColumns;
+        const x = (col + 0.5) * colWidth + (Math.random() - 0.5) * (colWidth * 0.55);
+        const y = ((row + Math.random() * 0.8) / itemsPerCol) * (height + 100) - 50;
+
+        items.push({
+          x,
+          y,
+          text,
+          isHeart,
+          heartType: Math.random() < 0.5 ? 'outline' : Math.random() < 0.8 ? 'filled' : 'sparkle',
+          size,
+          speed,
+          // Gentle tilt (-8 deg to +8 deg) for elegant readability matching Screenshot 2
+          rotation: (Math.random() - 0.5) * 0.18,
+          rotationSpeed: (Math.random() - 0.5) * 0.004,
+          opacity: layer === 2 ? 0.96 : layer === 1 ? 0.78 : 0.48,
+          layer,
+          swayAmplitude: Math.random() * 10 + 3,
+          swaySpeed: Math.random() * 0.02 + 0.01,
+          swayOffset: Math.random() * Math.PI * 2,
+        });
+      }
     }
 
     // Pre-sort ONCE by layer to eliminate per-frame Array.sort overhead
@@ -240,9 +258,11 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         item.rotation += item.rotationSpeed;
         const sway = Math.sin(time * item.swaySpeed + item.swayOffset) * item.swayAmplitude;
 
-        if (item.y > height + 40) {
-          item.y = -50;
-          item.x = Math.random() * width;
+        if (item.y > height + 30) {
+          item.y = -30 - Math.random() * 40;
+          const col = Math.floor(Math.random() * numColumns);
+          const colWidth = width / numColumns;
+          item.x = (col + 0.5) * colWidth + (Math.random() - 0.5) * (colWidth * 0.55);
           item.text = wordsList[Math.floor(Math.random() * wordsList.length)];
         }
 
@@ -414,7 +434,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[500px] overflow-x-hidden bg-[#030611] text-white font-sans select-none">
+    <div className="relative w-full h-full min-h-full overflow-hidden bg-[#030611] text-white font-sans select-none">
       {/* 60-120fps Neon Falling Words & Hearts Canvas */}
       <canvas
         ref={canvasRef}
