@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
@@ -7,6 +7,8 @@ import { api } from '../services/api';
 import { CardEditor } from '../components/editor/CardEditor';
 import { QrCodeModal } from '../components/common/QrCodeModal';
 import { Pagination } from '../components/common/Pagination';
+import { TemplateCardItem } from '../components/home/TemplateCardItem';
+import { TemplateRenderer } from '../templates/TemplateRenderer';
 import {
   PlusCircle,
   QrCode,
@@ -27,22 +29,31 @@ import {
   Copy,
   Check,
   ShoppingBag,
+  ChevronRight,
+  X,
 } from 'lucide-react';
 import { AdminTwoFactorModal } from './admin/AdminTwoFactorPage';
 import { SetPasswordModal } from '../components/auth/SetPasswordModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Dashboard: React.FC = () => {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, isTemplateOwned } = useAuth();
   const { theme } = useTheme();
   const { toast, confirmModal } = useToast();
+  const navigate = useNavigate();
   const isDark = theme === 'dark';
 
   // Active dashboard view tab
-  const [activeTab, setActiveTab] = useState<'cards' | 'transactions'>('cards');
+  const [activeTab, setActiveTab] = useState<'cards' | 'purchased' | 'transactions'>('cards');
 
   const [cards, setCards] = useState<Card[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [demoTemplate, setDemoTemplate] = useState<Template | null>(null);
+
+  // Purchased templates computation
+  const purchasedTemplates = useMemo(() => {
+    return templates.filter((tpl) => isTemplateOwned(tpl) && !tpl.isFree && (tpl.price || 0) > 0);
+  }, [templates, isTemplateOwned]);
   const [loading, setLoading] = useState(true);
 
   // User transactions state
@@ -305,10 +316,11 @@ export const Dashboard: React.FC = () => {
 
         {/* Tabs Switcher */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+            {/* Tab 1: Thiệp Mời Của Tôi */}
             <button
               onClick={() => setActiveTab('cards')}
-              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shrink-0 ${
                 activeTab === 'cards'
                   ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
                   : isDark
@@ -325,9 +337,30 @@ export const Dashboard: React.FC = () => {
               </span>
             </button>
 
+            {/* Tab 2: Thiệp Đã Sở Hữu */}
+            <button
+              onClick={() => setActiveTab('purchased')}
+              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shrink-0 ${
+                activeTab === 'purchased'
+                  ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-md shadow-amber-500/20'
+                  : isDark
+                  ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-white text-stone-600 hover:text-stone-900 border border-stone-200'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>Thiệp Đã Sở Hữu</span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                activeTab === 'purchased' ? 'bg-white/20 text-white' : 'bg-amber-500/15 text-amber-400'
+              }`}>
+                {purchasedTemplates.length}
+              </span>
+            </button>
+
+            {/* Tab 3: Lịch Sử Giao Dịch */}
             <button
               onClick={() => setActiveTab('transactions')}
-              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shrink-0 ${
                 activeTab === 'transactions'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
                   : isDark
@@ -336,7 +369,7 @@ export const Dashboard: React.FC = () => {
               }`}
             >
               <CreditCard className="w-4 h-4" />
-              <span>Lịch Sử Giao Dịch & Nạp Tiền</span>
+              <span>Lịch Sử Giao Dịch</span>
               {txTotalElements > 0 && (
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                   activeTab === 'transactions' ? 'bg-white/20 text-white' : 'bg-emerald-500/15 text-emerald-500'
@@ -350,14 +383,21 @@ export const Dashboard: React.FC = () => {
           {activeTab === 'cards' ? (
             <button
               onClick={() => setShowTemplateSelector(true)}
-              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto"
+              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
             >
               <PlusCircle className="w-4 h-4" /> Tạo Thiệp Mới
             </button>
+          ) : activeTab === 'purchased' ? (
+            <Link
+              to="/templates"
+              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
+            >
+              <Sparkles className="w-4 h-4" /> + Mua Thêm Mẫu Mới
+            </Link>
           ) : (
             <Link
               to="/payment"
-              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 text-white text-xs sm:text-sm shadow-md shadow-emerald-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto"
+              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 text-white text-xs sm:text-sm shadow-md shadow-emerald-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
             >
               <PlusCircle className="w-4 h-4" /> + Nạp Tiền Thêm
             </Link>
@@ -528,7 +568,64 @@ export const Dashboard: React.FC = () => {
           </>
         )}
 
-        {/* TAB 2: USER TRANSACTIONS HISTORY */}
+        {/* TAB 2: PURCHASED TEMPLATES */}
+        {activeTab === 'purchased' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-editorial text-xl font-bold flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-amber-500" /> Các Mẫu Thiệp Bạn Đã Sở Hữu
+                </h3>
+                <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Các mẫu thiệp cao cấp bạn đã mở khóa. Bạn có thể sử dụng để tạo và xuất bản không giới hạn thiệp mời.
+                </p>
+              </div>
+
+              <div className="text-right">
+                <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Tổng đã sở hữu:</span>
+                <strong className="text-base sm:text-lg font-bold text-amber-400 font-mono">
+                  {purchasedTemplates.length} Mẫu
+                </strong>
+              </div>
+            </div>
+
+            {purchasedTemplates.length === 0 ? (
+              <div className={`p-12 text-center rounded-3xl border space-y-4 ${
+                isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+              }`}>
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20 shadow-inner">
+                  <ShoppingBag className="w-8 h-8" />
+                </div>
+                <h4 className="font-editorial text-lg font-bold">Bạn chưa sở hữu mẫu thiệp trả phí nào</h4>
+                <p className={`text-xs max-w-md mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Khám phá bộ sưu tập mẫu thiệp cao cấp độc quyền, mở khóa một lần và sử dụng mãi mãi để tạo nên những tấm thiệp tuyệt đẹp!
+                </p>
+                <div className="pt-2">
+                  <Link
+                    to="/templates"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-bold shadow-lg shadow-rose-500/20 hover:brightness-105 active:scale-95 transition"
+                  >
+                    <Sparkles className="w-4 h-4" /> Khám Phá Mẫu Thiệp Ngay
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {purchasedTemplates.map((tpl) => (
+                  <TemplateCardItem
+                    key={tpl.id}
+                    template={tpl}
+                    isDark={isDark}
+                    onPreview={(t) => setDemoTemplate(t)}
+                    onUse={(t) => navigate(`/editor?templateId=${t.id}`)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: USER TRANSACTIONS HISTORY */}
         {activeTab === 'transactions' && (
           <div className={`p-6 sm:p-8 rounded-3xl border ${
             isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
@@ -844,6 +941,61 @@ export const Dashboard: React.FC = () => {
           refreshUser();
         }}
       />
+
+      {/* Live Demo Preview Modal */}
+      {demoTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-sm sm:max-w-md h-[85vh] bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between p-3.5 bg-slate-900/90 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <h4 className="font-editorial text-sm font-bold text-white truncate max-w-[200px]">
+                  {demoTemplate.title}
+                </h4>
+              </div>
+              <button
+                onClick={() => setDemoTemplate(null)}
+                className="p-1 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto relative">
+              <TemplateRenderer
+                slug={demoTemplate.slug}
+                templateType={demoTemplate.templateType}
+                customHtml={demoTemplate.customHtml}
+                customCss={demoTemplate.customCss}
+                customJs={demoTemplate.customJs}
+                customData={demoTemplate.defaultConfig}
+                title={demoTemplate.title}
+                wishes={[]}
+                isPreview={true}
+              />
+            </div>
+
+            <div className="p-3.5 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between gap-3">
+              <button
+                onClick={() => setDemoTemplate(null)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 transition"
+              >
+                Đóng
+              </button>
+              <button
+                onClick={() => {
+                  const tpl = demoTemplate;
+                  setDemoTemplate(null);
+                  navigate(`/editor?templateId=${tpl.id}`);
+                }}
+                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
+              >
+                Tạo Thiệp Mới <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
