@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Template } from '../../types';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
 import {
@@ -9,6 +9,8 @@ import {
   Flame,
   Heart,
   Calendar,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 
 interface HeroCardShowcaseProps {
@@ -94,38 +96,67 @@ const FALLBACK_TEMPLATES: Record<string, Template> = {
 export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, isDark }) => {
   const [activeTabId, setActiveTabId] = useState<string>('sinh-nhat-nguoi-yeu-3d-cake');
   const [deviceMode, setDeviceMode] = useState<'mobile' | 'desktop'>('mobile');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const showcaseTabs = [
     {
       id: 'sinh-nhat-nguoi-yeu-3d-cake',
       category: 'BIRTHDAY_LOVER',
       label: 'Người Yêu',
+      fullName: 'Sinh Nhật Người Yêu',
+      desc: 'Bánh kem 3D & Mở hộp quà',
       icon: Gift,
+      color: 'text-rose-500',
+      bgColor: 'bg-rose-500/15',
     },
     {
       id: 'sinh-nhat-ban-be-disco-neon',
       category: 'BIRTHDAY_FRIENDS',
       label: 'Bạn Bè',
+      fullName: 'Đại Tiệc Bạn Bè',
+      desc: 'Disco Neon sôi động',
       icon: Flame,
+      color: 'text-amber-500',
+      bgColor: 'bg-amber-500/15',
     },
     {
       id: 'ky-niem-ngay-yeu-vinyl-player',
       category: 'LOVE_ANNIVERSARY',
       label: 'Kỷ Niệm',
+      fullName: 'Kỷ Niệm Ngày Yêu',
+      desc: 'Đĩa than & Đếm ngày yêu',
       icon: Heart,
+      color: 'text-pink-500',
+      bgColor: 'bg-pink-500/15',
     },
     {
       id: 'thu-moi-su-kien-royal-wax-seal',
       category: 'EVENT_INVITATION',
       label: 'Thư Mời',
+      fullName: 'Thư Mời Sự Kiện',
+      desc: 'Dấu sáp hoàng gia & QR',
       icon: Calendar,
+      color: 'text-emerald-500',
+      bgColor: 'bg-emerald-500/15',
     },
   ];
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const currentTab = showcaseTabs.find((t) => t.id === activeTabId) || showcaseTabs[0];
+
   // Match template from backend first; if loading or not found, fall back instantly to built-in template
   const activeTemplate = useMemo(() => {
-    const currentTab = showcaseTabs.find((t) => t.id === activeTabId) || showcaseTabs[0];
-
     if (templates && templates.length > 0) {
       let match = templates.find((t) => t.slug === currentTab.id);
       if (match) return match;
@@ -138,36 +169,82 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
     }
 
     return FALLBACK_TEMPLATES[currentTab.id] || FALLBACK_TEMPLATES['sinh-nhat-nguoi-yeu-3d-cake'];
-  }, [templates, activeTabId]);
+  }, [templates, currentTab]);
 
   return (
-    <div className="w-full max-w-[540px] mx-auto space-y-3">
-      {/* Top Controls: Category Tabs & Device Mode Toggle */}
-      <div className={`p-1.5 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-2 transition-colors ${
-        isDark ? 'bg-[#121824]/90 border-slate-800' : 'bg-white/95 border-stone-200 shadow-sm'
+    <div className="w-full max-w-[500px] mx-auto space-y-3">
+      {/* Top Controls: Sleek Dropdown & Device Switcher */}
+      <div className={`p-2 rounded-2xl border flex items-center justify-between gap-2.5 transition-colors relative z-30 ${
+        isDark ? 'bg-[#121824]/95 border-slate-800' : 'bg-white/95 border-stone-200 shadow-sm'
       }`}>
-        {/* Category Tabs */}
-        <div className="flex items-center gap-1 w-full sm:w-auto overflow-x-auto">
-          {showcaseTabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTabId === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTabId(tab.id)}
-                className={`px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm'
-                    : isDark
-                    ? 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                    : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-                }`}
-              >
-                <Icon className="w-3 h-3" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+        {/* Modern Elegant Category Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-sm active:scale-95 ${
+              isDark
+                ? 'bg-slate-900 border-slate-700 text-white hover:border-rose-500'
+                : 'bg-stone-50 border-stone-200 text-stone-800 hover:border-rose-400'
+            }`}
+          >
+            <currentTab.icon className={`w-3.5 h-3.5 ${currentTab.color}`} />
+            <span className="truncate max-w-[140px] sm:max-w-[160px]">{currentTab.fullName}</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-slate-400 ${
+              isDropdownOpen ? 'rotate-180 text-rose-500' : ''
+            }`} />
+          </button>
+
+          {/* Floating Glassmorphic Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className={`absolute top-full left-0 mt-2 w-64 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-150 ${
+              isDark
+                ? 'bg-[#121824]/95 border-slate-700/80 text-white'
+                : 'bg-white/95 border-stone-200 text-stone-800 shadow-stone-300/50'
+            }`}>
+              <div className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 text-slate-400">
+                Chọn mẫu thiệp tương tác
+              </div>
+              <div className="space-y-1">
+                {showcaseTabs.map((tab) => {
+                  const Icon = tab.icon;
+                  const isSelected = activeTabId === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTabId(tab.id);
+                        setIsDropdownOpen(false);
+                      }}
+                      className={`w-full p-2 rounded-xl text-left flex items-center justify-between transition-all ${
+                        isSelected
+                          ? isDark
+                            ? 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30'
+                            : 'bg-rose-50 text-rose-700 font-bold border border-rose-200'
+                          : isDark
+                          ? 'hover:bg-slate-800 text-slate-300'
+                          : 'hover:bg-stone-100 text-stone-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${tab.bgColor}`}>
+                          <Icon className={`w-3.5 h-3.5 ${tab.color}`} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold truncate">{tab.fullName}</p>
+                          <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                            {tab.desc}
+                          </p>
+                        </div>
+                      </div>
+                      {isSelected && <Check className="w-4 h-4 text-rose-500 shrink-0 ml-1" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Device Switcher (Mobile 📱 vs Desktop 💻) */}
@@ -212,8 +289,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
         }`} />
 
         {deviceMode === 'mobile' ? (
-          /* ================= MOBILE PHONE FRAME ================= */
-          <div className={`relative w-full max-w-[310px] sm:max-w-[330px] xl:max-w-[350px] h-[450px] sm:h-[480px] xl:h-[500px] rounded-[36px] border-[6px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
+          /* ================= SLEEK SMARTPHONE FRAME ================= */
+          <div className={`relative w-[285px] sm:w-[305px] h-[510px] sm:h-[540px] rounded-[40px] border-[7px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
             isDark
               ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700/60 shadow-black'
               : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
@@ -226,8 +303,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
               </div>
             </div>
 
-            {/* Template Render Container */}
-            <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative">
+            {/* Template Render Container (Fitted seamlessly inside screen) */}
+            <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative flex flex-col justify-center">
               {activeTemplate && (
                 <TemplateRenderer
                   slug={activeTemplate.slug}
@@ -270,7 +347,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
               </div>
 
               {/* Template Render Container */}
-              <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative">
+              <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative flex flex-col justify-center">
                 {activeTemplate && (
                   <TemplateRenderer
                     slug={activeTemplate.slug}
