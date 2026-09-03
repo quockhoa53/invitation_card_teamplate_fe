@@ -203,32 +203,35 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     };
     window.addEventListener('resize', handleResize);
 
-    // Stratified lane distribution to guarantee uniform coverage without empty voids
-    const numColumns = Math.max(5, Math.floor(width / 75));
-    const itemsPerCol = isPreview ? 8 : 11;
+    // Elegant, uncluttered lane distribution for silky 60-120fps performance
+    const numColumns = Math.min(8, Math.max(4, Math.floor(width / 200)));
+    const itemsPerCol = isPreview ? 4 : 5;
     const totalItems = numColumns * itemsPerCol;
     const items: FallingItem[] = [];
 
     for (let col = 0; col < numColumns; col++) {
       for (let row = 0; row < itemsPerCol; row++) {
-        const isHeart = Math.random() < 0.3;
+        const isHeart = Math.random() < 0.28;
         const layer = Math.random() < 0.25 ? 2 : Math.random() < 0.65 ? 1 : 0;
         const size = layer === 2
-          ? Math.floor(Math.random() * 6 + 24)
+          ? Math.floor(Math.random() * 6 + 22)
           : layer === 1
-          ? Math.floor(Math.random() * 5 + 16)
+          ? Math.floor(Math.random() * 4 + 15)
           : Math.floor(Math.random() * 3 + 12);
+        
+        // Brisk, gliding, silky fall speed (no sluggish crawl)
         const speed = layer === 2
-          ? Math.random() * 0.6 + 1.1
+          ? Math.random() * 0.8 + 2.5
           : layer === 1
-          ? Math.random() * 0.4 + 0.75
-          : Math.random() * 0.3 + 0.45;
+          ? Math.random() * 0.6 + 1.8
+          : Math.random() * 0.5 + 1.2;
+        
         const text = wordsList[Math.floor(Math.random() * wordsList.length)];
 
-        // Spread evenly across lanes and heights with subtle organic jitter
+        // Spread evenly across lanes with organic jitter
         const colWidth = width / numColumns;
         const x = (col + 0.5) * colWidth + (Math.random() - 0.5) * (colWidth * 0.55);
-        const y = ((row + Math.random() * 0.8) / itemsPerCol) * (height + 100) - 50;
+        const y = ((row + Math.random() * 0.8) / itemsPerCol) * (height + 120) - 60;
 
         items.push({
           x,
@@ -238,13 +241,12 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
           heartType: Math.random() < 0.5 ? 'outline' : Math.random() < 0.8 ? 'filled' : 'sparkle',
           size,
           speed,
-          // Gentle tilt (-8 deg to +8 deg) for elegant readability matching Screenshot 2
-          rotation: (Math.random() - 0.5) * 0.18,
-          rotationSpeed: (Math.random() - 0.5) * 0.004,
-          opacity: layer === 2 ? 0.96 : layer === 1 ? 0.78 : 0.48,
+          rotation: (Math.random() - 0.5) * 0.14,
+          rotationSpeed: (Math.random() - 0.5) * 0.003,
+          opacity: layer === 2 ? 0.95 : layer === 1 ? 0.78 : 0.45,
           layer,
-          swayAmplitude: Math.random() * 10 + 3,
-          swaySpeed: Math.random() * 0.02 + 0.01,
+          swayAmplitude: Math.random() * 8 + 3,
+          swaySpeed: Math.random() * 0.025 + 0.012,
           swayOffset: Math.random() * Math.PI * 2,
         });
       }
@@ -310,17 +312,17 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
 
           if (item.heartType === 'outline') {
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = item.layer === 2 ? 14 : 8;
+            ctx.shadowBlur = item.layer === 2 ? 6 : 0;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText('♡', 0, 0);
           } else if (item.heartType === 'filled') {
             ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = item.layer === 2 ? 14 : 6;
+            ctx.shadowBlur = item.layer === 2 ? 6 : 0;
             ctx.fillStyle = `rgba(244, 63, 94, ${item.opacity})`;
             ctx.fillText('❤️', 0, 0);
           } else {
             ctx.shadowColor = '#fef08a';
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 4;
             ctx.fillStyle = `rgba(254, 240, 138, ${item.opacity})`;
             ctx.fillText('✨', 0, 0);
           }
@@ -331,22 +333,22 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
 
           if (item.layer === 2) {
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 16;
+            ctx.shadowBlur = 8;
             ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           } else if (item.layer === 1) {
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur = 3;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           } else {
-            ctx.shadowColor = '#0ea5e9';
-            ctx.shadowBlur = 4;
+            ctx.shadowBlur = 0;
             ctx.fillStyle = `rgba(186, 230, 253, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           }
         }
 
+        ctx.shadowBlur = 0;
         ctx.restore();
       }
 
