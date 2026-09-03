@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Howl } from 'howler';
-import confetti from 'canvas-confetti';
 import {
   Heart,
   Volume2,
@@ -11,7 +10,6 @@ import {
   Send,
   MessageCircle,
   X,
-  Clock,
 } from 'lucide-react';
 import { LoveAnniversaryData, CardWish } from '../types';
 
@@ -34,7 +32,7 @@ interface FallingItem {
   rotation: number;
   rotationSpeed: number;
   opacity: number;
-  layer: number; // 0 = far/blur, 1 = mid, 2 = hero/foreground
+  layer: number; // 0 = far, 1 = mid, 2 = hero/foreground
   swayAmplitude: number;
   swaySpeed: number;
   swayOffset: number;
@@ -46,6 +44,16 @@ interface TouchParticle {
   vx: number;
   vy: number;
   size: number;
+  alpha: number;
+  char: string;
+  color: string;
+}
+
+interface ShockwaveRing {
+  x: number;
+  y: number;
+  radius: number;
+  maxRadius: number;
   alpha: number;
   color: string;
 }
@@ -74,6 +82,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const soundRef = useRef<Howl | null>(null);
   const touchParticlesRef = useRef<TouchParticle[]>([]);
+  const shockwavesRef = useRef<ShockwaveRing[]>([]);
 
   // Calculate days together
   useEffect(() => {
@@ -125,9 +134,8 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     }
   };
 
-  // Falling words list setup (matching Screenshot 2 viral format)
+  // Falling words list
   const defaultWords = [
-    'Em yêu anh',
     'Em yêu anh',
     'thành công',
     'vững vàng',
@@ -138,18 +146,17 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     `${timeTogether.days} Days`,
     'Yêu anh nhiều lắm',
     'Mãi bên nhau',
-    'Hạnh phúc nhé',
   ];
 
   const wordsList = data.fallingWords && data.fallingWords.length > 0
     ? data.fallingWords
     : defaultWords;
 
-  // Falling Neon Rain Canvas Engine
+  // Ultra-optimized 60-120fps Canvas Engine
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let animationFrameId: number;
@@ -163,15 +170,15 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     };
     window.addEventListener('resize', handleResize);
 
-    // Generate falling items pool
-    const itemCount = isPreview ? 35 : 65;
+    // Pre-allocated falling items pool
+    const itemCount = isPreview ? 28 : 50;
     const items: FallingItem[] = [];
 
     for (let i = 0; i < itemCount; i++) {
       const isHeart = Math.random() < 0.28;
-      const layer = Math.random() < 0.25 ? 2 : Math.random() < 0.6 ? 1 : 0; // 0=far, 1=mid, 2=hero
-      const size = layer === 2 ? Math.floor(Math.random() * 12 + 28) : layer === 1 ? Math.floor(Math.random() * 8 + 18) : Math.floor(Math.random() * 6 + 13);
-      const speed = layer === 2 ? Math.random() * 0.9 + 1.2 : layer === 1 ? Math.random() * 0.6 + 0.8 : Math.random() * 0.4 + 0.4;
+      const layer = Math.random() < 0.25 ? 2 : Math.random() < 0.6 ? 1 : 0;
+      const size = layer === 2 ? Math.floor(Math.random() * 8 + 26) : layer === 1 ? Math.floor(Math.random() * 6 + 17) : Math.floor(Math.random() * 4 + 13);
+      const speed = layer === 2 ? Math.random() * 0.8 + 1.2 : layer === 1 ? Math.random() * 0.5 + 0.8 : Math.random() * 0.3 + 0.5;
       const text = wordsList[Math.floor(Math.random() * wordsList.length)];
 
       items.push({
@@ -182,64 +189,59 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         heartType: Math.random() < 0.5 ? 'outline' : Math.random() < 0.8 ? 'filled' : 'sparkle',
         size,
         speed,
-        rotation: (Math.random() - 0.5) * 0.4,
-        rotationSpeed: (Math.random() - 0.5) * 0.015,
-        opacity: layer === 2 ? 0.95 : layer === 1 ? 0.75 : 0.45,
+        rotation: (Math.random() - 0.5) * 0.35,
+        rotationSpeed: (Math.random() - 0.5) * 0.012,
+        opacity: layer === 2 ? 0.96 : layer === 1 ? 0.78 : 0.48,
         layer,
-        swayAmplitude: Math.random() * 18 + 5,
+        swayAmplitude: Math.random() * 14 + 4,
         swaySpeed: Math.random() * 0.02 + 0.01,
         swayOffset: Math.random() * Math.PI * 2,
       });
     }
 
-    // Background Twinkling Stars
-    const starCount = 45;
+    // Pre-sort ONCE by layer to eliminate per-frame Array.sort overhead
+    items.sort((a, b) => a.layer - b.layer);
+
+    // Static Stars
+    const starCount = 35;
     const stars = Array.from({ length: starCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      radius: Math.random() * 1.5 + 0.5,
-      alpha: Math.random() * 0.7 + 0.2,
-      pulseSpeed: Math.random() * 0.03 + 0.01,
+      radius: Math.random() * 1.4 + 0.5,
+      alpha: Math.random() * 0.6 + 0.2,
+      speed: Math.random() * 0.02 + 0.01,
     }));
 
     let time = 0;
 
     const render = () => {
       time += 1;
-      ctx.clearRect(0, 0, width, height);
 
-      // Deep dark cosmic background
-      const gradient = ctx.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, '#04060f');
-      gradient.addColorStop(0.5, '#070b18');
-      gradient.addColorStop(1, '#02040a');
-      ctx.fillStyle = gradient;
+      // Dark gradient background
+      ctx.fillStyle = '#030611';
       ctx.fillRect(0, 0, width, height);
 
       // Draw Twinkling Stars
-      stars.forEach((star) => {
-        star.alpha += Math.sin(time * star.pulseSpeed) * 0.02;
-        star.alpha = Math.max(0.1, Math.min(0.9, star.alpha));
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < starCount; i++) {
+        const star = stars[i];
+        const pulse = 0.5 + 0.5 * Math.sin(time * star.speed + i);
+        ctx.globalAlpha = star.alpha * pulse;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 6;
         ctx.fill();
-      });
+      }
+      ctx.globalAlpha = 1;
 
-      // Draw Falling Words and Hearts (Sorted by layer for 3D depth)
-      items.sort((a, b) => a.layer - b.layer);
-
-      items.forEach((item) => {
-        // Move item down
+      // Draw Falling Words & Hearts (Iterate pre-sorted items)
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
         item.y += item.speed;
         item.rotation += item.rotationSpeed;
         const sway = Math.sin(time * item.swaySpeed + item.swayOffset) * item.swayAmplitude;
 
-        // Reset when reached bottom
-        if (item.y > height + 50) {
-          item.y = -60;
+        if (item.y > height + 40) {
+          item.y = -50;
           item.x = Math.random() * width;
           item.text = wordsList[Math.floor(Math.random() * wordsList.length)];
         }
@@ -249,69 +251,82 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         ctx.rotate(item.rotation);
 
         if (item.isHeart) {
-          // Render glowing neon heart
           ctx.font = `${item.size}px sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
           if (item.heartType === 'outline') {
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = item.layer === 2 ? 20 : 10;
+            ctx.shadowBlur = item.layer === 2 ? 14 : 8;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText('♡', 0, 0);
           } else if (item.heartType === 'filled') {
             ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = item.layer === 2 ? 18 : 8;
+            ctx.shadowBlur = item.layer === 2 ? 14 : 6;
             ctx.fillStyle = `rgba(244, 63, 94, ${item.opacity})`;
             ctx.fillText('❤️', 0, 0);
           } else {
             ctx.shadowColor = '#fef08a';
-            ctx.shadowBlur = 14;
+            ctx.shadowBlur = 10;
             ctx.fillStyle = `rgba(254, 240, 138, ${item.opacity})`;
             ctx.fillText('✨', 0, 0);
           }
         } else {
-          // Render Glowing Neon Word (Screenshot 2 Match!)
           ctx.font = `bold ${item.size}px "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
 
-          // Multi-layer glowing text shadow for luminous effect
           if (item.layer === 2) {
-            // Foreground hero word: intense bright white core with cyan bloom
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 24;
+            ctx.shadowBlur = 16;
             ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
-
-            // Double pass for extra neon bloom
-            ctx.shadowColor = '#0284c7';
-            ctx.shadowBlur = 38;
-            ctx.fillText(item.text, 0, 0);
           } else if (item.layer === 1) {
-            // Midground word
             ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 14;
+            ctx.shadowBlur = 10;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           } else {
-            // Distant soft word
             ctx.shadowColor = '#0ea5e9';
-            ctx.shadowBlur = 6;
+            ctx.shadowBlur = 4;
             ctx.fillStyle = `rgba(186, 230, 253, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           }
         }
 
         ctx.restore();
-      });
+      }
 
-      // Update and draw touch particles
+      // Draw Expanding Shockwave Rings (Zero-latency instant feedback)
+      for (let i = shockwavesRef.current.length - 1; i >= 0; i--) {
+        const ring = shockwavesRef.current[i];
+        ring.radius += 3.5;
+        ring.alpha -= 0.035;
+
+        if (ring.alpha <= 0 || ring.radius >= ring.maxRadius) {
+          shockwavesRef.current.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = ring.color;
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = ring.alpha;
+        ctx.shadowColor = ring.color;
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Draw Instant Touch Particles
       for (let i = touchParticlesRef.current.length - 1; i >= 0; i--) {
         const p = touchParticlesRef.current[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.alpha -= 0.02;
+        p.vy += 0.04; // Gentle gravity
+        p.alpha -= 0.024;
 
         if (p.alpha <= 0) {
           touchParticlesRef.current.splice(i, 1);
@@ -323,10 +338,10 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 16;
+        ctx.shadowBlur = 12;
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
-        ctx.fillText('💖', p.x, p.y);
+        ctx.fillText(p.char, p.x, p.y);
         ctx.restore();
       }
 
@@ -341,7 +356,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     };
   }, [wordsList, isPreview, timeTogether.days]);
 
-  // Handle Touch/Click particle burst
+  // Instant Native Touch Burst (0ms latency, zero DOM stalls!)
   const handleCanvasInteraction = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -349,30 +364,34 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    // Trigger romantic confetti on touch
-    confetti({
-      particleCount: 20,
-      spread: 60,
-      origin: { x: clientX / window.innerWidth, y: clientY / window.innerHeight },
-      colors: ['#38bdf8', '#f43f5e', '#ffffff'],
+    // 1. Add instant glowing shockwave ring
+    shockwavesRef.current.push({
+      x,
+      y,
+      radius: 8,
+      maxRadius: 75,
+      alpha: 0.9,
+      color: '#38bdf8',
     });
 
-    // Spawn 8 floating particles
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 * i) / 8;
-      const speed = Math.random() * 2 + 1.5;
+    // 2. Add 14 instantaneous exploding particles
+    const particleChars = ['💖', '❤️', '✨', '💕', '⭐'];
+    for (let i = 0; i < 14; i++) {
+      const angle = (Math.PI * 2 * i) / 14 + (Math.random() - 0.5) * 0.4;
+      const speed = Math.random() * 3.2 + 2.0;
       touchParticlesRef.current.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.5,
-        size: Math.random() * 10 + 14,
+        vy: Math.sin(angle) * speed - 1.2,
+        size: Math.random() * 8 + 14,
         alpha: 1,
+        char: particleChars[Math.floor(Math.random() * particleChars.length)],
         color: Math.random() < 0.6 ? '#38bdf8' : '#f43f5e',
       });
     }
 
-    // Auto-start music if not playing on first touch
+    // Auto-start music if paused
     if (soundRef.current && !isPlayingMusic) {
       soundRef.current.play();
       setIsPlayingMusic(true);
@@ -387,7 +406,6 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
       await onSendWish(senderName, wishText, '💍');
       setWishText('');
       setShowWishesModal(false);
-      confetti({ particleCount: 80, spread: 70 });
     } catch (err) {
       alert('Không thể gửi lời chúc, vui lòng thử lại');
     } finally {
@@ -396,23 +414,18 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[500px] overflow-x-hidden bg-[#03050c] text-white font-sans select-none">
-      {/* 60fps Neon Falling Words & Hearts Canvas */}
+    <div className="relative w-full h-full min-h-[500px] overflow-x-hidden bg-[#030611] text-white font-sans select-none">
+      {/* 60-120fps Neon Falling Words & Hearts Canvas */}
       <canvas
         ref={canvasRef}
-        onClick={(e) => handleCanvasInteraction(e.clientX, e.clientY)}
-        onTouchStart={(e) => {
-          if (e.touches[0]) {
-            handleCanvasInteraction(e.touches[0].clientX, e.touches[0].clientY);
-          }
-        }}
-        className="absolute inset-0 w-full h-full cursor-pointer z-0"
+        onPointerDown={(e) => handleCanvasInteraction(e.clientX, e.clientY)}
+        className="absolute inset-0 w-full h-full cursor-pointer z-0 touch-none"
       />
 
       {/* Top Floating Controls */}
       <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
         {/* Milestone Badge */}
-        <div className="pointer-events-auto px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 shadow-lg shadow-cyan-950/40">
+        <div className="pointer-events-auto px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 shadow-md">
           <Calendar className="w-3 h-3 text-cyan-400 animate-pulse" />
           <span>{timeTogether.days} Ngày Yêu Nhau</span>
         </div>
@@ -420,7 +433,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         {/* Audio Toggle */}
         <button
           onClick={toggleMusic}
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-pink-500/30 text-pink-300 text-[11px] font-bold shadow-lg active:scale-95 transition"
+          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-pink-500/30 text-pink-300 text-[11px] font-bold shadow-md active:scale-95 transition"
         >
           {isPlayingMusic ? (
             <>
@@ -436,29 +449,23 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         </button>
       </div>
 
-      {/* Floating Action Button at Bottom: Open Secret Love Letter & Vows */}
-      <div className="absolute bottom-4 left-0 right-0 z-30 flex flex-col items-center justify-center gap-2 pointer-events-none px-4">
-        <div className="pointer-events-auto flex items-center gap-2">
-          <button
-            onClick={() => setShowLetterModal(true)}
-            className="px-4 py-2 rounded-full font-bold text-xs bg-gradient-to-r from-cyan-600 via-sky-500 to-pink-500 text-white shadow-xl shadow-cyan-500/25 hover:brightness-110 active:scale-95 transition flex items-center gap-1.5"
-          >
-            <Heart className="w-3.5 h-3.5 fill-white animate-bounce" />
-            <span>Mở Bức Thư Tình & Đếm Ngày Yêu</span>
-          </button>
+      {/* Sleek Compact Action Button: Mở bức thư tình */}
+      <div className="absolute bottom-3 left-0 right-0 z-30 flex items-center justify-center gap-2 pointer-events-none px-4">
+        <button
+          onClick={() => setShowLetterModal(true)}
+          className="pointer-events-auto px-4 py-1.5 rounded-full font-bold text-xs bg-gradient-to-r from-cyan-600 via-sky-500 to-pink-500 text-white shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition flex items-center gap-1.5"
+        >
+          <Heart className="w-3.5 h-3.5 fill-white animate-pulse" />
+          <span>Mở bức thư tình</span>
+        </button>
 
-          <button
-            onClick={() => setShowWishesModal(true)}
-            className="p-2 rounded-full bg-slate-900/90 border border-slate-700 text-cyan-300 hover:text-white shadow-lg active:scale-95 transition"
-            title="Gửi lời chúc"
-          >
-            <MessageCircle className="w-4 h-4" />
-          </button>
-        </div>
-
-        <p className="text-[10px] text-cyan-200/60 font-medium tracking-wide">
-          ✨ Chạm lên màn hình để bùng nổ tim phát sáng
-        </p>
+        <button
+          onClick={() => setShowWishesModal(true)}
+          className="pointer-events-auto p-1.5 rounded-full bg-slate-900/90 border border-slate-700 text-cyan-300 hover:text-white shadow-md active:scale-95 transition"
+          title="Gửi lời chúc"
+        >
+          <MessageCircle className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* SECRET LOVE LETTER MODAL */}

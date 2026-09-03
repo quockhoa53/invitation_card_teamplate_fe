@@ -344,11 +344,6 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                     />
                   )}
                 </div>
-
-                {/* Hint Badge */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-white/10 text-[9px] text-rose-300 font-semibold flex items-center gap-1 shadow pointer-events-none">
-                  <Sparkles className="w-2.5 h-2.5 text-rose-400" /> Cuộn xuống để xem & chạm tương tác
-                </div>
               </div>
             </motion.div>
           ) : (
