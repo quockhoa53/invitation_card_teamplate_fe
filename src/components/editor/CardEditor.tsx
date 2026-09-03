@@ -446,7 +446,17 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                 </div>
               )}
 
-              {(selectedTemplate.slug?.includes('ky-niem') || selectedTemplate.category === 'LOVE_ANNIVERSARY' || customData.fallingWords !== undefined) && (
+              {(customData.anniversaryStartDate !== undefined ||
+                selectedTemplate.category === 'LOVE_ANNIVERSARY' ||
+                selectedTemplate.slug?.includes('mua') ||
+                selectedTemplate.slug?.includes('rain') ||
+                selectedTemplate.slug?.includes('love') ||
+                selectedTemplate.slug?.includes('ky-niem') ||
+                selectedTemplate.title?.toLowerCase().includes('mưa') ||
+                selectedTemplate.title?.toLowerCase().includes('love') ||
+                selectedTemplate.title?.toLowerCase().includes('kỷ niệm') ||
+                customData.fallingWords !== undefined ||
+                customData.keyword1 !== undefined) && (
                 <div className="space-y-3 pt-2 border-t border-dashed border-slate-700/50">
                   {/* Mốc Kỷ Niệm: Bao Nhiêu Ngày hay Bao Nhiêu Năm */}
                   <div>
