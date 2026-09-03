@@ -154,63 +154,81 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 3D SHOWCASE STAGE: 8 CARDS ARRANGED IN 2 ROWS (4 PER ROW) */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10 py-6">
-        {/* 3D Perspective Stage Horizon Glow & Grid Floor */}
-        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none rounded-3xl">
-          {/* Subtle 3D Perspective Grid Floor */}
+      {/* 3D SHOWCASE STAGE SECTION */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* 3D Stage Exhibition Container */}
+        <div className={`relative rounded-[32px] sm:rounded-[40px] border p-6 sm:p-10 lg:p-12 overflow-hidden transition-colors ${
+          isDark
+            ? 'bg-gradient-to-b from-[#0e1422] via-[#090d16] to-[#06090e] border-slate-800 shadow-2xl shadow-black/80'
+            : 'bg-gradient-to-b from-slate-100/90 via-slate-50 to-white border-slate-200/90 shadow-2xl shadow-slate-200/60'
+        }`}>
+          {/* 3D Stage Top Rim Illumination */}
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent opacity-80" />
+
+          {/* 3D Stage Overhead Spotlight Beam */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-gradient-to-b from-rose-500/20 via-rose-500/5 to-transparent blur-3xl pointer-events-none" />
+
+          {/* 3D Perspective Grid Floor (Clearly Visible) */}
           <div
-            className="absolute inset-0 opacity-[0.2] dark:opacity-[0.15] [background-image:linear-gradient(to_right,#e11d48_1px,transparent_1px),linear-gradient(to_bottom,#e11d48_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_35%,#000_60%,transparent_100%)]"
+            className="absolute inset-x-0 bottom-0 h-[60%] pointer-events-none opacity-45 dark:opacity-30"
             style={{
-              transform: 'perspective(1000px) rotateX(28deg) scale(1.12)',
-              transformOrigin: 'top center',
+              backgroundImage: 'linear-gradient(to right, #e11d48 1px, transparent 1px), linear-gradient(to bottom, #e11d48 1px, transparent 1px)',
+              backgroundSize: '48px 48px',
+              transform: 'perspective(450px) rotateX(55deg)',
+              transformOrigin: 'bottom center',
+              maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)',
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)',
             }}
           />
-          {/* Stage Center Ambient Spotlight */}
-          <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 w-[750px] h-[380px] rounded-full blur-[140px] pointer-events-none ${
-            isDark ? 'bg-rose-600/15' : 'bg-rose-500/10'
-          }`} />
-        </div>
 
-        {/* Section Header */}
-        <div className="space-y-1 text-center sm:text-left">
-          <span className="text-xs uppercase font-bold tracking-widest text-rose-500">
-            KD Showcase 3D Stage
-          </span>
-          <h2 className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Bộ Sưu Tập Thiệp Mời Tiêu Biểu
-          </h2>
-          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            8 ấn phẩm thiệp mời tương tác nổi bật nhất trên không gian hiển thị 3D sống động.
-          </p>
-        </div>
+          {/* 3D Horizon Line */}
+          <div className="absolute top-[40%] inset-x-8 h-px bg-gradient-to-r from-transparent via-rose-500/40 to-transparent pointer-events-none" />
 
-        {/* 8 Cards in 2 Rows (4 Cards Per Row) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-          {displayTemplates.map((tpl) => (
-            <TemplateCardItem
-              key={tpl.id}
-              template={tpl}
-              isDark={isDark}
-              onPreview={(t) => setDemoTemplate(t)}
-              onUse={(t) => handleUseTemplate(t)}
-            />
-          ))}
-        </div>
+          {/* Section Header */}
+          <div className="relative z-10 space-y-2 mb-8 sm:mb-10 text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] sm:text-xs font-bold uppercase tracking-wider border-rose-500/30 bg-rose-500/10 text-rose-500">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Sân Khấu Trưng Bày 3D</span>
+            </div>
+            <h2 className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Bộ Sưu Tập Thiệp Mời Tiêu Biểu
+            </h2>
+            <p className={`text-xs sm:text-sm max-w-xl ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              8 ấn phẩm thiệp mời tương tác nổi bật nhất trên không gian hiển thị 3D sống động.
+            </p>
+          </div>
 
-        {/* View All Button */}
-        <div className="text-center pt-4 sm:pt-6">
-          <Link
-            to="/templates"
-            className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 ${
-              isDark
-                ? 'bg-slate-900 border-slate-800 hover:border-rose-500 text-white'
-                : 'bg-white border-slate-200 hover:border-rose-500 text-slate-900 shadow-sm'
-            }`}
-          >
-            <span>Khám Phá Toàn Bộ Bộ Sưu Tập</span>
-            <ArrowRight className="w-4 h-4 text-rose-500" />
-          </Link>
+          {/* 8 Cards in 2 Rows (4 Cards Per Row) - Raised on 3D Stage */}
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {displayTemplates.map((tpl) => (
+              <div
+                key={tpl.id}
+                className="transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] drop-shadow-xl hover:drop-shadow-2xl"
+              >
+                <TemplateCardItem
+                  template={tpl}
+                  isDark={isDark}
+                  onPreview={(t) => setDemoTemplate(t)}
+                  onUse={(t) => handleUseTemplate(t)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* View All Button */}
+          <div className="relative z-10 text-center pt-8 sm:pt-10">
+            <Link
+              to="/templates"
+              className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 shadow-md ${
+                isDark
+                  ? 'bg-slate-900/90 border-slate-700 hover:border-rose-500 hover:bg-slate-800 text-white'
+                  : 'bg-white border-slate-200 hover:border-rose-500 hover:bg-slate-50 text-slate-900'
+              }`}
+            >
+              <span>Khám Phá Toàn Bộ Bộ Sưu Tập</span>
+              <ArrowRight className="w-4 h-4 text-rose-500" />
+            </Link>
+          </div>
         </div>
       </section>
 
