@@ -500,8 +500,8 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         >
           {isPlayingMusic ? (
             <>
-              <Volume2 className="w-3.5 h-3.5 text-pink-400 animate-pulse" />
-              <span>Nhạc Bật 💖</span>
+              <Volume2 className="w-3.5 h-3.5 text-rose-300 animate-pulse" />
+              <span>Âm Nhạc</span>
             </>
           ) : (
             <>
@@ -516,18 +516,18 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
       <div className="absolute bottom-3 left-0 right-0 z-30 flex items-center justify-center gap-2 pointer-events-none px-4">
         <button
           onClick={() => setShowLetterModal(true)}
-          className="pointer-events-auto px-4 py-1.5 rounded-full font-bold text-xs bg-gradient-to-r from-cyan-600 via-sky-500 to-pink-500 text-white shadow-lg shadow-cyan-500/25 hover:scale-105 active:scale-95 transition flex items-center gap-1.5"
+          className="pointer-events-auto px-5 py-2 rounded-full font-semibold text-xs bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-950/60 active:scale-95 transition flex items-center gap-1.5"
         >
-          <Heart className="w-3.5 h-3.5 fill-white animate-pulse" />
-          <span>Mở bức thư tình</span>
+          <Heart className="w-3.5 h-3.5 fill-white" />
+          <span>Mở Bức Thư Tình</span>
         </button>
 
         <button
           onClick={() => setShowWishesModal(true)}
-          className="pointer-events-auto p-1.5 rounded-full bg-slate-900/90 border border-slate-700 text-cyan-300 hover:text-white shadow-md active:scale-95 transition"
+          className="pointer-events-auto p-2 rounded-full bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white shadow-md active:scale-95 transition"
           title="Gửi lời chúc"
         >
-          <MessageCircle className="w-3.5 h-3.5" />
+          <MessageCircle className="w-3.5 h-3.5 text-rose-400" />
         </button>
       </div>
 
@@ -535,12 +535,12 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
       <AnimatePresence>
         {showLetterModal && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.92 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
           >
-            <div className="relative max-w-md w-full rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#0e1628]/95 via-[#080d19]/95 to-[#04060d]/95 border border-cyan-500/30 shadow-2xl text-center space-y-6">
+            <div className="relative max-w-md w-full rounded-3xl p-6 sm:p-8 bg-[#0f1422] border border-rose-500/30 shadow-2xl text-center space-y-6">
               <button
                 onClick={() => setShowLetterModal(false)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-white"
@@ -549,36 +549,36 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
               </button>
 
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-semibold">
                   <Sparkles className="w-3.5 h-3.5" /> Thư Tình Kỷ Niệm
                 </div>
-                <h3 className="font-editorial text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-pink-200">
+                <h3 className="font-editorial text-2xl font-bold text-white">
                   {data.senderName || 'Quỳnh Anh'} & {data.recipientName || 'Đức Huy'}
                 </h3>
               </div>
 
               {/* Days Together Counter Display */}
-              <div className="grid grid-cols-4 gap-2 p-3.5 rounded-2xl bg-slate-900/90 border border-cyan-500/20">
+              <div className="grid grid-cols-4 gap-2 p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
                 <div>
-                  <span className="font-editorial text-xl sm:text-2xl font-black text-cyan-400 block">
+                  <span className="font-editorial text-xl sm:text-2xl font-bold text-rose-500 block">
                     {timeTogether.days}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400">Ngày</span>
                 </div>
                 <div>
-                  <span className="font-editorial text-xl sm:text-2xl font-black text-pink-400 block">
+                  <span className="font-editorial text-xl sm:text-2xl font-bold text-slate-200 block">
                     {timeTogether.hours}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400">Giờ</span>
                 </div>
                 <div>
-                  <span className="font-editorial text-xl sm:text-2xl font-black text-amber-400 block">
+                  <span className="font-editorial text-xl sm:text-2xl font-bold text-slate-200 block">
                     {timeTogether.minutes}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400">Phút</span>
                 </div>
                 <div>
-                  <span className="font-editorial text-xl sm:text-2xl font-black text-emerald-400 block">
+                  <span className="font-editorial text-xl sm:text-2xl font-bold text-slate-200 block">
                     {timeTogether.seconds}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400">Giây</span>
@@ -586,16 +586,16 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
               </div>
 
               {/* Love Message Content */}
-              <div className="p-4 rounded-2xl bg-[#142036]/60 border border-cyan-500/15 text-slate-200 text-xs sm:text-sm leading-relaxed italic text-left max-h-48 overflow-y-auto">
+              <div className="p-4 rounded-2xl bg-[#141a29] border border-slate-800 text-slate-300 text-xs sm:text-sm leading-relaxed italic text-left max-h-48 overflow-y-auto">
                 "{data.greetingMessage || 'Mỗi ngày trôi qua được ở bên anh đều là một ngày ngập tràn ấm áp và hạnh phúc. Cảm ơn anh vì đã luôn là chỗ dựa vững vàng, luôn yêu thương và che chở cho em. Chúc tình yêu của chúng mình mãi luôn bền chặt như ngày đầu tiên!'}"
               </div>
 
               <div className="pt-2">
                 <button
                   onClick={() => setShowLetterModal(false)}
-                  className="w-full py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-cyan-600 to-pink-600 text-white shadow-lg active:scale-95 transition"
+                  className="w-full py-2.5 rounded-xl font-semibold text-xs bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-950/50 active:scale-95 transition"
                 >
-                  Tiếp Tục Ngắm Mưa Chữ Phát Sáng ✨
+                  Trở Lại Màn Hình Tương Tác
                 </button>
               </div>
             </div>

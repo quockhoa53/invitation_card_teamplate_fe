@@ -125,18 +125,19 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
     <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#14080e] via-[#1a0c14] to-[#0a0508] text-white font-sans selection:bg-rose-500 selection:text-white pb-12">
       {/* Soft Ambient Rose Glow */}
       <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-rose-600/15 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-pink-600/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-rose-950/50 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-rose-900/30 blur-[100px] pointer-events-none" />
 
       {/* Floating Music Button */}
       {data.musicUrl && (
         <button
           onClick={toggleMusic}
-          className={`${isPreview ? 'absolute' : 'fixed'} top-4 right-4 z-40 flex items-center gap-2 bg-rose-600/80 hover:bg-rose-500 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-rose-400/40 shadow-xl shadow-rose-950/50 transition-all active:scale-95 text-xs font-bold`}
+          className={`${isPreview ? 'absolute' : 'fixed'} top-4 right-4 z-40 flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-rose-400/40 shadow-xl transition-all active:scale-95 text-xs font-bold`}
         >
           {isPlayingMusic ? (
             <>
-              <Volume2 className="w-3.5 h-3.5 animate-pulse text-rose-200" />
-              <span className="text-[11px]">Nhạc: Bật 💖</span>
+              <Volume2 className="w-3.5 h-3.5 animate-pulse text-white" />
+              <span className="text-[11px]">Âm Nhạc</span>
             </>
           ) : (
             <>
@@ -158,7 +159,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               isPreview ? 'min-h-full px-2 py-3' : 'min-h-[520px] px-4 py-8'
             }`}
           >
-            <div className={`w-full bg-gradient-to-b from-[#240e1a]/90 via-[#180911]/90 to-[#10060c]/90 border border-rose-500/30 shadow-2xl backdrop-blur-xl ${
+            <div className={`w-full bg-slate-900 border border-slate-800 shadow-2xl ${
               isPreview
                 ? 'p-4 sm:p-5 rounded-[26px] space-y-3.5 max-w-[280px]'
                 : 'p-8 rounded-[36px] space-y-6 max-w-md'
@@ -168,46 +169,36 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               </div>
 
               <div className="space-y-1">
-                <h2 className={`font-editorial font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-300 to-rose-300 ${
+                <h2 className={`font-bold text-white ${
                   isPreview ? 'text-lg sm:text-xl' : 'text-2xl sm:text-3xl'
                 }`}>
                   Gửi Tặng {data.recipientName || 'Em Yêu'}
                 </h2>
-                <p className={`text-rose-200/70 ${isPreview ? 'text-[11px] leading-tight' : 'text-xs sm:text-sm'}`}>
+                <p className={`text-slate-400 ${isPreview ? 'text-[11px] leading-tight' : 'text-xs sm:text-sm'}`}>
                   Một món quà bất ngờ tràn ngập yêu thương đang chờ đón bạn!
                 </p>
               </div>
 
-              {/* 3D Velvet Gift Box with Satin Ribbon */}
-              <div
-                onClick={handleOpenGift}
-                className={`relative cursor-pointer mx-auto bg-gradient-to-tr from-rose-700 via-rose-600 to-pink-500 p-1 shadow-xl shadow-rose-900/60 flex items-center justify-center group transform hover:scale-105 active:scale-95 transition-all duration-300 select-none ${
-                  isPreview ? 'w-24 h-24 rounded-[22px]' : 'w-36 h-36 rounded-[32px]'
-                }`}
-              >
-                <div className={`w-full h-full bg-[#120409]/60 border border-amber-400/30 flex flex-col items-center justify-center space-y-1.5 ${
-                  isPreview ? 'rounded-[18px]' : 'rounded-[28px]'
-                }`}>
-                  <div className={`rounded-xl bg-rose-500/30 border border-rose-400/40 flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform ${
-                    isPreview ? 'w-10 h-10' : 'w-14 h-14'
-                  }`}>
-                    <Gift className={`${isPreview ? 'w-5 h-5' : 'w-8 h-8'} text-rose-100`} />
-                  </div>
-                  <span className={`font-black uppercase tracking-widest text-amber-300 animate-pulse ${
-                    isPreview ? 'text-[8.5px]' : 'text-[10px]'
-                  }`}>
-                    Chạm để mở quà
+              {/* Gift Box Preview Animation */}
+              <div className="py-1 sm:py-2 flex justify-center">
+                <div
+                  onClick={handleOpenGift}
+                  className="cursor-pointer group relative p-4 rounded-3xl bg-rose-500/10 border border-rose-500/30 hover:border-rose-500/60 hover:scale-105 transition-all duration-300 shadow-inner"
+                >
+                  <Gift className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 group-hover:rotate-12 transition-transform duration-300" />
+                  <span className="absolute -bottom-2 inset-x-0 text-[10px] font-bold text-rose-300 uppercase tracking-widest">
+                    Mở Quà
                   </span>
                 </div>
               </div>
 
               <button
                 onClick={handleOpenGift}
-                className={`w-full font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white shadow-xl shadow-rose-600/30 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-2 ${
+                className={`w-full font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-xl shadow-rose-950/60 active:scale-95 transition flex items-center justify-center gap-2 ${
                   isPreview ? 'py-2.5 px-4 rounded-xl text-xs' : 'py-3 px-6 rounded-2xl text-xs sm:text-sm'
                 }`}
               >
-                <Heart className="w-3.5 h-3.5 fill-white animate-bounce" />
+                <Heart className="w-3.5 h-3.5 fill-white" />
                 <span>Mở Thiệp Sinh Nhật Ngay</span>
               </button>
             </div>
@@ -230,11 +221,11 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               <span>Happy Birthday To My Love</span>
             </div>
 
-            <h1 className="font-editorial text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-pink-300 to-amber-200 leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight">
               {data.greetingTitle || 'Chúc Mừng Sinh Nhật Người Yêu'}
             </h1>
-            <p className="text-rose-200/80 text-xs sm:text-sm font-medium">
-              Từ <span className="text-rose-400 font-bold">{data.senderName || 'Anh'}</span> với tất cả tình yêu thương ✨
+            <p className="text-slate-400 text-xs sm:text-sm font-medium">
+              Từ <span className="text-rose-500 font-bold">{data.senderName || 'Anh'}</span> với tất cả tình yêu thương
             </p>
           </header>
 

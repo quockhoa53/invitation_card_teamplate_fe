@@ -195,7 +195,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-rose-400'
             }`}
           >
-            <currentTab.icon className="w-3.5 h-3.5 text-rose-500" />
+            <span className="w-2 h-2 rounded-full bg-rose-500 shadow-sm shadow-rose-500/60 shrink-0 animate-pulse" />
             <span className="truncate max-w-[140px] sm:max-w-[170px]">{currentTab.fullName}</span>
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-slate-400 ${
               isDropdownOpen ? 'rotate-180 text-rose-500' : ''
@@ -213,8 +213,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 Bộ sưu tập thiệp tương tác
               </div>
               <div className="space-y-1">
-                {showcaseTabs.map((tab) => {
-                  const Icon = tab.icon;
+                {showcaseTabs.map((tab, idx) => {
                   const isSelected = activeTabId === tab.id;
                   return (
                     <button
@@ -230,18 +229,22 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                             ? 'bg-rose-500/15 text-rose-300 font-semibold border border-rose-500/30'
                             : 'bg-rose-50 text-rose-600 font-semibold border border-rose-200'
                           : isDark
-                          ? 'hover:bg-slate-850 text-slate-300'
+                          ? 'hover:bg-slate-800/60 text-slate-300'
                           : 'hover:bg-slate-100 text-slate-700'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                          isSelected ? 'bg-rose-500 text-white' : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'
+                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0 transition-colors ${
+                          isSelected
+                            ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
+                            : isDark
+                            ? 'bg-slate-800 text-slate-400'
+                            : 'bg-slate-100 text-slate-600'
                         }`}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </div>
+                          0{idx + 1}
+                        </span>
                         <div className="min-w-0">
-                          <p className="text-xs font-medium truncate">{tab.fullName}</p>
+                          <p className="text-xs font-semibold truncate leading-snug">{tab.fullName}</p>
                           <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                             {tab.desc}
                           </p>
