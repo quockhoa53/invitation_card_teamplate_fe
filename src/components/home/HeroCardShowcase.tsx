@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Template } from '../../types';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
 import {
@@ -288,91 +289,109 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
           isDark ? 'bg-gradient-to-tr from-rose-500 via-amber-500 to-pink-600' : 'bg-rose-300'
         }`} />
 
-        {deviceMode === 'mobile' ? (
-          /* ================= SLEEK SMARTPHONE FRAME ================= */
-          <div className={`relative w-[285px] sm:w-[305px] h-[510px] sm:h-[540px] rounded-[40px] border-[7px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
-            isDark
-              ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700/60 shadow-black'
-              : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
-          }`}>
-            {/* Dynamic Island Notch */}
-            <div className="h-4 bg-slate-950 flex items-center justify-center relative z-20 shrink-0">
-              <div className="w-14 h-2.5 rounded-full bg-black flex items-center justify-between px-1.5">
-                <div className="w-1 h-1 rounded-full bg-slate-800" />
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-900 border border-slate-700/60" />
-              </div>
-            </div>
-
-            {/* Template Render Container (Fitted seamlessly inside screen) */}
-            <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative flex flex-col justify-center">
-              {activeTemplate && (
-                <TemplateRenderer
-                  slug={activeTemplate.slug}
-                  category={activeTemplate.category}
-                  templateType={activeTemplate.templateType}
-                  customHtml={activeTemplate.customHtml}
-                  customCss={activeTemplate.customCss}
-                  customJs={activeTemplate.customJs}
-                  customData={activeTemplate.defaultConfig}
-                  title={activeTemplate.title}
-                  wishes={[]}
-                  isPreview={true}
-                />
-              )}
-            </div>
-
-            {/* Hint Badge */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-white/10 text-[9px] text-rose-300 font-semibold flex items-center gap-1 shadow pointer-events-none">
-              <Sparkles className="w-2.5 h-2.5 text-rose-400" /> Chạm thử trực tiếp vào thiệp
-            </div>
-          </div>
-        ) : (
-          /* ================= LAPTOP / DESKTOP FRAME ================= */
-          <div className="w-full flex flex-col items-center animate-fade">
-            {/* Laptop Screen Bezel */}
-            <div className={`relative w-full aspect-[16/10] max-h-[380px] rounded-t-2xl border-[6px] shadow-2xl overflow-hidden flex flex-col transition-all ${
-              isDark
-                ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700'
-                : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
-            }`}>
-              {/* Web Browser Top Bar */}
-              <div className="h-5 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between text-white shrink-0">
-                <div className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <AnimatePresence mode="wait">
+          {deviceMode === 'mobile' ? (
+            /* ================= SLEEK SMARTPHONE FRAME ================= */
+            <motion.div
+              key="mobile-frame"
+              initial={{ opacity: 0, scale: 0.94, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: -8 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              className="w-full flex justify-center items-center"
+            >
+              <div className={`relative w-[285px] sm:w-[305px] h-[510px] sm:h-[540px] rounded-[40px] border-[7px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
+                isDark
+                  ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700/60 shadow-black'
+                  : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
+              }`}>
+                {/* Dynamic Island Notch */}
+                <div className="h-4 bg-slate-950 flex items-center justify-center relative z-20 shrink-0">
+                  <div className="w-14 h-2.5 rounded-full bg-black flex items-center justify-between px-1.5">
+                    <div className="w-1 h-1 rounded-full bg-slate-800" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-900 border border-slate-700/60" />
+                  </div>
                 </div>
-                <span className="text-[9px] font-mono text-slate-400">kdcard.vn/c/{activeTemplate?.slug}</span>
-                <div className="w-5" />
+
+                {/* Template Render Container (Full Native Smooth Scroll Enabled) */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(244,63,94,0.3)_transparent]">
+                  {activeTemplate && (
+                    <TemplateRenderer
+                      slug={activeTemplate.slug}
+                      category={activeTemplate.category}
+                      templateType={activeTemplate.templateType}
+                      customHtml={activeTemplate.customHtml}
+                      customCss={activeTemplate.customCss}
+                      customJs={activeTemplate.customJs}
+                      customData={activeTemplate.defaultConfig}
+                      title={activeTemplate.title}
+                      wishes={[]}
+                      isPreview={true}
+                    />
+                  )}
+                </div>
+
+                {/* Hint Badge */}
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-slate-950/90 backdrop-blur-md border border-white/10 text-[9px] text-rose-300 font-semibold flex items-center gap-1 shadow pointer-events-none">
+                  <Sparkles className="w-2.5 h-2.5 text-rose-400" /> Cuộn xuống để xem & chạm tương tác
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            /* ================= LAPTOP / DESKTOP FRAME ================= */
+            <motion.div
+              key="desktop-frame"
+              initial={{ opacity: 0, scale: 0.94, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: -8 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              className="w-full flex flex-col items-center"
+            >
+              {/* Laptop Screen Bezel */}
+              <div className={`relative w-full aspect-[16/10] max-h-[380px] rounded-t-2xl border-[6px] shadow-2xl overflow-hidden flex flex-col transition-all ${
+                isDark
+                  ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700'
+                  : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
+              }`}>
+                {/* Web Browser Top Bar */}
+                <div className="h-5 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between text-white shrink-0">
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  <span className="text-[9px] font-mono text-slate-400">kdcard.vn/c/{activeTemplate?.slug}</span>
+                  <div className="w-5" />
+                </div>
+
+                {/* Template Render Container (Full Native Smooth Scroll Enabled) */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(244,63,94,0.3)_transparent]">
+                  {activeTemplate && (
+                    <TemplateRenderer
+                      slug={activeTemplate.slug}
+                      category={activeTemplate.category}
+                      templateType={activeTemplate.templateType}
+                      customHtml={activeTemplate.customHtml}
+                      customCss={activeTemplate.customCss}
+                      customJs={activeTemplate.customJs}
+                      customData={activeTemplate.defaultConfig}
+                      title={activeTemplate.title}
+                      wishes={[]}
+                      isPreview={true}
+                    />
+                  )}
+                </div>
               </div>
 
-              {/* Template Render Container */}
-              <div className="flex-1 overflow-y-auto bg-slate-950 text-white relative flex flex-col justify-center">
-                {activeTemplate && (
-                  <TemplateRenderer
-                    slug={activeTemplate.slug}
-                    category={activeTemplate.category}
-                    templateType={activeTemplate.templateType}
-                    customHtml={activeTemplate.customHtml}
-                    customCss={activeTemplate.customCss}
-                    customJs={activeTemplate.customJs}
-                    customData={activeTemplate.defaultConfig}
-                    title={activeTemplate.title}
-                    wishes={[]}
-                    isPreview={true}
-                  />
-                )}
+              {/* Laptop Base Stand */}
+              <div className={`w-[106%] h-2.5 rounded-b-xl border-t shadow-md ${
+                isDark ? 'bg-slate-800 border-slate-700' : 'bg-stone-300 border-stone-400'
+              }`}>
+                <div className="w-12 h-0.5 rounded-full bg-slate-600/40 mx-auto mt-1" />
               </div>
-            </div>
-
-            {/* Laptop Base Stand */}
-            <div className={`w-[106%] h-2.5 rounded-b-xl border-t shadow-md ${
-              isDark ? 'bg-slate-800 border-slate-700' : 'bg-stone-300 border-stone-400'
-            }`}>
-              <div className="w-12 h-0.5 rounded-full bg-slate-600/40 mx-auto mt-1" />
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -111,7 +111,7 @@ export const EventInvitationTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative min-h-full w-full overflow-hidden bg-gradient-to-b from-[#081410] via-[#0b1c16] to-[#040a08] text-white font-sans selection:bg-emerald-500 pb-12">
+    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#081410] via-[#0b1c16] to-[#040a08] text-white font-sans selection:bg-emerald-500 pb-12">
       {/* Background Soft Glow */}
       <div className="absolute top-10 left-1/4 w-80 h-80 rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none" />
 

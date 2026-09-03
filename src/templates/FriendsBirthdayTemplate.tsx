@@ -85,7 +85,7 @@ export const FriendsBirthdayTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative min-h-full w-full overflow-hidden bg-gradient-to-b from-[#0b0c16] via-[#120e24] to-[#08070f] text-white font-sans selection:bg-amber-500 pb-12">
+    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#0b0c16] via-[#120e24] to-[#08070f] text-white font-sans selection:bg-amber-500 pb-12">
       {/* Background Animated Strobe Glows */}
       <div className="absolute top-10 left-1/4 w-72 h-72 rounded-full bg-amber-500/10 blur-[100px] pointer-events-none" />
       <div className="absolute top-1/3 right-10 w-80 h-80 rounded-full bg-rose-500/15 blur-[120px] pointer-events-none" />

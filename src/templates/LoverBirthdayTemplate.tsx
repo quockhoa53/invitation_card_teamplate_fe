@@ -122,7 +122,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative min-h-full w-full overflow-hidden bg-gradient-to-b from-[#14080e] via-[#1a0c14] to-[#0a0508] text-white font-sans selection:bg-rose-500 selection:text-white pb-12">
+    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#14080e] via-[#1a0c14] to-[#0a0508] text-white font-sans selection:bg-rose-500 selection:text-white pb-12">
       {/* Soft Ambient Rose Glow */}
       <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-rose-600/15 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-pink-600/10 blur-[100px] pointer-events-none" />

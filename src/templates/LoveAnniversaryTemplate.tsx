@@ -100,7 +100,7 @@ export const LoveAnniversaryTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative min-h-full w-full overflow-hidden bg-gradient-to-b from-[#140810] via-[#1a0b18] to-[#090409] text-white font-sans selection:bg-rose-500 pb-12">
+    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#140810] via-[#1a0b18] to-[#090409] text-white font-sans selection:bg-rose-500 pb-12">
       {/* Background Soft Glows */}
       <div className="absolute top-10 left-1/4 w-72 h-72 rounded-full bg-pink-500/10 blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/3 right-10 w-80 h-80 rounded-full bg-rose-500/15 blur-[120px] pointer-events-none" />
