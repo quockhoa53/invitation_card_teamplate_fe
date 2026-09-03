@@ -222,6 +222,13 @@ export interface LoveAnniversaryData {
   timeline?: TimelineItem[];
   photos: PhotoItem[];
   fallingWords?: string[];
+  keyword1?: string;
+  keyword2?: string;
+  keyword3?: string;
+  keyword4?: string;
+  keyword5?: string;
+  milestoneUnit?: 'DAYS' | 'YEARS' | 'CUSTOM';
+  milestoneText?: string;
   neonTheme?: 'cyan' | 'pink' | 'gold' | 'white';
 }
 

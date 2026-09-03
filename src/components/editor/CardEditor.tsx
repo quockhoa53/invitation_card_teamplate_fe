@@ -447,29 +447,144 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               )}
 
               {(selectedTemplate.slug?.includes('ky-niem') || selectedTemplate.category === 'LOVE_ANNIVERSARY' || customData.fallingWords !== undefined) && (
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
-                    isDark ? 'text-slate-300' : 'text-stone-700'
-                  }`}>
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Danh sách từ ngữ phát sáng rơi (phân cách bằng dấu phẩy)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={Array.isArray(customData.fallingWords) ? customData.fallingWords.join(', ') : (customData.fallingWords || 'Em yêu anh, thành công, vững vàng, Chúc anh luôn vui vẻ, Happy Anniversary, 1000 Days')}
-                    onChange={(e) => {
-                      const words = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
-                      updateField('fallingWords', words);
-                    }}
-                    placeholder="Em yêu anh, thành công, vững vàng, Chúc anh luôn vui vẻ, Happy Anniversary, 1000 Days"
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none resize-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-cyan-300 focus:border-cyan-400'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-cyan-500'
-                    }`}
-                  />
-                  <p className="text-[10px] text-slate-400 mt-1">
-                    Các cụm từ trên sẽ rơi xuống liên tục dưới dạng chữ Neon phát sáng 3D như video trào lưu TikTok!
-                  </p>
+                <div className="space-y-3 pt-2 border-t border-dashed border-slate-700/50">
+                  {/* Mốc Kỷ Niệm: Bao Nhiêu Ngày hay Bao Nhiêu Năm */}
+                  <div>
+                    <label className={`block text-xs font-bold mb-1.5 flex items-center gap-1.5 ${
+                      isDark ? 'text-cyan-300' : 'text-stone-800'
+                    }`}>
+                      <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Kiểu hiển thị mốc kỷ niệm
+                    </label>
+                    <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-700 text-xs mb-2">
+                      <button
+                        type="button"
+                        onClick={() => updateField('milestoneUnit', 'DAYS')}
+                        className={`py-1 px-2 rounded-lg font-semibold transition ${
+                          (customData.milestoneUnit || 'DAYS') === 'DAYS'
+                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Theo Số Ngày
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateField('milestoneUnit', 'YEARS')}
+                        className={`py-1 px-2 rounded-lg font-semibold transition ${
+                          customData.milestoneUnit === 'YEARS'
+                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Theo Số Năm
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateField('milestoneUnit', 'CUSTOM')}
+                        className={`py-1 px-2 rounded-lg font-semibold transition ${
+                          customData.milestoneUnit === 'CUSTOM'
+                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Tùy Biến
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      value={customData.milestoneText || ''}
+                      onChange={(e) => updateField('milestoneText', e.target.value)}
+                      placeholder={
+                        customData.milestoneUnit === 'YEARS'
+                          ? 'Ví dụ: 3 Năm Bên Nhau'
+                          : customData.milestoneUnit === 'CUSTOM'
+                          ? 'Ví dụ: Kỷ Niệm 08/06/2023'
+                          : 'Ví dụ: 1000 Ngày Yêu Nhau (để trống sẽ tự tính số ngày)'
+                      }
+                      className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-700 text-cyan-300 focus:border-cyan-400'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-cyan-500'
+                      }`}
+                    />
+                  </div>
+
+                  {/* 5 Từ Khóa Rơi (Keywords) */}
+                  <div className="space-y-2 pt-1">
+                    <label className={`block text-xs font-bold flex items-center gap-1.5 ${
+                      isDark ? 'text-cyan-300' : 'text-stone-800'
+                    }`}>
+                      <Sparkles className="w-3.5 h-3.5 text-pink-400" /> 5 Từ khóa phát sáng rơi liên tục (Nhập 5 câu bạn thích):
+                    </label>
+
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 1:</span>
+                        <input
+                          type="text"
+                          value={customData.keyword1 || ''}
+                          onChange={(e) => updateField('keyword1', e.target.value)}
+                          placeholder="Ví dụ: Em yêu anh / Yêu em nhiều"
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 2:</span>
+                        <input
+                          type="text"
+                          value={customData.keyword2 || ''}
+                          onChange={(e) => updateField('keyword2', e.target.value)}
+                          placeholder="Ví dụ: Thành công / Luôn hạnh phúc"
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 3:</span>
+                        <input
+                          type="text"
+                          value={customData.keyword3 || ''}
+                          onChange={(e) => updateField('keyword3', e.target.value)}
+                          placeholder="Ví dụ: Vững vàng / Bình yên"
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 4:</span>
+                        <input
+                          type="text"
+                          value={customData.keyword4 || ''}
+                          onChange={(e) => updateField('keyword4', e.target.value)}
+                          placeholder="Ví dụ: Chúc anh luôn vui vẻ / Nụ cười rạng rỡ"
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
+                          }`}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 5:</span>
+                        <input
+                          type="text"
+                          value={customData.keyword5 || ''}
+                          onChange={(e) => updateField('keyword5', e.target.value)}
+                          placeholder="Ví dụ: Happy Anniversary / Mãi bên nhau"
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 

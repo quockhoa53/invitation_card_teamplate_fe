@@ -134,17 +134,38 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     }
   };
 
-  // Falling words list
+  // 1. Determine milestone text (Days or Years or Custom)
+  const yearsTogether = Math.max(1, Math.floor(timeTogether.days / 365));
+  let milestoneBadgeText = `${timeTogether.days} Ngày Yêu Nhau`;
+  if (data.milestoneText && data.milestoneText.trim()) {
+    milestoneBadgeText = data.milestoneText.trim();
+  } else if (data.milestoneUnit === 'YEARS') {
+    milestoneBadgeText = `${yearsTogether} Năm Yêu Nhau`;
+  }
+
+  // Format anniversary date
+  const formattedAnniversaryDate = data.anniversaryStartDate
+    ? new Date(data.anniversaryStartDate).toLocaleDateString('vi-VN')
+    : '';
+
+  // 2. 5 user-customizable keywords
+  const kw1 = data.keyword1 || 'Em yêu anh';
+  const kw2 = data.keyword2 || 'thành công';
+  const kw3 = data.keyword3 || 'vững vàng';
+  const kw4 = data.keyword4 || 'Chúc anh luôn vui vẻ';
+  const kw5 = data.keyword5 || 'Happy Anniversary';
+
+  // Falling words list incorporating the 5 keywords, names, milestone, and date
   const defaultWords = [
-    'Em yêu anh',
-    'thành công',
-    'vững vàng',
-    'Chúc anh luôn vui vẻ',
+    kw1,
+    kw2,
+    kw3,
+    kw4,
+    kw5,
     data.recipientName || 'Đức Huy',
     data.senderName || 'Quỳnh Anh',
-    'Happy Anniversary',
-    `${timeTogether.days} Days`,
-    'Yêu anh nhiều lắm',
+    milestoneBadgeText,
+    formattedAnniversaryDate ? `Kỷ Niệm ${formattedAnniversaryDate}` : `${timeTogether.days} Days`,
     'Mãi bên nhau',
   ];
 
@@ -447,7 +468,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         {/* Milestone Badge */}
         <div className="pointer-events-auto px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 shadow-md">
           <Calendar className="w-3 h-3 text-cyan-400 animate-pulse" />
-          <span>{timeTogether.days} Ngày Yêu Nhau</span>
+          <span>{milestoneBadgeText}</span>
         </div>
 
         {/* Audio Toggle */}
