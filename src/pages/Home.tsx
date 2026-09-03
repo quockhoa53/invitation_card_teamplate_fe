@@ -58,8 +58,8 @@ export const Home: React.FC = () => {
     navigate(`/editor?templateId=${tpl.id}`);
   };
 
-  // Top 4 curated templates for the spotlight showcase
-  const featuredTemplates = useMemo(() => templates.slice(0, 4), [templates]);
+  // Display real templates from database (up to 8 templates, 2 rows of 4)
+  const displayTemplates = useMemo(() => templates.slice(0, 8), [templates]);
 
   return (
     <div className="space-y-12 sm:space-y-20 pb-20 overflow-x-hidden">
@@ -154,165 +154,52 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* FEATURED TEMPLATES - ASYMMETRICAL SPOTLIGHT BENTO GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+      {/* 3D SHOWCASE STAGE: 8 CARDS ARRANGED IN 2 ROWS (4 PER ROW) */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10 py-6">
+        {/* 3D Perspective Stage Horizon Glow & Grid Floor */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none rounded-3xl">
+          {/* Subtle 3D Perspective Grid Floor */}
+          <div
+            className="absolute inset-0 opacity-[0.2] dark:opacity-[0.15] [background-image:linear-gradient(to_right,#e11d48_1px,transparent_1px),linear-gradient(to_bottom,#e11d48_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_35%,#000_60%,transparent_100%)]"
+            style={{
+              transform: 'perspective(1000px) rotateX(28deg) scale(1.12)',
+              transformOrigin: 'top center',
+            }}
+          />
+          {/* Stage Center Ambient Spotlight */}
+          <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 w-[750px] h-[380px] rounded-full blur-[140px] pointer-events-none ${
+            isDark ? 'bg-rose-600/15' : 'bg-rose-500/10'
+          }`} />
+        </div>
+
         {/* Section Header */}
-        <div className="space-y-1">
+        <div className="space-y-1 text-center sm:text-left">
           <span className="text-xs uppercase font-bold tracking-widest text-rose-500">
-            KD Collection
+            KD Showcase 3D Stage
           </span>
-          <h2 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Thiệp Mời Tiêu Biểu
+          <h2 className="font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Bộ Sưu Tập Thiệp Mời Tiêu Biểu
           </h2>
           <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            Khám phá 4 ấn phẩm thiệp mời tương tác nổi bật nhất do đội ngũ KD Atelier thiết kế.
+            8 ấn phẩm thiệp mời tương tác nổi bật nhất trên không gian hiển thị 3D sống động.
           </p>
         </div>
 
-        {/* Bento Grid: 1 Large Spotlight (Left) + 3 Editorial Cards (Right) */}
-        {featuredTemplates.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-            {/* Spotlight Card 1 (Left 7 Cols) */}
-            {featuredTemplates[0] && (
-              <div
-                onClick={() => setDemoTemplate(featuredTemplates[0])}
-                className={`lg:col-span-7 group relative rounded-2xl border overflow-hidden flex flex-col justify-between cursor-pointer transition-all duration-300 ${
-                  isDark
-                    ? 'bg-[#0f1522] border-slate-800 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-black'
-                    : 'bg-white border-slate-200 hover:border-rose-500/40 hover:shadow-xl hover:shadow-slate-200/60'
-                }`}
-              >
-                {/* Spotlight Image Container */}
-                <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[16/10] w-full overflow-hidden bg-slate-900">
-                  <img
-                    src={featuredTemplates[0].thumbnailUrl}
-                    alt={featuredTemplates[0].title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#080b11] via-black/30 to-transparent" />
-
-                  {/* Badges */}
-                  <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
-                    <span className="px-2.5 py-1 rounded-md bg-rose-600 text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" /> Spotlight Nổi Bật Nhất
-                    </span>
-                    <span className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
-                      {featuredTemplates[0].isFree ? 'Miễn Phí' : `${featuredTemplates[0].price.toLocaleString('vi-VN')} đ`}
-                    </span>
-                  </div>
-
-                  {/* Play Hover */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 bg-black/20">
-                    <div className="w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
-                      <Play className="w-4 h-4 fill-white ml-0.5" />
-                    </div>
-                  </div>
-
-                  {/* Overlay Bottom Content */}
-                  <div className="absolute bottom-3.5 left-4 right-4 text-white space-y-1">
-                    <h3 className="font-editorial text-lg sm:text-2xl font-bold leading-snug text-white">
-                      {featuredTemplates[0].title}
-                    </h3>
-                    <p className="text-xs text-slate-300 line-clamp-1 max-w-lg hidden sm:block">
-                      {featuredTemplates[0].description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Actions */}
-                <div className={`p-3.5 flex items-center justify-between gap-3 border-t ${
-                  isDark ? 'border-slate-800/80 bg-[#0c111a]' : 'border-slate-100 bg-slate-50/60'
-                }`}>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDemoTemplate(featuredTemplates[0]);
-                    }}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition active:scale-95 ${
-                      isDark ? 'border-slate-700 hover:bg-slate-800 text-slate-200' : 'border-slate-200 hover:bg-white text-slate-800'
-                    }`}
-                  >
-                    <Eye className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Xem Thử</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleUseTemplate(featuredTemplates[0]);
-                    }}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-sm active:scale-95 transition flex items-center gap-1"
-                  >
-                    <span>Tạo Thiệp Này</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Right Stack: 3 Editorial Horizontal Cards (Right 5 Cols) */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
-              {featuredTemplates.slice(1, 4).map((tpl, idx) => (
-                <div
-                  key={tpl.id}
-                  onClick={() => setDemoTemplate(tpl)}
-                  className={`group rounded-2xl border p-3 flex items-center gap-3.5 cursor-pointer transition-all duration-200 ${
-                    isDark
-                      ? 'bg-[#0f1522] border-slate-800 hover:border-rose-500/40 hover:bg-[#121a2a]'
-                      : 'bg-white border-slate-200 hover:border-rose-500/40 hover:shadow-md hover:bg-slate-50/50'
-                  }`}
-                >
-                  {/* Thumbnail Left */}
-                  <div className="relative w-24 sm:w-28 aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 shrink-0">
-                    <img
-                      src={tpl.thumbnailUrl}
-                      alt={tpl.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                    <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-bold text-white">
-                      0{idx + 2}
-                    </div>
-                  </div>
-
-                  {/* Info Right */}
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-rose-500 truncate">
-                        {tpl.category.replace(/_/g, ' ')}
-                      </span>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
-                        tpl.isFree
-                          ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}>
-                        {tpl.isFree ? 'Miễn Phí' : `${tpl.price.toLocaleString('vi-VN')} đ`}
-                      </span>
-                    </div>
-
-                    <h4 className="font-editorial text-sm font-bold truncate text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors">
-                      {tpl.title}
-                    </h4>
-                    <p className={`text-xs line-clamp-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                      {tpl.description}
-                    </p>
-
-                    <div className="pt-0.5 flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-rose-500 group-hover:underline inline-flex items-center gap-1">
-                        Xem chi tiết <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* 8 Cards in 2 Rows (4 Cards Per Row) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          {displayTemplates.map((tpl) => (
+            <TemplateCardItem
+              key={tpl.id}
+              template={tpl}
+              isDark={isDark}
+              onPreview={(t) => setDemoTemplate(t)}
+              onUse={(t) => handleUseTemplate(t)}
+            />
+          ))}
+        </div>
 
         {/* View All Button */}
-        <div className="text-center pt-2 sm:pt-4">
+        <div className="text-center pt-4 sm:pt-6">
           <Link
             to="/templates"
             className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 ${
@@ -321,7 +208,7 @@ export const Home: React.FC = () => {
                 : 'bg-white border-slate-200 hover:border-rose-500 text-slate-900 shadow-sm'
             }`}
           >
-            <span>Khám Phá Toàn Bộ {templates.length} Mẫu Thiệp Mời</span>
+            <span>Khám Phá Toàn Bộ Bộ Sưu Tập</span>
             <ArrowRight className="w-4 h-4 text-rose-500" />
           </Link>
         </div>
