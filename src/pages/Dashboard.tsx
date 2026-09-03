@@ -69,6 +69,30 @@ export const Dashboard: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
 
+  // Pagination for purchased templates
+  const [purchasedPage, setPurchasedPage] = useState(1);
+  const [purchasedPageSize, setPurchasedPageSize] = useState(6);
+  const totalPurchasedPages = Math.ceil(purchasedTemplates.length / purchasedPageSize) || 1;
+  const pagedPurchasedTemplates = purchasedTemplates.slice(
+    (purchasedPage - 1) * purchasedPageSize,
+    purchasedPage * purchasedPageSize
+  );
+
+  const getCategoryLabel = (cat: string) => {
+    switch (cat) {
+      case 'BIRTHDAY_LOVER':
+        return 'Sinh Nhật Người Yêu';
+      case 'BIRTHDAY_FRIENDS':
+        return 'Sinh Nhật Bạn Bè';
+      case 'LOVE_ANNIVERSARY':
+        return 'Kỷ Niệm Tình Yêu';
+      case 'EVENT_INVITATION':
+        return 'Thư Mời Sự Kiện & Cưới';
+      default:
+        return 'Mẫu Thiệp Mời';
+    }
+  };
+
   // Editor states
   const [editingCard, setEditingCard] = useState<Card | null>(null);
   const [selectedTemplateForNew, setSelectedTemplateForNew] = useState<Template | null>(null);
@@ -591,35 +615,126 @@ export const Dashboard: React.FC = () => {
 
             {purchasedTemplates.length === 0 ? (
               <div className={`p-12 text-center rounded-3xl border space-y-4 ${
-                isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+                isDark ? 'bg-[#121824]/60 border-slate-800' : 'bg-white border-stone-200 shadow-sm'
               }`}>
-                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20 shadow-inner">
-                  <ShoppingBag className="w-8 h-8" />
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/20 shadow-inner">
+                  <Sparkles className="w-8 h-8" />
                 </div>
-                <h4 className="font-editorial text-lg font-bold">Bạn chưa sở hữu mẫu thiệp trả phí nào</h4>
-                <p className={`text-xs max-w-md mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                <h4 className="font-editorial text-xl font-bold">Bạn chưa sở hữu mẫu thiệp trả phí nào</h4>
+                <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                   Khám phá bộ sưu tập mẫu thiệp cao cấp độc quyền, mở khóa một lần và sử dụng mãi mãi để tạo nên những tấm thiệp tuyệt đẹp!
                 </p>
                 <div className="pt-2">
                   <Link
                     to="/templates"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs font-bold shadow-lg shadow-rose-500/20 hover:brightness-105 active:scale-95 transition"
+                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs shadow-lg transition hover:brightness-105 active:scale-95"
                   >
-                    <Sparkles className="w-4 h-4" /> Khám Phá Mẫu Thiệp Ngay
+                    Khám Phá Mẫu Thiệp Ngay <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {purchasedTemplates.map((tpl) => (
-                  <TemplateCardItem
-                    key={tpl.id}
-                    template={tpl}
-                    isDark={isDark}
-                    onPreview={(t) => setDemoTemplate(t)}
-                    onUse={(t) => navigate(`/editor?templateId=${t.id}`)}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {pagedPurchasedTemplates.map((tpl) => (
+                    <div
+                      key={tpl.id}
+                      className={`rounded-3xl border shadow-lg overflow-hidden flex flex-col justify-between transition-all group ${
+                        isDark
+                          ? 'bg-[#121824] border-slate-800/80 hover:border-slate-700'
+                          : 'bg-white border-stone-200 hover:border-rose-300'
+                      }`}
+                    >
+                      {/* Thumbnail / Header */}
+                      <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
+                        <img
+                          src={tpl.thumbnailUrl}
+                          alt={tpl.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-3 left-3 flex gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white text-[10px] font-bold border border-white/10">
+                            {getCategoryLabel(tpl.category)}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                            <CheckCircle2 className="w-3 h-3" /> Đã Sở Hữu
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Template Info */}
+                      <div className="p-5 space-y-3 flex-1">
+                        <h3 className="font-editorial text-lg font-bold truncate group-hover:text-rose-500 transition-colors">
+                          {tpl.title}
+                        </h3>
+
+                        <div className={`flex items-center gap-4 text-xs ${
+                          isDark ? 'text-slate-400' : 'text-stone-500'
+                        }`}>
+                          <span className="flex items-center gap-1">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Mẫu Thiệp Cao Cấp
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5 text-emerald-400" /> Bản Quyền Vĩnh Viễn
+                          </span>
+                        </div>
+
+                        <div className={`p-2.5 rounded-xl border text-[11px] font-mono truncate flex items-center justify-between ${
+                          isDark
+                            ? 'bg-slate-900/80 border-slate-800 text-slate-300'
+                            : 'bg-stone-50 border-stone-200 text-stone-700'
+                        }`}>
+                          <span className="truncate opacity-75">Giá mở khóa:</span>
+                          <strong className="text-amber-400 shrink-0 font-bold">
+                            {tpl.price ? tpl.price.toLocaleString('vi-VN') + ' đ' : 'Miễn phí'}
+                          </strong>
+                        </div>
+                      </div>
+
+                      {/* Card Actions */}
+                      <div className={`p-4 border-t flex items-center justify-between gap-2 ${
+                        isDark ? 'bg-slate-950/50 border-slate-800' : 'bg-stone-50/70 border-stone-100'
+                      }`}>
+                        <button
+                          onClick={() => setDemoTemplate(tpl)}
+                          className={`p-2 rounded-xl transition flex items-center gap-1.5 px-3 text-xs font-semibold ${
+                            isDark
+                              ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                              : 'bg-white hover:bg-stone-100 text-stone-700 border border-stone-200'
+                          }`}
+                          title="Xem thử mẫu thiệp"
+                        >
+                          <Eye className="w-4 h-4 text-rose-500" />
+                          <span>Xem Thử</span>
+                        </button>
+
+                        <button
+                          onClick={() => navigate(`/editor?templateId=${tpl.id}`)}
+                          className="flex-1 py-2 px-4 rounded-xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
+                        >
+                          <span>Tạo Thiệp Mới</span>
+                          <PlusCircle className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination for Purchased Templates */}
+                {totalPurchasedPages > 1 && (
+                  <Pagination
+                    currentPage={purchasedPage}
+                    totalPages={totalPurchasedPages}
+                    totalItems={purchasedTemplates.length}
+                    itemsPerPage={purchasedPageSize}
+                    onPageChange={(p) => setPurchasedPage(p)}
+                    onItemsPerPageChange={(sz) => {
+                      setPurchasedPageSize(sz);
+                      setPurchasedPage(1);
+                    }}
+                    labelItem="mẫu thiệp"
                   />
-                ))}
+                )}
               </div>
             )}
           </div>
