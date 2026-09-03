@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { useToast } from '../../context/ToastContext';
 import { Template, Card } from '../../types';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
 import { api } from '../../services/api';
@@ -37,6 +38,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
   onCancel,
 }) => {
   const { theme } = useTheme();
+  const { confirmModal } = useToast();
   const isDark = theme === 'dark';
 
   const [title, setTitle] = useState(initialCard ? initialCard.title : `Thiệp ${selectedTemplate.title}`);
@@ -136,7 +138,20 @@ export const CardEditor: React.FC<CardEditorProps> = ({
       setSuccessMsg('Lưu thiệp mời thành công!');
       onSaved(resCard);
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Lưu thiệp thất bại');
+      const msg = err.response?.data?.message || err.message || 'Lưu thiệp thất bại';
+      if (msg.includes('INSUFFICIENT_CREDITS')) {
+        confirmModal({
+          title: 'Số Dư Ví Không Đủ',
+          message: `${msg.replace('INSUFFICIENT_CREDITS: ', '')}\n\nBạn có muốn chuyển sang trang Nạp Tiền ngay bây giờ không?`,
+          confirmText: '💳 Đi Đến Nạp Tiền',
+          type: 'warning',
+          onConfirm: () => {
+            window.location.href = '/payment';
+          },
+        });
+        return;
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

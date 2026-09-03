@@ -14,6 +14,8 @@ import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
 import { AdminTemplatesPage } from './pages/admin/AdminTemplatesPage';
 import { AdminTransactionsPage } from './pages/admin/AdminTransactionsPage';
+import { AdminWithdrawalsPage } from './pages/admin/AdminWithdrawalsPage';
+import { AdminPromotionsPage } from './pages/admin/AdminPromotionsPage';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
@@ -98,6 +100,8 @@ export const AppContent: React.FC = () => {
           <Route path="categories" element={<AdminCategoriesPage />} />
           <Route path="templates" element={<AdminTemplatesPage />} />
           <Route path="transactions" element={<AdminTransactionsPage />} />
+          <Route path="withdrawals" element={<AdminWithdrawalsPage />} />
+          <Route path="promotions" element={<AdminPromotionsPage />} />
         </Route>
 
         {/* Fallback */}

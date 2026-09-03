@@ -12,6 +12,8 @@ export interface User {
   authProvider?: 'LOCAL' | 'GOOGLE';
   googleId?: string;
   creditsBalance: number;
+  realBalance?: number;
+  bonusBalance?: number;
   createdAt: string;
 }
 
@@ -102,6 +104,9 @@ export interface CardWish {
 export interface PaymentOrder {
   orderCode: string;
   amount: number;
+  bonusAmount?: number;
+  actualAmount?: number;
+  missingAmount?: number;
   paymentMethod: string;
   vietQrUrl: string;
   qrCodeBase64: string;
@@ -118,7 +123,11 @@ export interface TransactionItem {
   orderCode: string;
   paymentMethod: string;
   amount: number;
-  status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'CANCELLED';
+  bonusAmount?: number;
+  actualAmount?: number;
+  missingAmount?: number;
+  type?: string;
+  status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'CANCELLED' | 'UNDERPAID' | 'SETTLED_TO_WALLET';
   gatewayPayload?: string;
   completedAt?: string;
   createdAt: string;
@@ -126,6 +135,48 @@ export interface TransactionItem {
   userEmail?: string;
   userFullName?: string;
   userAvatarUrl?: string;
+}
+
+export interface WithdrawalItem {
+  id: string;
+  amount: number;
+  bankName: string;
+  accountNumber: string;
+  accountHolder: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  adminNote?: string;
+  processedAt?: string;
+  createdAt: string;
+  userId?: string;
+  userEmail?: string;
+  userFullName?: string;
+}
+
+export interface PromotionItem {
+  id: string;
+  code: string;
+  description?: string;
+  discountType: 'PERCENTAGE' | 'FIXED_AMOUNT';
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountAmount?: number;
+  maxUsage?: number;
+  usedCount: number;
+  startDate?: string;
+  endDate?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface ValidatePromotionResult {
+  valid: boolean;
+  message: string;
+  code?: string;
+  discountType?: string;
+  discountValue?: number;
+  originalAmount?: number;
+  discountAmount?: number;
+  finalAmount?: number;
 }
 
 export interface AdminStats {

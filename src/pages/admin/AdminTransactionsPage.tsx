@@ -205,7 +205,8 @@ export const AdminTransactionsPage: React.FC = () => {
                   <tr>
                     <th className="py-3 px-4">Mã Đơn</th>
                     <th className="py-3 px-4">Khách Hàng</th>
-                    <th className="py-3 px-4">Số Tiền</th>
+                    <th className="py-3 px-4">Loại GD</th>
+                    <th className="py-3 px-4">Số Tiền & Thưởng</th>
                     <th className="py-3 px-4">Phương Thức</th>
                     <th className="py-3 px-4">Trạng Thái</th>
                     <th className="py-3 px-4">Thời Gian Tạo</th>
@@ -248,11 +249,40 @@ export const AdminTransactionsPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Amount */}
+                      {/* Transaction Type */}
                       <td className="py-3 px-4">
-                        <span className="font-bold font-mono text-sm text-emerald-500">
-                          +{t.amount.toLocaleString('vi-VN')} đ
-                        </span>
+                        {t.type === 'CARD_PURCHASE' ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-500/15 text-pink-400 border border-pink-500/20">
+                            Mua Thiệp
+                          </span>
+                        ) : t.type === 'WITHDRAWAL' ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
+                            Rút Tiền
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                            Nạp Tiền
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Amount & Bonus */}
+                      <td className="py-3 px-4">
+                        <div className="space-y-0.5">
+                          <span className="font-bold font-mono text-sm text-emerald-500">
+                            +{t.amount.toLocaleString('vi-VN')} đ
+                          </span>
+                          {t.bonusAmount && t.bonusAmount > 0 ? (
+                            <div className="text-[10px] font-semibold text-pink-400 flex items-center gap-1">
+                              <span>🎁 Tặng +{t.bonusAmount.toLocaleString('vi-VN')} đ</span>
+                            </div>
+                          ) : null}
+                          {t.status === 'UNDERPAID' && (
+                            <div className="text-[10px] text-amber-400 font-medium">
+                              Thực nhận: {t.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {t.missingAmount?.toLocaleString('vi-VN')} đ)
+                            </div>
+                          )}
+                        </div>
                       </td>
 
                       {/* Payment Method */}
@@ -268,12 +298,22 @@ export const AdminTransactionsPage: React.FC = () => {
                       <td className="py-3 px-4">
                         {t.status === 'SUCCESS' && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
-                            <CheckCircle2 className="w-3 h-3" /> Đã Nạp Tiền
+                            <CheckCircle2 className="w-3 h-3" /> Thành Công
                           </span>
                         )}
                         {t.status === 'PENDING' && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
                             <Clock className="w-3 h-3" /> Đang Chờ Quét
+                          </span>
+                        )}
+                        {t.status === 'UNDERPAID' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                            ⚠️ Chuyển Thiếu
+                          </span>
+                        )}
+                        {t.status === 'SETTLED_TO_WALLET' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                            💼 Đã Nạp Vào Ví
                           </span>
                         )}
                         {t.status === 'CANCELLED' && (
@@ -284,7 +324,7 @@ export const AdminTransactionsPage: React.FC = () => {
                       </td>
 
                       {/* Time */}
-                      <td className="py-3 px-4 text-[11px] opacity-70">
+                      <td className="py-3 px-4 text-[11px] opacity-70 whitespace-nowrap">
                         {new Date(t.createdAt).toLocaleString('vi-VN')}
                       </td>
 

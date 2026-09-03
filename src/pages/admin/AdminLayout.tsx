@@ -15,6 +15,8 @@ import {
   Moon,
   FolderTree,
   CreditCard,
+  ArrowDownToLine,
+  Tag,
 } from 'lucide-react';
 import { AdminTwoFactorModal } from './AdminTwoFactorPage';
 
@@ -52,6 +54,8 @@ export const AdminLayout: React.FC = () => {
   const navItems = [
     { path: '/admin', label: 'Tổng Quan & Doanh Thu', icon: LayoutDashboard },
     { path: '/admin/transactions', label: 'Lịch Sử Giao Dịch', icon: CreditCard },
+    { path: '/admin/withdrawals', label: 'Duyệt Rút Tiền', icon: ArrowDownToLine },
+    { path: '/admin/promotions', label: 'Mã Khuyến Mãi', icon: Tag },
     { path: '/admin/templates', label: 'Quản Lý Template', icon: Layers },
     { path: '/admin/categories', label: 'Quản Lý Loại Template', icon: FolderTree },
     { path: '/admin/users', label: 'Quản Lý Người Dùng', icon: Users },

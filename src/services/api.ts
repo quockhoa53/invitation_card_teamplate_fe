@@ -294,4 +294,72 @@ export const api = {
     const res = await apiClient.delete(`/admin/categories/${id}`);
     return res.data;
   },
+
+  // Underpaid resolution options (OP1 & OP2)
+  settleUnderpaidToWallet: async (orderCode: string): Promise<ApiResponse<PaymentOrder>> => {
+    const res = await apiClient.post(`/payment/orders/${orderCode}/settle-to-wallet`);
+    return res.data;
+  },
+
+  getSupplementOrder: async (orderCode: string): Promise<ApiResponse<PaymentOrder>> => {
+    const res = await apiClient.get(`/payment/orders/${orderCode}/supplement-order`);
+    return res.data;
+  },
+
+  // Withdrawals
+  requestWithdrawal: async (data: { amount: number; bankName: string; accountNumber: string; accountHolder: string }): Promise<ApiResponse<any>> => {
+    const res = await apiClient.post('/withdrawals', data);
+    return res.data;
+  },
+
+  getMyWithdrawals: async (params?: { page?: number; size?: number }): Promise<ApiResponse<{ content: any[]; totalPages: number; totalElements: number }>> => {
+    const res = await apiClient.get('/withdrawals/my', { params });
+    return res.data;
+  },
+
+  getAdminWithdrawals: async (params?: { status?: string; search?: string; page?: number; size?: number }): Promise<ApiResponse<{ content: any[]; totalPages: number; totalElements: number }>> => {
+    const res = await apiClient.get('/admin/withdrawals', { params });
+    return res.data;
+  },
+
+  approveAdminWithdrawal: async (id: string, note?: string): Promise<ApiResponse<any>> => {
+    const res = await apiClient.post(`/admin/withdrawals/${id}/approve`, { note });
+    return res.data;
+  },
+
+  rejectAdminWithdrawal: async (id: string, reason?: string): Promise<ApiResponse<any>> => {
+    const res = await apiClient.post(`/admin/withdrawals/${id}/reject`, { reason });
+    return res.data;
+  },
+
+  // Promotions / Coupons
+  validatePromotion: async (code: string, amount: number): Promise<ApiResponse<any>> => {
+    const res = await apiClient.get('/promotions/validate', { params: { code, amount } });
+    return res.data;
+  },
+
+  getAdminPromotions: async (params?: { search?: string; isActive?: boolean; page?: number; size?: number }): Promise<ApiResponse<{ content: any[]; totalPages: number; totalElements: number }>> => {
+    const res = await apiClient.get('/admin/promotions', { params });
+    return res.data;
+  },
+
+  createAdminPromotion: async (data: any): Promise<ApiResponse<any>> => {
+    const res = await apiClient.post('/admin/promotions', data);
+    return res.data;
+  },
+
+  updateAdminPromotion: async (id: string, data: any): Promise<ApiResponse<any>> => {
+    const res = await apiClient.put(`/admin/promotions/${id}`, data);
+    return res.data;
+  },
+
+  deleteAdminPromotion: async (id: string): Promise<ApiResponse<void>> => {
+    const res = await apiClient.delete(`/admin/promotions/${id}`);
+    return res.data;
+  },
+
+  toggleAdminPromotion: async (id: string): Promise<ApiResponse<any>> => {
+    const res = await apiClient.patch(`/admin/promotions/${id}/toggle`);
+    return res.data;
+  },
 };
