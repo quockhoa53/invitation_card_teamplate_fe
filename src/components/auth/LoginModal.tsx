@@ -254,14 +254,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 </div>
               </div>
 
-              {/* Demo account hints */}
-              <div className={`p-2.5 rounded-xl border text-[11px] space-y-1 ${
-                isDark ? 'bg-slate-900/60 border-slate-800 text-slate-400' : 'bg-stone-50 border-stone-200 text-stone-600'
-              }`}>
-                <p><strong>Admin:</strong> admin@invitation.com / Admin@123456</p>
-                <p><strong>User:</strong> user@invitation.com / User@123456</p>
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}

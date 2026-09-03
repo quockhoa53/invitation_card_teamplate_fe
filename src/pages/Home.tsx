@@ -55,25 +55,25 @@ export const Home: React.FC = () => {
   const featuredTemplates = templates.slice(0, 4);
 
   return (
-    <div className="space-y-24 pb-24 overflow-x-hidden">
-      {/* 3D LIVE SPLIT HERO SECTION */}
-      <section className="relative pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="space-y-20 pb-20 overflow-x-hidden">
+      {/* 3D LIVE SPLIT HERO SECTION (FIT TO VIEWPORT) */}
+      <section className="relative pt-2 sm:pt-4 lg:pt-3 pb-4 sm:pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-[calc(100vh-4.25rem)] flex items-center">
         {/* Subtle Ambient Glow */}
         <div
-          className={`absolute top-1/3 left-1/4 w-[600px] h-[350px] rounded-full blur-[140px] pointer-events-none ${
+          className={`absolute top-1/3 left-1/4 w-[500px] h-[300px] rounded-full blur-[140px] pointer-events-none ${
             isDark ? 'bg-rose-500/15' : 'bg-rose-300/20'
           }`}
         />
         <div
-          className={`absolute top-1/4 right-10 w-[400px] h-[300px] rounded-full blur-[120px] pointer-events-none ${
+          className={`absolute top-1/4 right-10 w-[350px] h-[260px] rounded-full blur-[120px] pointer-events-none ${
             isDark ? 'bg-amber-500/10' : 'bg-amber-300/20'
           }`}
         />
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full my-auto">
           {/* Left Column: Brand Story & CTA */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold tracking-wide transition-colors">
+          <div className="lg:col-span-7 space-y-3.5 sm:space-y-4 lg:space-y-5 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-semibold tracking-wide transition-colors">
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 isDark ? 'bg-rose-500/20 text-rose-300' : 'bg-rose-100 text-rose-700'
               }`}>
@@ -84,31 +84,31 @@ export const Home: React.FC = () => {
               </span>
             </div>
 
-            <h1 className="font-editorial text-4xl sm:text-6xl lg:text-[66px] font-bold tracking-tight leading-[1.12]">
+            <h1 className="font-editorial text-3xl sm:text-5xl lg:text-[44px] xl:text-[52px] font-bold tracking-tight leading-[1.12]">
               Trao gửi yêu thương qua những tấm{' '}
               <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500">
                 thiệp sống động
               </span>
             </h1>
 
-            <p className={`text-sm sm:text-base lg:text-lg max-w-xl font-sans leading-relaxed ${
+            <p className={`text-xs sm:text-sm lg:text-[14.5px] max-w-xl font-sans leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-stone-600'
             }`}>
               Tự tay tạo và cá nhân hóa thiệp sinh nhật, kỷ niệm tình yêu và thư mời độc bản: mở hộp quà, thổi nến bánh kem, đếm ngày yêu và âm nhạc lãng mạn. Tự động sinh mã QR và link riêng gửi người thân.
             </p>
 
             {/* Action Buttons */}
-            <div className="pt-2 flex flex-wrap justify-center lg:justify-start items-center gap-4">
+            <div className="pt-1 flex flex-wrap justify-center lg:justify-start items-center gap-3">
               <Link
                 to="/templates"
-                className="px-7 py-3.5 rounded-full font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-xl shadow-rose-500/25 hover:shadow-rose-500/40 hover:scale-102 active:scale-95 transition-all flex items-center gap-2"
+                className="px-6 py-3 rounded-full font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:scale-102 active:scale-95 transition-all flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4" /> Khám Phá Bộ Sưu Tập Ngay
               </Link>
 
               <Link
                 to="/templates"
-                className={`px-6 py-3.5 rounded-full font-semibold text-xs sm:text-sm border transition-all active:scale-95 flex items-center gap-2 ${
+                className={`px-5 py-3 rounded-full font-semibold text-xs sm:text-sm border transition-all active:scale-95 flex items-center gap-2 ${
                   isDark
                     ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-slate-200'
                     : 'bg-white border-stone-200 hover:border-stone-300 text-stone-700 shadow-sm'
@@ -119,25 +119,25 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className={`pt-6 border-t grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 text-left ${
+            <div className={`pt-3.5 border-t grid grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0 text-left ${
               isDark ? 'border-slate-800/80' : 'border-stone-200'
             }`}>
               <div>
-                <span className="font-editorial text-lg font-bold text-rose-500 block">4+ Kịch Bản</span>
+                <span className="font-editorial text-base sm:text-lg font-bold text-rose-500 block">4+ Kịch Bản</span>
                 <span className={`text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                   Tương tác độc quyền
                 </span>
               </div>
 
               <div>
-                <span className="font-editorial text-lg font-bold text-amber-500 block">Tự Động</span>
+                <span className="font-editorial text-base sm:text-lg font-bold text-amber-500 block">Tự Động</span>
                 <span className={`text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                   Mã QR & Link riêng
                 </span>
               </div>
 
               <div>
-                <span className="font-editorial text-lg font-bold text-emerald-500 block">Bảo Mật</span>
+                <span className="font-editorial text-base sm:text-lg font-bold text-emerald-500 block">Bảo Mật</span>
                 <span className={`text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                   Khóa mật khẩu riêng tư
                 </span>
