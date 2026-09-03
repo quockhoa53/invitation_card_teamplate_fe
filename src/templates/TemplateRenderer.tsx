@@ -2,6 +2,7 @@ import React from 'react';
 import { LoverBirthdayTemplate } from './LoverBirthdayTemplate';
 import { FriendsBirthdayTemplate } from './FriendsBirthdayTemplate';
 import { LoveAnniversaryTemplate } from './LoveAnniversaryTemplate';
+import { LoveRainAnniversaryTemplate } from './LoveRainAnniversaryTemplate';
 import { EventInvitationTemplate } from './EventInvitationTemplate';
 import { DynamicCodeRenderer } from './DynamicCodeRenderer';
 import { CardWish } from '../types';
@@ -87,8 +88,20 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   }
 
   if (slug?.includes('ky-niem') || category === 'LOVE_ANNIVERSARY') {
+    if (slug?.includes('vinyl')) {
+      return (
+        <LoveAnniversaryTemplate
+          data={parsedData}
+          title={title}
+          wishes={wishes}
+          onSendWish={onSendWish}
+          isPreview={isPreview}
+        />
+      );
+    }
+    // Default to the viral Falling Words & Hearts Rain template (Screenshot 2)
     return (
-      <LoveAnniversaryTemplate
+      <LoveRainAnniversaryTemplate
         data={parsedData}
         title={title}
         wishes={wishes}

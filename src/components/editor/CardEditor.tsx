@@ -446,6 +446,33 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                 </div>
               )}
 
+              {(selectedTemplate.slug?.includes('ky-niem') || selectedTemplate.category === 'LOVE_ANNIVERSARY' || customData.fallingWords !== undefined) && (
+                <div>
+                  <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
+                    isDark ? 'text-slate-300' : 'text-stone-700'
+                  }`}>
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Danh sách từ ngữ phát sáng rơi (phân cách bằng dấu phẩy)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={Array.isArray(customData.fallingWords) ? customData.fallingWords.join(', ') : (customData.fallingWords || 'Em yêu anh, thành công, vững vàng, Chúc anh luôn vui vẻ, Happy Anniversary, 1000 Days')}
+                    onChange={(e) => {
+                      const words = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                      updateField('fallingWords', words);
+                    }}
+                    placeholder="Em yêu anh, thành công, vững vàng, Chúc anh luôn vui vẻ, Happy Anniversary, 1000 Days"
+                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none resize-none ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-700 text-cyan-300 focus:border-cyan-400'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-cyan-500'
+                    }`}
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Các cụm từ trên sẽ rơi xuống liên tục dưới dạng chữ Neon phát sáng 3D như video trào lưu TikTok!
+                  </p>
+                </div>
+              )}
+
               {customData.eventDate !== undefined && (
                 <div>
                   <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${

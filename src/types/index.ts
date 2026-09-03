@@ -221,6 +221,8 @@ export interface LoveAnniversaryData {
   themeColor?: string;
   timeline?: TimelineItem[];
   photos: PhotoItem[];
+  fallingWords?: string[];
+  neonTheme?: 'cyan' | 'pink' | 'gold' | 'white';
 }
 
 export interface EventInvitationData {
