@@ -268,21 +268,32 @@ export const AdminTransactionsPage: React.FC = () => {
 
                       {/* Amount & Bonus */}
                       <td className="py-3 px-4">
-                        <div className="space-y-0.5">
-                          <span className="font-bold font-mono text-sm text-emerald-500">
-                            +{t.amount.toLocaleString('vi-VN')} đ
-                          </span>
-                          {t.bonusAmount && t.bonusAmount > 0 ? (
-                            <div className="text-[10px] font-semibold text-pink-400 flex items-center gap-1">
-                              <span>🎁 Tặng +{t.bonusAmount.toLocaleString('vi-VN')} đ</span>
+                        {(() => {
+                          const isExpense = t.type === 'CARD_PURCHASE' || t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('BUY') || t.orderCode?.startsWith('WDR');
+                          return (
+                            <div className="space-y-0.5">
+                              {isExpense ? (
+                                <span className="font-bold font-mono text-sm text-rose-400">
+                                  -{t.amount.toLocaleString('vi-VN')} đ
+                                </span>
+                              ) : (
+                                <span className="font-bold font-mono text-sm text-emerald-500">
+                                  +{t.amount.toLocaleString('vi-VN')} đ
+                                </span>
+                              )}
+                              {!isExpense && t.bonusAmount && t.bonusAmount > 0 ? (
+                                <div className="text-[10px] font-semibold text-pink-400 flex items-center gap-1">
+                                  <span>🎁 Tặng +{t.bonusAmount.toLocaleString('vi-VN')} đ</span>
+                                </div>
+                              ) : null}
+                              {t.status === 'UNDERPAID' && (
+                                <div className="text-[10px] text-amber-400 font-medium">
+                                  Thực nhận: {t.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {t.missingAmount?.toLocaleString('vi-VN')} đ)
+                                </div>
+                              )}
                             </div>
-                          ) : null}
-                          {t.status === 'UNDERPAID' && (
-                            <div className="text-[10px] text-amber-400 font-medium">
-                              Thực nhận: {t.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {t.missingAmount?.toLocaleString('vi-VN')} đ)
-                            </div>
-                          )}
-                        </div>
+                          );
+                        })()}
                       </td>
 
                       {/* Payment Method */}

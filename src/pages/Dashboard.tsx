@@ -26,6 +26,7 @@ import {
   ArrowRight,
   Copy,
   Check,
+  ShoppingBag,
 } from 'lucide-react';
 import { AdminTwoFactorModal } from './admin/AdminTwoFactorPage';
 import { SetPasswordModal } from '../components/auth/SetPasswordModal';
@@ -535,10 +536,10 @@ export const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="font-editorial text-xl font-bold flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-emerald-500" /> Lịch Sử Nạp Tiền Của Bạn
+                  <CreditCard className="w-5 h-5 text-emerald-500" /> Lịch Sử Giao Dịch & Biến Động Số Dư
                 </h3>
                 <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Theo dõi trạng thái các đơn nạp tiền VietQR tự động
+                  Theo dõi chi tiết các giao dịch nạp tiền, mua thiệp và biến động số dư ví
                 </p>
               </div>
 
@@ -559,7 +560,7 @@ export const Dashboard: React.FC = () => {
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto">
                   <CreditCard className="w-7 h-7" />
                 </div>
-                <h4 className="font-editorial text-base font-bold">Chưa có giao dịch nạp tiền nào</h4>
+                <h4 className="font-editorial text-base font-bold">Chưa có giao dịch nào</h4>
                 <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                   Nạp tiền ngay để mở khóa không giới hạn các mẫu thiệp Pro và tính năng cao cấp!
                 </p>
@@ -587,95 +588,141 @@ export const Dashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-stone-100'}`}>
-                      {userTransactions.map((tx) => (
-                        <tr
-                          key={tx.id}
-                          className={`transition ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-50'}`}
-                        >
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-1.5 font-mono font-bold text-amber-500">
-                              <span>{tx.orderCode}</span>
-                              <button
-                                type="button"
-                                onClick={() => handleCopyCode(tx.orderCode)}
-                                className="p-1 hover:bg-amber-500/20 rounded text-slate-400 hover:text-amber-500 transition"
-                                title="Sao chép mã đơn"
-                              >
-                                {copiedCode === tx.orderCode ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-                              </button>
-                            </div>
-                          </td>
+                      {userTransactions.map((tx) => {
+                        const isPurchase = tx.type === 'CARD_PURCHASE' || tx.type === 'TEMPLATE_PURCHASE' || tx.orderCode?.startsWith('BUY');
+                        const isWithdrawal = tx.type === 'WITHDRAWAL' || tx.orderCode?.startsWith('WDR');
+                        const isExpense = isPurchase || isWithdrawal;
 
-                          <td className="py-3 px-4">
-                            <span className="font-bold font-mono text-sm text-emerald-500">
-                              +{tx.amount.toLocaleString('vi-VN')} đ
-                            </span>
-                          </td>
-
-                          <td className="py-3 px-4">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                              isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
-                            }`}>
-                              {tx.paymentMethod || 'VIETQR'}
-                            </span>
-                          </td>
-
-                          <td className="py-3 px-4">
-                            {tx.status === 'SUCCESS' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
-                                <CheckCircle2 className="w-3 h-3" /> Đã Nạp Tiền
-                              </span>
-                            )}
-                            {tx.status === 'PENDING' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
-                                <Clock className="w-3 h-3" /> Đang Chờ Quét
-                              </span>
-                            )}
-                            {tx.status === 'CANCELLED' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
-                                <XCircle className="w-3 h-3" /> Đã Hủy
-                              </span>
-                            )}
-                          </td>
-
-                          <td className="py-3 px-4 text-[11px] opacity-70 font-mono">
-                            {new Date(tx.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} · {new Date(tx.createdAt).toLocaleDateString('vi-VN')}
-                          </td>
-
-                          <td className="py-3 px-4 text-right">
-                            {tx.status === 'PENDING' ? (
-                              <div className="flex items-center justify-end gap-1.5">
-                                <Link
-                                  to={`/payment?orderCode=${tx.orderCode}`}
-                                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] shadow-sm transition inline-flex items-center gap-1 active:scale-95"
-                                >
-                                  Thanh Toán Ngay →
-                                </Link>
+                        return (
+                          <tr
+                            key={tx.id}
+                            className={`transition ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-50'}`}
+                          >
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-1.5 font-mono font-bold text-amber-500">
+                                <span>{tx.orderCode}</span>
                                 <button
                                   type="button"
-                                  onClick={() => handleCancelUserTransaction(tx.orderCode)}
-                                  className={`p-1.5 rounded-xl border transition ${
-                                    isDark
-                                      ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20'
-                                      : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
-                                  }`}
-                                  title="Hủy đơn này"
+                                  onClick={() => handleCopyCode(tx.orderCode)}
+                                  className="p-1 hover:bg-amber-500/20 rounded text-slate-400 hover:text-amber-500 transition"
+                                  title="Sao chép mã đơn"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
+                                  {copiedCode === tx.orderCode ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
                                 </button>
                               </div>
-                            ) : tx.status === 'CANCELLED' ? (
-                              <span className="text-[11px] text-slate-400 font-medium">
-                                Đã Hủy
+                            </td>
+
+                            <td className="py-3 px-4">
+                              <div className="space-y-0.5">
+                                {isExpense ? (
+                                  <span className="font-bold font-mono text-sm text-rose-500">
+                                    -{tx.amount.toLocaleString('vi-VN')} đ
+                                  </span>
+                                ) : (
+                                  <span className="font-bold font-mono text-sm text-emerald-500">
+                                    +{tx.amount.toLocaleString('vi-VN')} đ
+                                  </span>
+                                )}
+                                {!isExpense && tx.bonusAmount && tx.bonusAmount > 0 ? (
+                                  <div className="text-[10px] font-semibold text-pink-400">
+                                    🎁 Tặng +{tx.bonusAmount.toLocaleString('vi-VN')} đ
+                                  </div>
+                                ) : null}
+                                {tx.status === 'UNDERPAID' && (
+                                  <div className="text-[10px] text-amber-400 font-medium">
+                                    Thực nhận: {tx.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {tx.missingAmount?.toLocaleString('vi-VN')} đ)
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+
+                            <td className="py-3 px-4">
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                isPurchase
+                                  ? isDark ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30' : 'bg-purple-50 text-purple-700 border border-purple-200'
+                                  : isWithdrawal
+                                  ? isDark ? 'bg-blue-500/15 text-blue-300 border border-blue-500/30' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                  : isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
+                              }`}>
+                                {isPurchase ? 'VÍ KD CARD' : isWithdrawal ? 'NGÂN HÀNG' : (tx.paymentMethod || 'VIETQR')}
                               </span>
-                            ) : (
-                              <span className="text-[11px] text-emerald-500 font-semibold">
-                                ✓ Hoàn tất
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+
+                            <td className="py-3 px-4">
+                              {isPurchase && tx.status === 'SUCCESS' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-500/15 text-pink-400 border border-pink-500/30">
+                                  <ShoppingBag className="w-3 h-3" /> Mua Thiệp
+                                </span>
+                              ) : isWithdrawal ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                                  💸 Rút Tiền
+                                </span>
+                              ) : tx.status === 'SUCCESS' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                                  <CheckCircle2 className="w-3 h-3" /> Đã Nạp Tiền
+                                </span>
+                              ) : tx.status === 'UNDERPAID' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                  ⚠️ Chuyển Thiếu
+                                </span>
+                              ) : tx.status === 'SETTLED_TO_WALLET' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                                  💼 Đã Nạp Vào Ví
+                                </span>
+                              ) : tx.status === 'PENDING' ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                                  <Clock className="w-3 h-3" /> Đang Chờ Quét
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                                  <XCircle className="w-3 h-3" /> Đã Hủy
+                                </span>
+                              )}
+                            </td>
+
+                            <td className="py-3 px-4 text-[11px] opacity-70 font-mono">
+                              {new Date(tx.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} · {new Date(tx.createdAt).toLocaleDateString('vi-VN')}
+                            </td>
+
+                            <td className="py-3 px-4 text-right">
+                              {tx.status === 'PENDING' ? (
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <Link
+                                    to={`/payment?orderCode=${tx.orderCode}`}
+                                    className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] shadow-sm transition inline-flex items-center gap-1 active:scale-95"
+                                  >
+                                    Thanh Toán Ngay →
+                                  </Link>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCancelUserTransaction(tx.orderCode)}
+                                    className={`p-1.5 rounded-xl border transition ${
+                                      isDark
+                                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20'
+                                        : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
+                                    }`}
+                                    title="Hủy đơn này"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ) : tx.status === 'CANCELLED' ? (
+                                <span className="text-[11px] text-slate-400 font-medium">
+                                  Đã Hủy
+                                </span>
+                              ) : isPurchase ? (
+                                <span className="text-[11px] text-purple-400 font-semibold inline-flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5 text-purple-400" /> Mở Khóa Mẫu
+                                </span>
+                              ) : (
+                                <span className="text-[11px] text-emerald-500 font-semibold">
+                                  ✓ Hoàn tất
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
