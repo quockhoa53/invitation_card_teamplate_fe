@@ -436,7 +436,20 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   <input
                     type="datetime-local"
                     value={customData.anniversaryStartDate ? customData.anniversaryStartDate.substring(0, 16) : ''}
-                    onChange={(e) => updateField('anniversaryStartDate', e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      updateField('anniversaryStartDate', val);
+                      if (val) {
+                        const start = new Date(val);
+                        const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
+                        const years = Math.max(1, Math.floor(diffDays / 365));
+                        if (customData.milestoneUnit === 'YEARS') {
+                          updateField('milestoneText', `${years} Năm Yêu Nhau`);
+                        } else if (customData.milestoneUnit === 'DAYS' || !customData.milestoneUnit) {
+                          updateField('milestoneText', `${diffDays} Ngày Yêu Nhau`);
+                        }
+                      }
+                    }}
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
                         ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
@@ -468,7 +481,12 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-700 text-xs mb-2">
                       <button
                         type="button"
-                        onClick={() => updateField('milestoneUnit', 'DAYS')}
+                        onClick={() => {
+                          updateField('milestoneUnit', 'DAYS');
+                          const start = customData.anniversaryStartDate ? new Date(customData.anniversaryStartDate) : new Date(Date.now() - 1000 * 86400000);
+                          const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
+                          updateField('milestoneText', `${diffDays} Ngày Yêu Nhau`);
+                        }}
                         className={`py-1 px-2 rounded-lg font-semibold transition ${
                           (customData.milestoneUnit || 'DAYS') === 'DAYS'
                             ? 'bg-cyan-500 text-slate-950 shadow-sm'
@@ -479,7 +497,13 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                       </button>
                       <button
                         type="button"
-                        onClick={() => updateField('milestoneUnit', 'YEARS')}
+                        onClick={() => {
+                          updateField('milestoneUnit', 'YEARS');
+                          const start = customData.anniversaryStartDate ? new Date(customData.anniversaryStartDate) : new Date(Date.now() - 1000 * 86400000);
+                          const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
+                          const years = Math.max(1, Math.floor(diffDays / 365));
+                          updateField('milestoneText', `${years} Năm Yêu Nhau`);
+                        }}
                         className={`py-1 px-2 rounded-lg font-semibold transition ${
                           customData.milestoneUnit === 'YEARS'
                             ? 'bg-cyan-500 text-slate-950 shadow-sm'

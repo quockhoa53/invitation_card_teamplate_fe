@@ -136,11 +136,19 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
 
   // 1. Determine milestone text (Days or Years or Custom)
   const yearsTogether = Math.max(1, Math.floor(timeTogether.days / 365));
-  let milestoneBadgeText = `${timeTogether.days} Ngày Yêu Nhau`;
-  if (data.milestoneText && data.milestoneText.trim()) {
+  let milestoneBadgeText = '';
+  if (data.milestoneUnit === 'YEARS') {
+    milestoneBadgeText = (data.milestoneText && data.milestoneText.includes('Năm'))
+      ? data.milestoneText.trim()
+      : `${yearsTogether} Năm Yêu Nhau`;
+  } else if (data.milestoneUnit === 'DAYS') {
+    milestoneBadgeText = (data.milestoneText && data.milestoneText.includes('Ngày'))
+      ? data.milestoneText.trim()
+      : `${timeTogether.days} Ngày Yêu Nhau`;
+  } else if (data.milestoneText && data.milestoneText.trim()) {
     milestoneBadgeText = data.milestoneText.trim();
-  } else if (data.milestoneUnit === 'YEARS') {
-    milestoneBadgeText = `${yearsTogether} Năm Yêu Nhau`;
+  } else {
+    milestoneBadgeText = `${timeTogether.days} Ngày Yêu Nhau`;
   }
 
   // Format anniversary date
