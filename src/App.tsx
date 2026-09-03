@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/common/Navbar';
+import { Footer } from './components/common/Footer';
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { CardEditorPage } from './pages/CardEditorPage';
@@ -33,7 +34,7 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-[#0b0f17] text-slate-100' : 'bg-[#faf8f5] text-stone-800'
+      theme === 'dark' ? 'bg-[#080b11] text-slate-100' : 'bg-[#fbfbfb] text-slate-800'
     }`}>
       <Routes>
         {/* Public Landing & Catalog */}
@@ -43,6 +44,7 @@ export const AppContent: React.FC = () => {
             <>
               <Navbar />
               <Home />
+              <Footer />
             </>
           }
         />
@@ -54,6 +56,7 @@ export const AppContent: React.FC = () => {
             <>
               <Navbar />
               <TemplatesPage />
+              <Footer />
             </>
           }
         />
@@ -65,6 +68,7 @@ export const AppContent: React.FC = () => {
             <ProtectedRoute>
               <Navbar />
               <Dashboard />
+              <Footer />
             </ProtectedRoute>
           }
         />

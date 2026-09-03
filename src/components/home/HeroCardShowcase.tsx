@@ -118,42 +118,34 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
     {
       id: 'sinh-nhat-nguoi-yeu-3d-cake',
       category: 'BIRTHDAY_LOVER',
-      label: 'Người Yêu',
+      label: 'Sinh Nhật',
       fullName: 'Sinh Nhật Người Yêu',
-      desc: 'Bánh kem 3D & Mở hộp quà',
-      icon: Gift,
-      color: 'text-rose-500',
-      bgColor: 'bg-rose-500/15',
-    },
-    {
-      id: 'sinh-nhat-ban-be-disco-neon',
-      category: 'BIRTHDAY_FRIENDS',
-      label: 'Bạn Bè',
-      fullName: 'Đại Tiệc Bạn Bè',
-      desc: 'Disco Neon sôi động',
-      icon: Flame,
-      color: 'text-amber-500',
-      bgColor: 'bg-amber-500/15',
+      desc: 'Bánh kem 3D & Thổi nến tương tác',
+      icon: Sparkles,
     },
     {
       id: 'ky-niem-ngay-yeu-falling-hearts',
       category: 'LOVE_ANNIVERSARY',
       label: 'Kỷ Niệm',
       fullName: 'Kỷ Niệm Ngày Yêu',
-      desc: 'Mưa chữ neon & Trái tim rơi',
+      desc: 'Mưa chữ neon & Đếm ngày yêu',
       icon: Heart,
-      color: 'text-pink-500',
-      bgColor: 'bg-pink-500/15',
+    },
+    {
+      id: 'sinh-nhat-ban-be-disco-neon',
+      category: 'BIRTHDAY_FRIENDS',
+      label: 'Bạn Bè',
+      fullName: 'Đại Tiệc Bạn Bè',
+      desc: 'Giai điệu Disco Neon sôi động',
+      icon: Flame,
     },
     {
       id: 'thu-moi-su-kien-royal-wax-seal',
       category: 'EVENT_INVITATION',
-      label: 'Thư Mời',
+      label: 'Sự Kiện',
       fullName: 'Thư Mời Sự Kiện',
-      desc: 'Dấu sáp hoàng gia & QR',
+      desc: 'Dấu sáp hoàng gia & Quét QR',
       icon: Calendar,
-      color: 'text-emerald-500',
-      bgColor: 'bg-emerald-500/15',
     },
   ];
 
@@ -190,21 +182,21 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
     <div className="w-full max-w-[500px] mx-auto space-y-3">
       {/* Top Controls: Sleek Dropdown & Device Switcher */}
       <div className={`p-2 rounded-2xl border flex items-center justify-between gap-2.5 transition-colors relative z-30 ${
-        isDark ? 'bg-[#121824]/95 border-slate-800' : 'bg-white/95 border-stone-200 shadow-sm'
+        isDark ? 'bg-[#0f1522]/95 border-slate-800/80 shadow-xl' : 'bg-white/95 border-slate-200/80 shadow-sm'
       }`}>
         {/* Modern Elegant Category Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-sm active:scale-95 ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-sm active:scale-95 ${
               isDark
-                ? 'bg-slate-900 border-slate-700 text-white hover:border-rose-500'
-                : 'bg-stone-50 border-stone-200 text-stone-800 hover:border-rose-400'
+                ? 'bg-slate-900/90 border-slate-700/80 text-white hover:border-rose-500'
+                : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-rose-400'
             }`}
           >
-            <currentTab.icon className={`w-3.5 h-3.5 ${currentTab.color}`} />
-            <span className="truncate max-w-[140px] sm:max-w-[160px]">{currentTab.fullName}</span>
+            <currentTab.icon className="w-3.5 h-3.5 text-rose-500" />
+            <span className="truncate max-w-[140px] sm:max-w-[170px]">{currentTab.fullName}</span>
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-slate-400 ${
               isDropdownOpen ? 'rotate-180 text-rose-500' : ''
             }`} />
@@ -212,13 +204,13 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
 
           {/* Floating Glassmorphic Dropdown Menu */}
           {isDropdownOpen && (
-            <div className={`absolute top-full left-0 mt-2 w-64 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-150 ${
+            <div className={`absolute top-full left-0 mt-2 w-72 p-2 rounded-2xl border shadow-2xl backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-150 ${
               isDark
-                ? 'bg-[#121824]/95 border-slate-700/80 text-white'
-                : 'bg-white/95 border-stone-200 text-stone-800 shadow-stone-300/50'
+                ? 'bg-[#0b0f17]/95 border-slate-800 text-white'
+                : 'bg-white/95 border-slate-200 text-slate-800 shadow-slate-200/60'
             }`}>
               <div className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 text-slate-400">
-                Chọn mẫu thiệp tương tác
+                Bộ sưu tập thiệp tương tác
               </div>
               <div className="space-y-1">
                 {showcaseTabs.map((tab) => {
@@ -232,28 +224,30 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                         setActiveTabId(tab.id);
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full p-2 rounded-xl text-left flex items-center justify-between transition-all ${
+                      className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-all ${
                         isSelected
                           ? isDark
-                            ? 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30'
-                            : 'bg-rose-50 text-rose-700 font-bold border border-rose-200'
+                            ? 'bg-rose-500/15 text-rose-300 font-semibold border border-rose-500/30'
+                            : 'bg-rose-50 text-rose-600 font-semibold border border-rose-200'
                           : isDark
-                          ? 'hover:bg-slate-800 text-slate-300'
-                          : 'hover:bg-stone-100 text-stone-700'
+                          ? 'hover:bg-slate-850 text-slate-300'
+                          : 'hover:bg-slate-100 text-slate-700'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${tab.bgColor}`}>
-                          <Icon className={`w-3.5 h-3.5 ${tab.color}`} />
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                          isSelected ? 'bg-rose-500 text-white' : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          <Icon className="w-3.5 h-3.5" />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-bold truncate">{tab.fullName}</p>
-                          <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                          <p className="text-xs font-medium truncate">{tab.fullName}</p>
+                          <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                             {tab.desc}
                           </p>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-rose-500 shrink-0 ml-1" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-rose-500 shrink-0 ml-1" />}
                     </button>
                   );
                 })}
@@ -296,17 +290,17 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
         </div>
       </div>
 
-      {/* Quick Interactive Prompt Hint for Mobile */}
-      <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-semibold text-rose-500 animate-pulse py-0.5">
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>Chạm vào màn hình thiệp để tương tác mở quà & thổi nến</span>
+      {/* Interactive Prompt Hint */}
+      <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 py-0.5">
+        <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+        <span>Trải nghiệm tương tác trực tiếp trên màn hình</span>
       </div>
 
       {/* Frame Container */}
       <div className="relative flex justify-center items-center">
         {/* Glow ambient background */}
-        <div className={`absolute -inset-2 rounded-[44px] blur-2xl opacity-25 pointer-events-none ${
-          isDark ? 'bg-gradient-to-tr from-rose-500 via-amber-500 to-pink-600' : 'bg-rose-300'
+        <div className={`absolute -inset-2 rounded-[44px] blur-2xl pointer-events-none ${
+          isDark ? 'bg-rose-500/15' : 'bg-rose-500/10'
         }`} />
 
         <AnimatePresence mode="wait">

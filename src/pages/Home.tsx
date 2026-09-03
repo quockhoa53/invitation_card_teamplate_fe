@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Gift,
   ChevronRight,
+  Play,
 } from 'lucide-react';
 
 export const Home: React.FC = () => {
@@ -57,89 +58,49 @@ export const Home: React.FC = () => {
     navigate(`/editor?templateId=${tpl.id}`);
   };
 
-  const [activeCategory, setActiveCategory] = useState<string>('ALL');
-
-  // Filter templates for featured showcase
-  const filteredFeaturedTemplates = useMemo(() => {
-    if (activeCategory === 'ALL') return templates.slice(0, 6);
-    return templates.filter((t) => t.category === activeCategory).slice(0, 6);
-  }, [templates, activeCategory]);
+  // Top 4 curated templates for the spotlight showcase
+  const featuredTemplates = useMemo(() => templates.slice(0, 4), [templates]);
 
   return (
     <div className="space-y-12 sm:space-y-20 pb-20 overflow-x-hidden">
-      {/* 3D LIVE SPLIT HERO SECTION (OPTIMIZED FOR MOBILE & DESKTOP) */}
-      <section className="relative pt-1 sm:pt-4 pb-4 sm:pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex items-center">
-        {/* Subtle Ambient Glow */}
+      {/* HERO SECTION */}
+      <section className="relative pt-2 sm:pt-6 pb-4 sm:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex items-center">
+        {/* Subtle Single Accent Ambient Glow */}
         <div
           className={`absolute top-1/4 left-1/4 w-[400px] sm:w-[500px] h-[260px] sm:h-[300px] rounded-full blur-[140px] pointer-events-none ${
-            isDark ? 'bg-rose-500/15' : 'bg-rose-300/20'
-          }`}
-        />
-        <div
-          className={`absolute top-1/3 right-10 w-[300px] sm:w-[350px] h-[220px] sm:h-[260px] rounded-full blur-[120px] pointer-events-none ${
-            isDark ? 'bg-amber-500/10' : 'bg-amber-300/20'
+            isDark ? 'bg-rose-500/10' : 'bg-rose-500/5'
           }`}
         />
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center w-full my-auto">
-          {/* Left Column: Brand Story & CTA (Punchy & Minimal Text for Mobile) */}
-          <div className="lg:col-span-7 space-y-3 sm:space-y-4 text-center lg:text-left">
-            {/* Top Trendy Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-semibold tracking-wide transition-colors">
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                isDark ? 'bg-rose-500/20 text-rose-300' : 'bg-rose-100 text-rose-700'
-              }`}>
-                KD Card 2026
-              </span>
-              <span className={isDark ? 'text-slate-300' : 'text-stone-600'}>
-                Thiệp Mời Động Thế Hệ Mới
-              </span>
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center w-full my-auto">
+          {/* Left Column: Brand Story & CTA */}
+          <div className="lg:col-span-7 space-y-4 sm:space-y-5 text-center lg:text-left">
+            {/* Top Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-[11px] font-semibold tracking-wide border-slate-200 dark:border-slate-800 bg-slate-100/80 dark:bg-slate-900/80 text-slate-800 dark:text-slate-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              <span>KD Card Atelier 2026 — Nền Tảng Thiệp Mời Độc Bản</span>
             </div>
 
             {/* Emotional Punchy Headline */}
-            <h1 className="font-editorial text-2xl sm:text-4xl lg:text-[44px] xl:text-[50px] font-bold tracking-tight leading-[1.18]">
-              Tạo thiệp mời tương tác{' '}
-              <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500">
-                sống động & độc bản
+            <h1 className="font-editorial text-3xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold tracking-tight leading-[1.12] text-slate-900 dark:text-white">
+              Trao gửi yêu thương qua thiệp mời{' '}
+              <span className="text-rose-600 dark:text-rose-500">
+                tương tác sống động
               </span>
             </h1>
 
-            {/* Quick Feature Tags with Emojis (Replaces Walls of Text) */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2 pt-0.5">
-              <span className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold border flex items-center gap-1 transition ${
-                isDark ? 'bg-slate-900/80 border-rose-500/20 text-rose-300' : 'bg-rose-50 border-rose-200 text-rose-700'
-              }`}>
-                🎁 Mở Quà 3D
-              </span>
-              <span className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold border flex items-center gap-1 transition ${
-                isDark ? 'bg-slate-900/80 border-amber-500/20 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700'
-              }`}>
-                🎂 Thổi Nến
-              </span>
-              <span className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold border flex items-center gap-1 transition ${
-                isDark ? 'bg-slate-900/80 border-purple-500/20 text-purple-300' : 'bg-purple-50 border-purple-200 text-purple-700'
-              }`}>
-                🎵 Tự Phát Nhạc
-              </span>
-              <span className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold border flex items-center gap-1 transition ${
-                isDark ? 'bg-slate-900/80 border-emerald-500/20 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-              }`}>
-                📱 Quét Mã QR
-              </span>
-            </div>
-
-            {/* One-sentence Subtitle for Desktop */}
-            <p className={`hidden sm:block text-xs sm:text-sm font-sans leading-relaxed ${
-              isDark ? 'text-slate-300' : 'text-stone-600'
+            {/* Modern Value Statement */}
+            <p className={`text-xs sm:text-base max-w-xl font-sans leading-relaxed ${
+              isDark ? 'text-slate-400' : 'text-slate-600'
             }`}>
-              Tự tay tạo thiệp sinh nhật, kỷ niệm tình yêu trong 30 giây. Gửi người thân qua Zalo, Messenger chỉ với 1 đường link riêng.
+              Tự tay tạo và cá nhân hóa thiệp sinh nhật, kỷ niệm tình yêu và thư mời sự kiện độc bản trong 30 giây. Tích hợp hiệu ứng 3D, âm nhạc và mã QR tự động gửi riêng người thân.
             </p>
 
-            {/* Action Button: Single High-Converting CTA */}
+            {/* Action Buttons */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
               <Link
                 to="/templates"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-xl shadow-rose-500/30 hover:shadow-rose-500/50 hover:scale-102 active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm shadow-lg shadow-rose-600/20 active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Bắt Đầu Tạo Thiệp Miễn Phí</span>
@@ -147,36 +108,36 @@ export const Home: React.FC = () => {
 
               <Link
                 to="/templates"
-                className={`hidden sm:inline-flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-xs border transition-all active:scale-95 ${
+                className={`hidden sm:inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-xs sm:text-sm border transition-all active:scale-95 ${
                   isDark
-                    ? 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-slate-200'
-                    : 'bg-white border-stone-200 hover:border-stone-300 text-stone-700 shadow-sm'
+                    ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-200'
+                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700 shadow-sm'
                 }`}
               >
                 <Eye className="w-4 h-4 text-rose-500" />
-                <span>Xem Tất Cả Mẫu</span>
+                <span>Xem Bộ Sưu Tập</span>
               </Link>
             </div>
 
-            {/* Mini Trust Stats - Clean Minimalist Badges */}
-            <div className={`hidden sm:grid pt-3 border-t grid-cols-3 gap-2 max-w-md mx-auto lg:mx-0 text-left ${
-              isDark ? 'border-slate-800/80' : 'border-stone-200'
+            {/* Minimalist Trust Stats */}
+            <div className={`hidden sm:grid pt-4 border-t grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0 text-left ${
+              isDark ? 'border-slate-800/80' : 'border-slate-200'
             }`}>
               <div>
-                <span className="font-editorial text-sm sm:text-base font-bold text-rose-500 block">4+ Kịch Bản</span>
-                <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Tương tác độc quyền
+                <span className="font-editorial text-base sm:text-lg font-bold text-slate-900 dark:text-white block">4+ Kịch Bản</span>
+                <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Tương tác 3D độc quyền
                 </span>
               </div>
               <div>
-                <span className="font-editorial text-sm sm:text-base font-bold text-amber-500 block">Tự Động</span>
-                <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                <span className="font-editorial text-base sm:text-lg font-bold text-slate-900 dark:text-white block">100% Tự Động</span>
+                <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Mã QR & Link riêng
                 </span>
               </div>
               <div>
-                <span className="font-editorial text-sm sm:text-base font-bold text-emerald-500 block">Bảo Mật</span>
-                <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                <span className="font-editorial text-base sm:text-lg font-bold text-slate-900 dark:text-white block">Bảo Mật 2FA</span>
+                <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Khóa mật khẩu riêng tư
                 </span>
               </div>
@@ -193,147 +154,176 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* FEATURED TEMPLATES SECTION (SWIPEABLE TOUCH CAROUSEL ON MOBILE) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      {/* FEATURED TEMPLATES - ASYMMETRICAL SPOTLIGHT BENTO GRID */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b pb-4 border-stone-200 dark:border-slate-800">
-          <div>
-            <div className="flex items-center gap-2 text-rose-500 text-xs font-bold uppercase tracking-wider mb-1">
-              <Gift className="w-4 h-4" /> Mẫu Thiệp Được Yêu Thích
-            </div>
-            <h2 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight">
-              Tuyển Chọn Mẫu Hot Nhất
-            </h2>
-          </div>
+        <div className="space-y-1">
+          <span className="text-xs uppercase font-bold tracking-widest text-rose-500">
+            KD Collection
+          </span>
+          <h2 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Thiệp Mời Tiêu Biểu
+          </h2>
+          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Khám phá 4 ấn phẩm thiệp mời tương tác nổi bật nhất do đội ngũ KD Atelier thiết kế.
+          </p>
+        </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-            {[
-              { id: 'ALL', label: 'Tất Cả' },
-              { id: 'BIRTHDAY_LOVER', label: '🎂 Người Yêu' },
-              { id: 'BIRTHDAY_FRIENDS', label: '🎉 Bạn Bè' },
-              { id: 'LOVE_ANNIVERSARY', label: '💖 Tình Yêu' },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-                  activeCategory === cat.id
-                    ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
-                    : isDark
-                    ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
-                    : 'bg-stone-100 border border-stone-200 text-stone-600 hover:text-stone-900'
+        {/* Bento Grid: 1 Large Spotlight (Left) + 3 Editorial Cards (Right) */}
+        {featuredTemplates.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+            {/* Spotlight Card 1 (Left 7 Cols) */}
+            {featuredTemplates[0] && (
+              <div
+                onClick={() => setDemoTemplate(featuredTemplates[0])}
+                className={`lg:col-span-7 group relative rounded-2xl border overflow-hidden flex flex-col justify-between cursor-pointer transition-all duration-300 ${
+                  isDark
+                    ? 'bg-[#0f1522] border-slate-800 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-black'
+                    : 'bg-white border-slate-200 hover:border-rose-500/40 hover:shadow-xl hover:shadow-slate-200/60'
                 }`}
               >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
+                {/* Spotlight Image Container */}
+                <div className="relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[16/10] w-full overflow-hidden bg-slate-900">
+                  <img
+                    src={featuredTemplates[0].thumbnailUrl}
+                    alt={featuredTemplates[0].title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#080b11] via-black/30 to-transparent" />
 
-        {/* Mobile Swipe Hint */}
-        <div className="sm:hidden flex items-center justify-between text-[11px] text-slate-400 px-1 -mb-2">
-          <span className="flex items-center gap-1 text-rose-500 font-semibold">
-            👉 Vuốt ngang để xem thêm mẫu
-          </span>
-          <Link to="/templates" className="font-bold underline text-rose-500">
-            Xem tất cả
-          </Link>
-        </div>
+                  {/* Badges */}
+                  <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
+                    <span className="px-2.5 py-1 rounded-md bg-rose-600 text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" /> Spotlight Nổi Bật Nhất
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10">
+                      {featuredTemplates[0].isFree ? 'Miễn Phí' : `${featuredTemplates[0].price.toLocaleString('vi-VN')} đ`}
+                    </span>
+                  </div>
 
-        {/* Swipeable Snap Carousel on Mobile, Responsive Grid on Tablet/Desktop */}
-        <div className="flex sm:grid overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:snap-none gap-4 pb-4 sm:pb-0 no-scrollbar -mx-4 px-4 sm:mx-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredFeaturedTemplates.map((tpl) => (
-            <div key={tpl.id} className="min-w-[270px] max-w-[285px] sm:min-w-0 sm:max-w-none snap-start shrink-0 sm:shrink">
-              <TemplateCardItem
-                template={tpl}
-                isDark={isDark}
-                onPreview={(t) => setDemoTemplate(t)}
-                onUse={(t) => handleUseTemplate(t)}
-              />
+                  {/* Play Hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 bg-black/20">
+                    <div className="w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
+                      <Play className="w-4 h-4 fill-white ml-0.5" />
+                    </div>
+                  </div>
+
+                  {/* Overlay Bottom Content */}
+                  <div className="absolute bottom-3.5 left-4 right-4 text-white space-y-1">
+                    <h3 className="font-editorial text-lg sm:text-2xl font-bold leading-snug text-white">
+                      {featuredTemplates[0].title}
+                    </h3>
+                    <p className="text-xs text-slate-300 line-clamp-1 max-w-lg hidden sm:block">
+                      {featuredTemplates[0].description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Actions */}
+                <div className={`p-3.5 flex items-center justify-between gap-3 border-t ${
+                  isDark ? 'border-slate-800/80 bg-[#0c111a]' : 'border-slate-100 bg-slate-50/60'
+                }`}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDemoTemplate(featuredTemplates[0]);
+                    }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition active:scale-95 ${
+                      isDark ? 'border-slate-700 hover:bg-slate-800 text-slate-200' : 'border-slate-200 hover:bg-white text-slate-800'
+                    }`}
+                  >
+                    <Eye className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Xem Thử</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUseTemplate(featuredTemplates[0]);
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-sm active:scale-95 transition flex items-center gap-1"
+                  >
+                    <span>Tạo Thiệp Này</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Right Stack: 3 Editorial Horizontal Cards (Right 5 Cols) */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
+              {featuredTemplates.slice(1, 4).map((tpl, idx) => (
+                <div
+                  key={tpl.id}
+                  onClick={() => setDemoTemplate(tpl)}
+                  className={`group rounded-2xl border p-3 flex items-center gap-3.5 cursor-pointer transition-all duration-200 ${
+                    isDark
+                      ? 'bg-[#0f1522] border-slate-800 hover:border-rose-500/40 hover:bg-[#121a2a]'
+                      : 'bg-white border-slate-200 hover:border-rose-500/40 hover:shadow-md hover:bg-slate-50/50'
+                  }`}
+                >
+                  {/* Thumbnail Left */}
+                  <div className="relative w-24 sm:w-28 aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 shrink-0">
+                    <img
+                      src={tpl.thumbnailUrl}
+                      alt={tpl.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-bold text-white">
+                      0{idx + 2}
+                    </div>
+                  </div>
+
+                  {/* Info Right */}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-rose-500 truncate">
+                        {tpl.category.replace(/_/g, ' ')}
+                      </span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                        tpl.isFree
+                          ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      }`}>
+                        {tpl.isFree ? 'Miễn Phí' : `${tpl.price.toLocaleString('vi-VN')} đ`}
+                      </span>
+                    </div>
+
+                    <h4 className="font-editorial text-sm font-bold truncate text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors">
+                      {tpl.title}
+                    </h4>
+                    <p className={`text-xs line-clamp-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {tpl.description}
+                    </p>
+
+                    <div className="pt-0.5 flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-rose-500 group-hover:underline inline-flex items-center gap-1">
+                        Xem chi tiết <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         {/* View All Button */}
-        <div className="text-center pt-2">
+        <div className="text-center pt-2 sm:pt-4">
           <Link
             to="/templates"
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-2xl border text-xs sm:text-sm font-bold transition-all active:scale-95 ${
+            className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 ${
               isDark
-                ? 'bg-slate-900 border-slate-800 hover:border-rose-500 text-slate-200'
-                : 'bg-white border-stone-200 hover:border-rose-300 text-stone-800 shadow-sm'
+                ? 'bg-slate-900 border-slate-800 hover:border-rose-500 text-white'
+                : 'bg-white border-slate-200 hover:border-rose-500 text-slate-900 shadow-sm'
             }`}
           >
             <span>Khám Phá Toàn Bộ {templates.length} Mẫu Thiệp Mời</span>
             <ArrowRight className="w-4 h-4 text-rose-500" />
           </Link>
-        </div>
-      </section>
-
-      {/* 4 SIGNATURE EXPERIENCES (VISUAL FIRST - NO CORPORATE FLUFF) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-xl mx-auto space-y-1.5 mb-6 sm:mb-10">
-          <span className="text-rose-500 font-bold text-xs uppercase tracking-widest">
-            Trải Nghiệm Khác Biệt
-          </span>
-          <h2 className="font-editorial text-2xl sm:text-3xl font-bold">
-            Chạm Vào Là Cảm Xúc Thật
-          </h2>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Không chỉ là một tấm ảnh tĩnh — mỗi thiệp là một trải nghiệm sống động
-          </p>
-        </div>
-
-        {/* 4 Punchy Visual Cards (2 cols on mobile, 4 on desktop) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-          <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-            isDark ? 'bg-[#121824] border-slate-800/80 hover:border-rose-500/40' : 'bg-white border-stone-200 hover:border-rose-300 shadow-sm'
-          }`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500/20 to-pink-500/20 text-rose-500 flex items-center justify-center mb-3 text-lg shadow-inner">
-              🎂
-            </div>
-            <h3 className="font-bold text-sm sm:text-base mb-1">Thổi Nến Thực Tế</h3>
-            <p className={`text-[11px] sm:text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-              Chạm màn hình để thổi tắt nến lung linh như sinh nhật ngoài đời thật.
-            </p>
-          </div>
-
-          <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-            isDark ? 'bg-[#121824] border-slate-800/80 hover:border-amber-500/40' : 'bg-white border-stone-200 hover:border-amber-300 shadow-sm'
-          }`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500/20 to-yellow-500/20 text-amber-500 flex items-center justify-center mb-3 text-lg shadow-inner">
-              🎁
-            </div>
-            <h3 className="font-bold text-sm sm:text-base mb-1">Mở Hộp Quà 3D</h3>
-            <p className={`text-[11px] sm:text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-              Bật nắp hộp quà hiệu ứng 3D kèm pháo hoa và lời nhắn bí mật.
-            </p>
-          </div>
-
-          <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-            isDark ? 'bg-[#121824] border-slate-800/80 hover:border-purple-500/40' : 'bg-white border-stone-200 hover:border-purple-300 shadow-sm'
-          }`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-500/20 to-pink-500/20 text-purple-500 flex items-center justify-center mb-3 text-lg shadow-inner">
-              🎵
-            </div>
-            <h3 className="font-bold text-sm sm:text-base mb-1">Giai Điệu Tình Yêu</h3>
-            <p className={`text-[11px] sm:text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-              Bản nhạc yêu thích tự động phát du dương ngay khi mở thiệp.
-            </p>
-          </div>
-
-          <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-            isDark ? 'bg-[#121824] border-slate-800/80 hover:border-emerald-500/40' : 'bg-white border-stone-200 hover:border-emerald-300 shadow-sm'
-          }`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 text-emerald-500 flex items-center justify-center mb-3 text-lg shadow-inner">
-              📱
-            </div>
-            <h3 className="font-bold text-sm sm:text-base mb-1">Mã QR & Link Riêng</h3>
-            <p className={`text-[11px] sm:text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-              Gửi qua Zalo, Messenger chỉ 1 chạm. Khóa mật khẩu riêng tư bảo mật.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -400,13 +390,13 @@ export const Home: React.FC = () => {
       <div className="sm:hidden fixed bottom-4 inset-x-4 z-40">
         <Link
           to="/templates"
-          className="w-full py-3 px-5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs shadow-2xl shadow-rose-950/50 border border-white/25 flex items-center justify-between backdrop-blur-md active:scale-98 transition"
+          className="w-full py-3.5 px-5 rounded-2xl font-semibold bg-rose-600 text-white text-xs shadow-xl shadow-rose-950/50 border border-white/20 flex items-center justify-between backdrop-blur-md active:scale-98 transition"
         >
           <span className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-300 animate-spin-slow" />
-            <span>Tạo thiệp động miễn phí</span>
+            <Sparkles className="w-4 h-4 text-rose-200" />
+            <span>Tạo thiệp tương tác độc bản</span>
           </span>
-          <span className="flex items-center gap-1 font-semibold text-[11px] bg-white/20 px-2.5 py-0.5 rounded-lg">
+          <span className="flex items-center gap-1 font-semibold text-[11px] bg-white/20 px-2.5 py-1 rounded-xl">
             Bắt đầu <ChevronRight className="w-3 h-3" />
           </span>
         </Link>
