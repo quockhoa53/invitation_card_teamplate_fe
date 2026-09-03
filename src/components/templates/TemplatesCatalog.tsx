@@ -7,6 +7,7 @@ import { Template, TemplateCategory } from '../../types';
 import { api } from '../../services/api';
 import { TemplateCardItem } from '../home/TemplateCardItem';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
+import { PurchaseTemplateModal } from './PurchaseTemplateModal';
 import { Pagination } from '../common/Pagination';
 import {
   Search,
@@ -32,7 +33,7 @@ const INITIAL_FILTERS: FilterState = {
 };
 
 export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isStandalonePage = false }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isTemplateOwned } = useAuth();
   const { theme } = useTheme();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
 
   // Live Preview Modal
   const [demoTemplate, setDemoTemplate] = useState<Template | null>(null);
+  const [purchasingTemplate, setPurchasingTemplate] = useState<Template | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,6 +142,10 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
   const handleUseTemplate = (tpl: Template) => {
     if (!isAuthenticated) {
       toast.warning('Yêu cầu Đăng Nhập', 'Vui lòng Đăng Nhập hoặc Đăng Ký để bắt đầu tạo thiệp của bạn!');
+      return;
+    }
+    if (!isTemplateOwned(tpl)) {
+      setPurchasingTemplate(tpl);
       return;
     }
     navigate(`/editor?templateId=${tpl.id}`);
@@ -410,6 +416,14 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
           </div>
         </div>
       )}
+
+      {/* Purchase Modal for Unowned Paid Templates */}
+      <PurchaseTemplateModal
+        template={purchasingTemplate}
+        isOpen={!!purchasingTemplate}
+        onClose={() => setPurchasingTemplate(null)}
+        onSuccess={(tpl) => navigate(`/editor?templateId=${tpl.id}`)}
+      />
     </div>
   );
 };

@@ -15,6 +15,9 @@ interface AuthContextType {
   logout: () => void;
   refreshUser: () => Promise<void>;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  purchasedTemplateIds: string[];
+  refreshPurchasedTemplates: () => Promise<void>;
+  isTemplateOwned: (template: { id: string; isFree?: boolean; price?: number }) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +25,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [purchasedTemplateIds, setPurchasedTemplateIds] = useState<string[]>([]);
+
+  const fetchPurchasedTemplates = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setPurchasedTemplateIds([]);
+      return;
+    }
+    try {
+      const res = await api.getMyPurchasedTemplateIds();
+      if (res.success && res.data) {
+        setPurchasedTemplateIds(res.data.map((id: any) => String(id)));
+      }
+    } catch {
+      // ignore
+    }
+  };
 
   const fetchUser = async () => {
     const token = localStorage.getItem('token');
@@ -35,13 +55,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.getMe();
       if (res.success && res.data) {
         setUser(res.data);
+        await fetchPurchasedTemplates();
       } else {
         localStorage.removeItem('token');
         setUser(null);
+        setPurchasedTemplateIds([]);
       }
     } catch (err) {
       localStorage.removeItem('token');
       setUser(null);
+      setPurchasedTemplateIds([]);
     } finally {
       setLoading(false);
     }
@@ -58,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('token', res.data.accessToken);
         if (res.data.user) {
           setUser(res.data.user);
+          await fetchPurchasedTemplates();
         } else {
           await fetchUser();
         }
@@ -74,6 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('token', res.data.accessToken);
         if (res.data.user) {
           setUser(res.data.user);
+          await fetchPurchasedTemplates();
         } else {
           await fetchUser();
         }
@@ -98,6 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('token', res.data.accessToken);
       if (res.data.user) {
         setUser(res.data.user);
+        await fetchPurchasedTemplates();
       } else {
         await fetchUser();
       }
@@ -112,21 +138,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('token', res.data.accessToken);
       if (res.data.user) {
         setUser(res.data.user);
+        await fetchPurchasedTemplates();
       } else {
         await fetchUser();
       }
       return res.data;
     }
-    throw new Error(res.message || '2FA Verification failed');
+    throw new Error(res.message || '2FA verification failed');
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    setPurchasedTemplateIds([]);
   };
 
   const refreshUser = async () => {
     await fetchUser();
+    await fetchPurchasedTemplates();
+  };
+
+  const isTemplateOwned = (template: { id: string; isFree?: boolean; price?: number }): boolean => {
+    if (template.isFree || !template.price || template.price <= 0) return true;
+    return purchasedTemplateIds.includes(String(template.id));
   };
 
   const isAdmin = user ? (user.role === 'ROLE_ADMIN' || user.role === 'ROLE_SUPER_ADMIN') : false;
@@ -146,6 +180,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         refreshUser,
         setUser,
+        purchasedTemplateIds,
+        refreshPurchasedTemplates: fetchPurchasedTemplates,
+        isTemplateOwned,
       }}
     >
       {children}

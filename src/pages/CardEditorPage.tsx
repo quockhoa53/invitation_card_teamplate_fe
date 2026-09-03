@@ -3,16 +3,20 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Template, Card } from '../types';
 import { api } from '../services/api';
 import { CardEditor } from '../components/editor/CardEditor';
+import { useAuth } from '../context/AuthContext';
+import { PurchaseTemplateModal } from '../components/templates/PurchaseTemplateModal';
 
 export const CardEditorPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { isTemplateOwned } = useAuth();
   const templateId = searchParams.get('templateId');
   const cardId = searchParams.get('cardId');
 
   const [template, setTemplate] = useState<Template | null>(null);
   const [card, setCard] = useState<Card | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +49,12 @@ export const CardEditorPage: React.FC = () => {
     fetchData();
   }, [templateId, cardId]);
 
+  useEffect(() => {
+    if (!loading && template && !card && !isTemplateOwned(template)) {
+      setShowPurchaseModal(true);
+    }
+  }, [loading, template, card, isTemplateOwned]);
+
   if (loading || !template) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
@@ -54,11 +64,27 @@ export const CardEditorPage: React.FC = () => {
   }
 
   return (
-    <CardEditor
-      initialCard={card}
-      selectedTemplate={template}
-      onSaved={() => navigate('/dashboard')}
-      onCancel={() => navigate('/dashboard')}
-    />
+    <>
+      <CardEditor
+        initialCard={card}
+        selectedTemplate={template}
+        onSaved={() => navigate('/dashboard')}
+        onCancel={() => navigate('/dashboard')}
+      />
+
+      <PurchaseTemplateModal
+        template={template}
+        isOpen={showPurchaseModal}
+        onClose={() => {
+          setShowPurchaseModal(false);
+          if (!card && !isTemplateOwned(template)) {
+            navigate('/templates');
+          }
+        }}
+        onSuccess={() => {
+          setShowPurchaseModal(false);
+        }}
+      />
+    </>
   );
 };

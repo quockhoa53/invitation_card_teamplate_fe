@@ -8,6 +8,7 @@ import { api } from '../services/api';
 import { HeroCardShowcase } from '../components/home/HeroCardShowcase';
 import { TemplateCardItem } from '../components/home/TemplateCardItem';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
+import { PurchaseTemplateModal } from '../components/templates/PurchaseTemplateModal';
 import {
   Sparkles,
   QrCode,
@@ -21,12 +22,13 @@ import {
 
 export const Home: React.FC = () => {
   const { theme } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isTemplateOwned } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [demoTemplate, setDemoTemplate] = useState<Template | null>(null);
+  const [purchasingTemplate, setPurchasingTemplate] = useState<Template | null>(null);
   const isDark = theme === 'dark';
 
   useEffect(() => {
@@ -46,6 +48,10 @@ export const Home: React.FC = () => {
   const handleUseTemplate = (tpl: Template) => {
     if (!isAuthenticated) {
       toast.warning('Yêu cầu Đăng Nhập', 'Vui lòng Đăng Nhập hoặc Đăng Ký để bắt đầu tùy chỉnh tấm thiệp của bạn!');
+      return;
+    }
+    if (!isTemplateOwned(tpl)) {
+      setPurchasingTemplate(tpl);
       return;
     }
     navigate(`/editor?templateId=${tpl.id}`);
@@ -329,6 +335,14 @@ export const Home: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Purchase Modal for Unowned Paid Templates */}
+      <PurchaseTemplateModal
+        template={purchasingTemplate}
+        isOpen={!!purchasingTemplate}
+        onClose={() => setPurchasingTemplate(null)}
+        onSuccess={(tpl) => navigate(`/editor?templateId=${tpl.id}`)}
+      />
     </div>
   );
 };

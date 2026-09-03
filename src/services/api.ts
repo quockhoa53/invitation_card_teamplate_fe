@@ -362,4 +362,15 @@ export const api = {
     const res = await apiClient.patch(`/admin/promotions/${id}/toggle`);
     return res.data;
   },
+
+  // Template Purchases
+  getMyPurchasedTemplateIds: async (): Promise<ApiResponse<string[]>> => {
+    const res = await apiClient.get('/templates/my-purchases');
+    return res.data;
+  },
+
+  purchaseTemplate: async (templateId: string): Promise<ApiResponse<boolean>> => {
+    const res = await apiClient.post(`/templates/${templateId}/purchase`);
+    return res.data;
+  },
 };
