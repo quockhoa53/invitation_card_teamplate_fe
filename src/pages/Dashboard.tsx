@@ -302,10 +302,10 @@ export const Dashboard: React.FC = () => {
                   ? 'bg-slate-900 hover:bg-slate-800 text-amber-300 border-amber-500/30'
                   : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
               }`}
-              title="Cài đặt 2FA Google Authenticator"
+              title="Cài đặt bảo mật 2 bước qua Gmail (2FA)"
             >
-              <ShieldCheck className="w-4 h-4 text-amber-500" />
-              <span className="hidden sm:inline">2FA Google</span>
+              <ShieldCheck className="w-4 h-4 text-rose-500" />
+              <span className="hidden sm:inline">2FA Gmail</span>
             </button>
           </div>
         </div>

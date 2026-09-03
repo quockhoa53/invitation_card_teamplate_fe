@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { ShieldCheck, AlertCircle } from 'lucide-react';
+import { api } from '../../services/api';
+import { Mail, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 interface TwoFactorModalProps {
   isOpen: boolean;
@@ -23,6 +24,19 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(60);
+
+  // Countdown timer for resending OTP
+  useEffect(() => {
+    if (!isOpen) return;
+    setCountdown(60);
+    const timer = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isOpen, tempToken]);
 
   if (!isOpen) return null;
 
@@ -36,9 +50,27 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
       await verify2FA(tempToken, code.trim());
       onSuccess();
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Mã xác thực không chính xác');
+      setError(err.response?.data?.message || err.message || 'Mã xác thực OTP không chính xác hoặc đã hết hạn');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (countdown > 0 || resending) return;
+    setError('');
+    setResending(true);
+    setResendSuccess(false);
+
+    try {
+      await api.resend2FAEmailOtp(tempToken);
+      setResendSuccess(true);
+      setCountdown(60);
+      setTimeout(() => setResendSuccess(false), 4000);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Không thể gửi lại mã OTP. Vui lòng thử lại sau.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -54,13 +86,13 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           ✕
         </button>
 
-        <div className="text-center space-y-1">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center justify-center mx-auto mb-2">
-            <ShieldCheck className="w-6 h-6" />
+        <div className="text-center space-y-2">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-amber-500/20 text-rose-500 border border-rose-500/30 flex items-center justify-center mx-auto shadow-inner">
+            <Mail className="w-7 h-7" />
           </div>
-          <h3 className="font-editorial text-2xl sm:text-3xl font-bold">Xác Thực 2 Bước (2FA)</h3>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Nhập mã 6 chữ số từ ứng dụng <strong>Google Authenticator</strong> hoặc mã khôi phục
+          <h3 className="font-editorial text-2xl sm:text-3xl font-bold">Xác Thực Mã OTP Gmail</h3>
+          <p className={`text-xs max-w-xs mx-auto leading-relaxed ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Mã xác thực 6 số đã được gửi tới hòm thư <strong>Gmail</strong> của bạn. Vui lòng kiểm tra hộp thư đến hoặc mục Spam.
           </p>
         </div>
 
@@ -68,6 +100,13 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
+          </div>
+        )}
+
+        {resendSuccess && (
+          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>Mã xác thực mới đã được gửi tới Gmail của bạn!</span>
           </div>
         )}
 
@@ -79,12 +118,12 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
               autoFocus
               maxLength={8}
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\s/g, ''))}
-              placeholder="••••••"
-              className={`w-full text-center text-2xl tracking-[0.3em] font-mono py-3 rounded-xl border focus:outline-none ${
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              placeholder="123456"
+              className={`w-full text-center text-3xl tracking-[0.35em] font-mono py-3.5 rounded-2xl border focus:outline-none transition ${
                 isDark
-                  ? 'bg-slate-900 border-amber-500/40 text-amber-300 focus:border-amber-400'
-                  : 'bg-amber-50/50 border-amber-300 text-stone-900 focus:border-amber-500'
+                  ? 'bg-slate-900 border-rose-500/40 text-rose-300 focus:border-rose-400'
+                  : 'bg-rose-50/50 border-rose-300 text-stone-900 focus:border-rose-500'
               }`}
             />
           </div>
@@ -92,11 +131,26 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           <button
             type="submit"
             disabled={loading || code.trim().length < 6}
-            className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-xs sm:text-sm shadow-md hover:brightness-105 active:scale-95 transition disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50"
           >
             {loading ? 'Đang xác minh...' : 'Xác Nhận & Đăng Nhập'}
           </button>
         </form>
+
+        {/* Resend OTP Action */}
+        <div className="text-center pt-1 border-t border-slate-800/60 flex items-center justify-between text-xs">
+          <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>
+            Chưa nhận được mã?
+          </span>
+          <button
+            onClick={handleResendOtp}
+            disabled={countdown > 0 || resending}
+            className="font-bold text-rose-500 hover:text-rose-400 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 transition"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin' : ''}`} />
+            {countdown > 0 ? `Gửi lại sau (${countdown}s)` : 'Gửi lại mã OTP'}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -87,6 +87,16 @@ export const api = {
     return res.data;
   },
 
+  sendEmailOtp: async (): Promise<ApiResponse<void>> => {
+    const res = await apiClient.post('/auth/2fa/send-email-otp');
+    return res.data;
+  },
+
+  resend2FAEmailOtp: async (tempToken: string): Promise<ApiResponse<void>> => {
+    const res = await apiClient.post('/auth/2fa/resend-email-otp', { tempToken });
+    return res.data;
+  },
+
   enable2FA: async (code: string): Promise<ApiResponse<boolean>> => {
     const res = await apiClient.post('/auth/2fa/enable', { code });
     return res.data;
