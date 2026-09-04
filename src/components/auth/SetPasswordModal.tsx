@@ -72,7 +72,7 @@ export const SetPasswordModal: React.FC<SetPasswordModalProps> = ({ isOpen, onCl
 
         {/* Modal Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center mx-auto shadow-lg shadow-rose-500/25">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white flex items-center justify-center mx-auto shadow-lg shadow-orange-500/25">
             <ShieldCheck className="w-7 h-7" />
           </div>
 
@@ -81,13 +81,13 @@ export const SetPasswordModal: React.FC<SetPasswordModalProps> = ({ isOpen, onCl
           </h3>
 
           <p className={`text-xs max-w-sm mx-auto leading-relaxed ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
-            Tài khoản <strong className="text-rose-500 font-semibold">{user?.email}</strong> chưa có mật khẩu trực tiếp. Bạn có muốn tạo mật khẩu để có thể đăng nhập bằng cả 2 cách trong tương lai không?
+            Tài khoản <strong className="text-orange-500 font-semibold">{user?.email}</strong> chưa có mật khẩu trực tiếp. Bạn có muốn tạo mật khẩu để có thể đăng nhập bằng cả 2 cách trong tương lai không?
           </p>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+          <div className="p-3 rounded-2xl bg-orange-500/15 border border-orange-500/30 text-orange-500 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -116,8 +116,8 @@ export const SetPasswordModal: React.FC<SetPasswordModalProps> = ({ isOpen, onCl
                 placeholder="Tối thiểu 6 ký tự..."
                 className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs focus:outline-none transition ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                    ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
                 }`}
               />
             </div>
@@ -136,8 +136,8 @@ export const SetPasswordModal: React.FC<SetPasswordModalProps> = ({ isOpen, onCl
                 placeholder="Nhập lại mật khẩu..."
                 className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs focus:outline-none transition ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                    ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
                 }`}
               />
             </div>
@@ -148,7 +148,7 @@ export const SetPasswordModal: React.FC<SetPasswordModalProps> = ({ isOpen, onCl
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-rose-500/25 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-1.5"
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-1.5"
             >
               {loading ? 'Đang thiết lập...' : 'Thiết Lập Mật Khẩu Ngay'}
               <ArrowRight className="w-3.5 h-3.5" />

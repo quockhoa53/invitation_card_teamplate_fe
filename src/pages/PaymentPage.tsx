@@ -323,7 +323,7 @@ export const PaymentPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="p-2 rounded-xl bg-rose-500/10 text-rose-500">
+                <span className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
                   <Wallet className="w-5 h-5" />
                 </span>
                 <h2 className="font-editorial text-xl sm:text-2xl font-bold">Ví Cá Nhân Của Bạn</h2>
@@ -348,7 +348,7 @@ export const PaymentPage: React.FC = () => {
                 isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
               }`}>
                 <span className="text-[11px] text-slate-400 block font-medium">Tiền Thưởng (Chỉ Mua Thiệp)</span>
-                <span className="font-mono font-bold text-sm text-pink-400">
+                <span className="font-mono font-bold text-sm text-amber-400">
                   +{bonusBalance.toLocaleString('vi-VN')} đ
                 </span>
               </div>
@@ -359,7 +359,7 @@ export const PaymentPage: React.FC = () => {
                   setShowWithdrawModal(true);
                 }}
                 disabled={realBalance < 10000}
-                className="px-4 py-3 rounded-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center gap-1.5"
+                className="px-4 py-3 rounded-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center gap-1.5"
               >
                 <ArrowDownToLine className="w-4 h-4" /> Rút Tiền Về Ngân Hàng
               </button>
@@ -403,7 +403,7 @@ export const PaymentPage: React.FC = () => {
                     <h4 className="text-sm font-bold flex items-center gap-2">
                       {pack.label}
                       {pack.bonus > 0 && (
-                        <span className="px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-400 text-[10px] font-bold border border-pink-500/30 flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
                           <Gift className="w-3 h-3" /> +{pack.bonus.toLocaleString('vi-VN')} đ
                         </span>
                       )}
@@ -425,7 +425,7 @@ export const PaymentPage: React.FC = () => {
             <div className={`p-4 rounded-2xl border space-y-3 ${
               isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-stone-50 border-stone-200'
             }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-pink-400">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
                 <Tag className="w-4 h-4" /> Mã Giảm Giá / Khuyến Mãi
               </div>
               <div className="flex gap-2">
@@ -435,14 +435,14 @@ export const PaymentPage: React.FC = () => {
                   onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
                   placeholder="Nhập mã (Ví dụ: CHAOMUNG)"
                   className={`flex-1 px-3.5 py-2 rounded-xl text-xs uppercase font-mono font-bold border focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-pink-500' : 'bg-white border-stone-200 focus:border-pink-500'
+                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500' : 'bg-white border-stone-200 focus:border-amber-500'
                   }`}
                 />
                 <button
                   type="button"
                   onClick={handleApplyPromo}
                   disabled={promoLoading || !promoCodeInput.trim()}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-500 text-white transition disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition disabled:opacity-50"
                 >
                   {promoLoading ? 'Đang kiểm tra...' : 'Áp Dụng'}
                 </button>
@@ -505,7 +505,7 @@ export const PaymentPage: React.FC = () => {
                   </button>
                   <a
                     href="/dashboard"
-                    className="px-6 py-2.5 rounded-xl bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition"
+                    className="px-6 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition"
                   >
                     Về Trang Cá Nhân
                   </a>
@@ -523,7 +523,7 @@ export const PaymentPage: React.FC = () => {
                     <div className="text-xs space-y-1 text-slate-300">
                       <p>• Yêu cầu gói: <strong className="text-white">{paymentOrder.amount.toLocaleString('vi-VN')} đ</strong></p>
                       <p>• Thực tế hệ thống đã nhận: <strong className="text-emerald-400">{paymentOrder.actualAmount?.toLocaleString('vi-VN')} đ</strong></p>
-                      <p>• Số tiền còn thiếu: <strong className="text-rose-400 font-bold">{paymentOrder.missingAmount?.toLocaleString('vi-VN')} đ</strong></p>
+                      <p>• Số tiền còn thiếu: <strong className="text-orange-400 font-bold">{paymentOrder.missingAmount?.toLocaleString('vi-VN')} đ</strong></p>
                     </div>
 
                     <p className="text-xs font-semibold text-white pt-1">
@@ -584,7 +584,7 @@ export const PaymentPage: React.FC = () => {
                     }`}>
                       <div className="flex justify-between items-center">
                         <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Ngân hàng:</span>
-                        <strong className="text-rose-500">{paymentOrder.bankName}</strong>
+                        <strong className="text-orange-500">{paymentOrder.bankName}</strong>
                       </div>
 
                       <div className="flex justify-between items-center">
@@ -659,11 +659,11 @@ export const PaymentPage: React.FC = () => {
                         onClick={handleCancelOrder}
                         className={`text-xs px-4 py-2.5 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition ${
                           isDark
-                            ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20'
-                            : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
+                            ? 'bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20'
+                            : 'bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-100'
                         }`}
                       >
-                        <XCircle className="w-4 h-4 text-rose-500" />
+                        <XCircle className="w-4 h-4 text-orange-500" />
                         <span>Hủy Giao Dịch Này</span>
                       </button>
                     </div>
@@ -682,7 +682,7 @@ export const PaymentPage: React.FC = () => {
             isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
           }`}>
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-editorial text-xl font-bold flex items-center gap-2 text-rose-500">
+              <h3 className="font-editorial text-xl font-bold flex items-center gap-2 text-orange-500">
                 <ArrowDownToLine className="w-5 h-5" /> Yêu Cầu Rút Tiền Về Ngân Hàng
               </h3>
               <button onClick={() => setShowWithdrawModal(false)} className="p-1.5 rounded-full hover:bg-slate-800 transition">
@@ -692,8 +692,8 @@ export const PaymentPage: React.FC = () => {
 
             <form onSubmit={handleSubmitWithdrawal} className="space-y-4 text-xs">
               {/* Anti-Loss Clawback Alert */}
-              <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-[11px] space-y-1">
-                <p className="font-bold text-rose-400 flex items-center gap-1">
+              <div className="p-3.5 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-300 text-[11px] space-y-1">
+                <p className="font-bold text-orange-400 flex items-center gap-1">
                   <AlertTriangle className="w-3.5 h-3.5" /> Quy định rút tiền & bảo vệ quyền lợi:
                 </p>
                 <p>• Bạn chỉ được rút tối đa số <strong>Tiền Nạp Thật</strong> hiện có ({realBalance.toLocaleString('vi-VN')} đ).</p>
@@ -712,7 +712,7 @@ export const PaymentPage: React.FC = () => {
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(Number(e.target.value))}
                   className={`w-full px-3.5 py-2.5 rounded-xl border font-mono font-bold text-sm text-emerald-400 focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 focus:border-rose-500' : 'bg-stone-50 border-stone-200 focus:border-rose-500'
+                    isDark ? 'bg-slate-800 border-slate-700 focus:border-orange-500' : 'bg-stone-50 border-stone-200 focus:border-orange-500'
                   }`}
                 />
                 <p className="text-[10px] text-slate-400 mt-1">
@@ -746,7 +746,7 @@ export const PaymentPage: React.FC = () => {
                   onChange={(e) => setWithdrawAccountNo(e.target.value.replace(/\s+/g, ''))}
                   placeholder="Ví dụ: 0123456789"
                   className={`w-full px-3.5 py-2.5 rounded-xl border font-mono font-bold focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-rose-500' : 'bg-stone-50 border-stone-200'
+                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-orange-500' : 'bg-stone-50 border-stone-200'
                   }`}
                 />
               </div>
@@ -761,7 +761,7 @@ export const PaymentPage: React.FC = () => {
                   onChange={(e) => setWithdrawAccountName(e.target.value.toUpperCase())}
                   placeholder="Ví dụ: NGUYEN VAN A"
                   className={`w-full px-3.5 py-2.5 rounded-xl border font-bold uppercase focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-rose-500' : 'bg-stone-50 border-stone-200'
+                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-orange-500' : 'bg-stone-50 border-stone-200'
                   }`}
                 />
               </div>
@@ -778,7 +778,7 @@ export const PaymentPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={withdrawSubmitting || realBalance < 10000}
-                  className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition shadow-lg shadow-rose-500/25 disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold transition shadow-lg shadow-orange-500/25 disabled:opacity-50"
                 >
                   {withdrawSubmitting ? 'Đang gửi...' : 'Gửi Yêu Cầu Rút Tiền'}
                 </button>

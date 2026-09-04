@@ -91,7 +91,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
     { id: 'ALL', label: 'Tất Cả', icon: '✨' },
     { id: 'POPULAR', label: 'Thịnh Hành', icon: '🔥' },
     { id: 'BIRTHDAY', label: 'Sinh Nhật', icon: '🎂' },
-    { id: 'LOVE', label: 'Tình Yêu', icon: '💖' },
+    { id: 'LOVE', label: 'Tình Yêu', icon: '✨' },
     { id: 'WEDDING', label: 'Tiệc Cưới', icon: '💍' },
     { id: 'CHILL', label: 'Chill / Lofi', icon: '☕' },
   ];
@@ -120,12 +120,12 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
       {/* Active Selected Song Banner */}
       <div className={`p-4 rounded-2xl border transition-all ${
         isDark
-          ? 'bg-gradient-to-r from-rose-950/40 via-purple-950/30 to-slate-900 border-rose-500/30 shadow-lg'
-          : 'bg-gradient-to-r from-rose-50 via-pink-50 to-amber-50/60 border-rose-200 shadow-sm'
+          ? 'bg-gradient-to-r from-orange-950/40 via-purple-950/30 to-slate-900 border-orange-500/30 shadow-lg'
+          : 'bg-gradient-to-r from-orange-50 via-amber-50 to-amber-50/60 border-orange-200 shadow-sm'
       }`}>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-rose-500/30 shadow-md">
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-orange-500/30 shadow-md">
               <img
                 src={currentTrack?.coverUrl || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200'}
                 alt="cover"
@@ -133,15 +133,15 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
               />
               {playingTrackId && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5">
-                  <div className="w-1 h-4 bg-rose-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <div className="w-1 h-6 bg-pink-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1 h-4 bg-orange-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1 h-6 bg-amber-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
                   <div className="w-1 h-3 bg-amber-400 rounded-full animate-bounce" />
                 </div>
               )}
             </div>
 
             <div className="min-w-0 flex-1">
-              <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-rose-500">
+              <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-orange-500">
                 <Radio className="w-3 h-3 animate-pulse" /> Bài hát đang chọn
               </span>
               <h4 className="font-editorial text-sm sm:text-base font-bold truncate leading-tight">
@@ -163,7 +163,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                   handlePreviewCustomUrl(selectedMusicUrl);
                 }
               }}
-              className="p-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md hover:brightness-110 active:scale-95 transition shrink-0"
+              className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md hover:brightness-110 active:scale-95 transition shrink-0"
               title={playingTrackId ? 'Tạm dừng nghe thử' : 'Nghe thử bài hát'}
             >
               {playingTrackId ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
@@ -177,7 +177,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
         isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-stone-200 shadow-sm'
       }`}>
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-rose-500">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-orange-500">
             <Music className="w-4 h-4" /> Kho Nhạc Không Bản Quyền Tuyển Chọn (Story Style)
           </div>
 
@@ -186,7 +186,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
             onClick={() => setShowCustomInput(!showCustomInput)}
             className={`text-[11px] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg border transition ${
               showCustomInput
-                ? 'bg-rose-500 text-white border-rose-500'
+                ? 'bg-orange-500 text-white border-orange-500'
                 : isDark
                 ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
                 : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
@@ -213,8 +213,8 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                 placeholder="https://example.com/audio/my-song.mp3"
                 className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                    : 'bg-white border-stone-200 text-stone-900 focus:border-rose-500'
+                    ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                    : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500'
                 }`}
               />
               <button
@@ -233,7 +233,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                     onSelectMusic(customUrlInput.trim(), 'Nhạc Tùy Chỉnh');
                   }
                 }}
-                className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md transition active:scale-95"
+                className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md transition active:scale-95"
               >
                 Áp Dụng
               </button>
@@ -252,8 +252,8 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                 placeholder="Tìm bài hát, nghệ sĩ (ví dụ: Birthday, Piano, Lofi, Guitar)..."
                 className={`w-full pl-8.5 pr-8 py-2 rounded-xl border text-xs focus:outline-none transition ${
                   isDark
-                    ? 'bg-slate-950 border-slate-800 text-white focus:border-rose-500'
-                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500 shadow-inner'
+                    ? 'bg-slate-950 border-slate-800 text-white focus:border-orange-500'
+                    : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500 shadow-inner'
                 }`}
               />
               {searchQuery && (
@@ -278,7 +278,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                     onClick={() => setActiveCategory(cat.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition active:scale-95 flex items-center gap-1 shrink-0 ${
                       isActive
-                        ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm'
+                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm'
                         : isDark
                         ? 'bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700'
                         : 'bg-stone-100 text-stone-600 hover:text-stone-900 hover:bg-stone-200'
@@ -303,11 +303,11 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                     className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between gap-3 group ${
                       isSelected
                         ? isDark
-                          ? 'bg-rose-950/30 border-rose-500/60 shadow-md'
-                          : 'bg-rose-50/90 border-rose-300 shadow-sm'
+                          ? 'bg-orange-950/30 border-orange-500/60 shadow-md'
+                          : 'bg-orange-50/90 border-orange-300 shadow-sm'
                         : isDark
                         ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/80'
-                        : 'bg-white border-stone-200 hover:border-rose-200 hover:bg-stone-50'
+                        : 'bg-white border-stone-200 hover:border-orange-200 hover:bg-stone-50'
                     }`}
                   >
                     {/* Album Art with Play Overlay */}
@@ -325,7 +325,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                       }`}>
                         {isPlaying ? (
                           <div className="flex items-center gap-0.5">
-                            <div className="w-1 h-3 bg-rose-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                            <div className="w-1 h-3 bg-orange-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
                             <div className="w-1 h-4 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
                             <div className="w-1 h-2.5 bg-amber-400 rounded-full animate-bounce" />
                           </div>
@@ -342,7 +342,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                     >
                       <div className="flex items-center gap-1.5">
                         <h5 className={`font-editorial text-xs sm:text-sm font-bold truncate ${
-                          isSelected ? 'text-rose-500' : ''
+                          isSelected ? 'text-orange-500' : ''
                         }`}>
                           {track.title}
                         </h5>
@@ -368,7 +368,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                         onClick={() => handleTogglePreview(track)}
                         className={`p-2 rounded-xl transition active:scale-95 ${
                           isPlaying
-                            ? 'bg-rose-500 text-white shadow-sm'
+                            ? 'bg-orange-500 text-white shadow-sm'
                             : isDark
                             ? 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700'
                             : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
@@ -384,7 +384,7 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 flex items-center gap-1 ${
                           isSelected
                             ? 'bg-emerald-500 text-white shadow-sm'
-                            : 'bg-rose-500/15 hover:bg-rose-500/25 text-rose-500'
+                            : 'bg-orange-500/15 hover:bg-orange-500/25 text-orange-500'
                         }`}
                       >
                         {isSelected ? (

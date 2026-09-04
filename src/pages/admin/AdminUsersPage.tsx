@@ -82,7 +82,7 @@ export const AdminUsersPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-editorial text-3xl font-bold flex items-center gap-2">
-            <Users className="w-6 h-6 text-rose-500" /> Quản Lý Người Dùng
+            <Users className="w-6 h-6 text-orange-500" /> Quản Lý Người Dùng
           </h2>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Danh sách tài khoản và phân quyền bảo mật hệ thống
@@ -102,8 +102,8 @@ export const AdminUsersPage: React.FC = () => {
             placeholder="Tìm theo email hoặc họ tên..."
             className={`w-full pl-9 pr-4 py-2 rounded-xl border text-xs focus:outline-none ${
               isDark
-                ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                : 'bg-white border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
             }`}
           />
         </div>
@@ -141,7 +141,7 @@ export const AdminUsersPage: React.FC = () => {
                         <img
                           src={u.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.email}`}
                           alt="avatar"
-                          className="w-8 h-8 rounded-xl object-cover border border-rose-500/40"
+                          className="w-8 h-8 rounded-xl object-cover border border-orange-500/40"
                         />
                         <div>
                           <p className="font-bold">{u.fullName || 'Chưa đặt tên'}</p>
@@ -170,7 +170,7 @@ export const AdminUsersPage: React.FC = () => {
                           <span className="opacity-50 text-[10px]">Chưa bật</span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-bold text-rose-500 font-mono">
+                      <td className="py-3 px-4 font-bold text-orange-500 font-mono">
                         {u.creditsBalance?.toLocaleString('vi-VN')} đ
                       </td>
                       <td className="py-3 px-4">
@@ -178,7 +178,7 @@ export const AdminUsersPage: React.FC = () => {
                           className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
                             u.isActive
                               ? 'bg-emerald-500/15 text-emerald-500'
-                              : 'bg-rose-500/15 text-rose-500'
+                              : 'bg-orange-500/15 text-orange-500'
                           }`}
                         >
                           {u.isActive ? 'Hoạt động' : 'Đã khóa'}
@@ -201,7 +201,7 @@ export const AdminUsersPage: React.FC = () => {
                           onClick={() => handleToggleStatus(u.id)}
                           className={`p-1.5 rounded-lg text-[11px] font-semibold transition ${
                             u.isActive
-                              ? 'bg-rose-500/15 text-rose-500 hover:bg-rose-500/25'
+                              ? 'bg-orange-500/15 text-orange-500 hover:bg-orange-500/25'
                               : 'bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25'
                           }`}
                         >

@@ -195,7 +195,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               onClick={() => setDevicePreview('mobile')}
               className={`p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold transition ${
                 devicePreview === 'mobile'
-                  ? 'bg-rose-500 text-white shadow-sm'
+                  ? 'bg-orange-500 text-white shadow-sm'
                   : isDark ? 'text-slate-400 hover:text-white' : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -205,7 +205,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               onClick={() => setDevicePreview('desktop')}
               className={`p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold transition ${
                 devicePreview === 'desktop'
-                  ? 'bg-rose-500 text-white shadow-sm'
+                  ? 'bg-orange-500 text-white shadow-sm'
                   : isDark ? 'text-slate-400 hover:text-white' : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -219,8 +219,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               onClick={() => setShowQrModal(true)}
               className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition ${
                 isDark
-                  ? 'bg-slate-900 hover:bg-slate-800 text-rose-400 border-rose-500/30'
-                  : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200'
+                  ? 'bg-slate-900 hover:bg-slate-800 text-orange-400 border-orange-500/30'
+                  : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200'
               }`}
             >
               <QrCode className="w-4 h-4" /> Xem Mã QR
@@ -230,7 +230,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
           <button
             onClick={handleSave}
             disabled={loading}
-            className="px-5 py-2 rounded-xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center gap-1.5"
+            className="px-5 py-2 rounded-xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center gap-1.5"
           >
             <Save className="w-4 h-4" />
             {loading ? 'Đang lưu...' : 'Lưu & Xuất Bản'}
@@ -245,7 +245,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
           isDark ? 'border-slate-800/80 bg-[#0b0f17]/80' : 'border-stone-200 bg-[#faf8f5]'
         }`}>
           {error && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -263,7 +263,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
             <div className={`p-5 rounded-2xl border space-y-4 ${
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
-              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-rose-500">
+              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
                 <Sparkles className="w-4 h-4" /> Thông Tin Cơ Bản
               </h3>
 
@@ -279,8 +279,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   placeholder="Ví dụ: Sinh Nhật Em Yêu Tròn 22 Tuổi"
                   className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none ${
                     isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                   }`}
                 />
               </div>
@@ -298,8 +298,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     placeholder="tu-dong-tao-neu-de-trong"
                     className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -347,7 +347,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
             <div className={`p-5 rounded-2xl border space-y-4 ${
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
-              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-rose-500">
+              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
                 <Sparkles className="w-4 h-4" /> Nội Dung Lời Chúc
               </h3>
 
@@ -363,8 +363,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     placeholder="Em Yêu, Bạn Thân, Quý Khách..."
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -379,8 +379,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     placeholder="Anh, Tôi, Ban Tổ Chức..."
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -396,8 +396,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   onChange={(e) => updateField('greetingTitle', e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                     isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                   }`}
                 />
               </div>
@@ -414,8 +414,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   onChange={(e) => updateField('greetingMessage', e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none resize-none ${
                     isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                   }`}
                 />
               </div>
@@ -426,7 +426,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
                     isDark ? 'text-slate-300' : 'text-stone-700'
                   }`}>
-                    <Calendar className="w-3.5 h-3.5 text-rose-500" /> Ngày sinh nhật
+                    <Calendar className="w-3.5 h-3.5 text-orange-500" /> Ngày sinh nhật
                   </label>
                   <input
                     type="date"
@@ -434,8 +434,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     onChange={(e) => updateField('birthdayDate', e.target.value)}
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -446,7 +446,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
                     isDark ? 'text-slate-300' : 'text-stone-700'
                   }`}>
-                    <Calendar className="w-3.5 h-3.5 text-pink-500" /> Ngày bắt đầu yêu nhau (đếm ngày)
+                    <Calendar className="w-3.5 h-3.5 text-amber-500" /> Ngày bắt đầu yêu nhau (đếm ngày)
                   </label>
                   <input
                     type="datetime-local"
@@ -467,8 +467,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     }}
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -564,7 +564,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     <label className={`block text-xs font-bold flex items-center gap-1.5 ${
                       isDark ? 'text-cyan-300' : 'text-stone-800'
                     }`}>
-                      <Sparkles className="w-3.5 h-3.5 text-pink-400" /> 5 Từ khóa phát sáng rơi liên tục (Nhập 5 câu bạn thích):
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" /> 5 Từ khóa phát sáng rơi liên tục (Nhập 5 câu bạn thích):
                     </label>
 
                     <div className="space-y-1.5">
@@ -650,8 +650,8 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     onChange={(e) => updateField('eventDate', e.target.value)}
                     className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -663,7 +663,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               <div className={`p-5 rounded-2xl border space-y-4 ${
                 isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
               }`}>
-                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-rose-500">
+                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
                   <Sparkles className="w-4 h-4" /> Cấu Hình Bản Đồ Tọa Độ & Khoảng Cách
                 </h3>
 
@@ -671,7 +671,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                 <div className={`p-3.5 rounded-xl border space-y-3 ${
                   isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-stone-50 border-stone-200'
                 }`}>
-                  <span className="text-xs font-bold text-rose-500 flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-orange-500 flex items-center gap-1.5">
                     📍 Vị Trí 1 (Người Gửi / Bạn Trai)
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -683,7 +683,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                         <img
                           src={customData.senderAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
                           alt="Avatar 1"
-                          className="w-8 h-8 rounded-full object-cover border border-rose-500/50 shrink-0"
+                          className="w-8 h-8 rounded-full object-cover border border-orange-500/50 shrink-0"
                         />
                         <input
                           type="text"
@@ -717,7 +717,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                 <div className={`p-3.5 rounded-xl border space-y-3 ${
                   isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-stone-50 border-stone-200'
                 }`}>
-                  <span className="text-xs font-bold text-pink-500 flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-amber-500 flex items-center gap-1.5">
                     📍 Vị Trí 2 (Người Nhận / Bạn Gái)
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -729,7 +729,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                         <img
                           src={customData.recipientAvatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100'}
                           alt="Avatar 2"
-                          className="w-8 h-8 rounded-full object-cover border border-pink-500/50 shrink-0"
+                          className="w-8 h-8 rounded-full object-cover border border-amber-500/50 shrink-0"
                         />
                         <input
                           type="text"
@@ -784,7 +784,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     <img
                       src={customData.reunionPhotoUrl || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300'}
                       alt="Ảnh đoàn tụ"
-                      className="w-16 h-16 rounded-xl object-cover border border-rose-500/40 bg-slate-950 shrink-0"
+                      className="w-16 h-16 rounded-xl object-cover border border-orange-500/40 bg-slate-950 shrink-0"
                     />
                     <input
                       type="text"
@@ -819,13 +819,13 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
               <div className="flex items-center justify-between">
-                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-rose-500">
+                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
                   <ImageIcon className="w-4 h-4" /> Album Ảnh Kỷ Niệm ({(customData.photos || []).length})
                 </h3>
                 <button
                   type="button"
                   onClick={addPhoto}
-                  className="px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-500 hover:bg-rose-500/25 text-xs font-bold flex items-center gap-1 transition"
+                  className="px-2.5 py-1 rounded-lg bg-orange-500/15 text-orange-500 hover:bg-orange-500/25 text-xs font-bold flex items-center gap-1 transition"
                 >
                   <Plus className="w-3.5 h-3.5" /> Thêm Ảnh
                 </button>
@@ -874,7 +874,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                       type="button"
                       onClick={() => removePhoto(idx)}
                       className={`p-1.5 transition ${
-                        isDark ? 'text-slate-400 hover:text-rose-400' : 'text-stone-400 hover:text-rose-600'
+                        isDark ? 'text-slate-400 hover:text-orange-400' : 'text-stone-400 hover:text-orange-600'
                       }`}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -891,7 +891,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
           isDark ? 'bg-[#080b11]' : 'bg-[#f5f2eb]'
         }`}>
           <div className="w-full flex items-center justify-between mb-4 max-w-sm sm:max-w-md">
-            <span className="text-xs font-bold text-rose-500 flex items-center gap-1.5">
+            <span className="text-xs font-bold text-orange-500 flex items-center gap-1.5">
               <Eye className="w-4 h-4" /> Live Preview (Thời Gian Thực)
             </span>
             <span className={`text-[11px] ${isDark ? 'text-slate-500' : 'text-stone-500'}`}>

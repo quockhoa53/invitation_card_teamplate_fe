@@ -183,7 +183,7 @@ export const AdminPromotionsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-editorial text-2xl sm:text-3xl font-bold flex items-center gap-2">
-            <Tag className="w-7 h-7 text-pink-500" /> Quản Lý Mã Khuyến Mãi
+            <Tag className="w-7 h-7 text-amber-500" /> Quản Lý Mã Khuyến Mãi
           </h1>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Tạo và cấu hình voucher giảm giá theo phần trăm (%) hoặc số tiền cố định (VNĐ).
@@ -192,7 +192,7 @@ export const AdminPromotionsPage: React.FC = () => {
 
         <button
           onClick={openCreateModal}
-          className="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-pink-500/20"
+          className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-amber-500/20"
         >
           <Plus className="w-4 h-4" /> Thêm Mã Khuyến Mãi Mới
         </button>
@@ -212,7 +212,7 @@ export const AdminPromotionsPage: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${
                 statusFilter === filterKey
-                  ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
+                  ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
                   : isDark
                   ? 'text-slate-400 hover:text-white hover:bg-slate-800'
                   : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
@@ -235,8 +235,8 @@ export const AdminPromotionsPage: React.FC = () => {
             placeholder="Tìm theo Mã code, mô tả..."
             className={`w-full pl-9 pr-4 py-2 rounded-xl text-xs border focus:outline-none ${
               isDark
-                ? 'bg-slate-900 border-slate-700 text-white focus:border-pink-500'
-                : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-pink-500'
+                ? 'bg-slate-900 border-slate-700 text-white focus:border-amber-500'
+                : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-amber-500'
             }`}
           />
         </div>
@@ -280,7 +280,7 @@ export const AdminPromotionsPage: React.FC = () => {
                       {/* Code */}
                       <td className="py-3.5 px-4">
                         <div className="space-y-0.5">
-                          <span className="font-mono font-black text-sm text-pink-400 bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 rounded-lg inline-block">
+                          <span className="font-mono font-black text-sm text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-lg inline-block">
                             {promo.code}
                           </span>
                           {promo.description && (
@@ -312,12 +312,12 @@ export const AdminPromotionsPage: React.FC = () => {
                       <td className="py-3.5 px-4">
                         <div className="space-y-1 max-w-[120px]">
                           <div className="flex justify-between text-[11px]">
-                            <span className="font-semibold text-rose-400">{promo.usedCount}</span>
+                            <span className="font-semibold text-orange-400">{promo.usedCount}</span>
                             <span className="text-slate-400">/ {promo.maxUsage || '∞'}</span>
                           </div>
                           <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"
+                              className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
                               style={{ width: `${usagePercent}%` }}
                             />
                           </div>
@@ -363,7 +363,7 @@ export const AdminPromotionsPage: React.FC = () => {
                           </button>
                           <button
                             onClick={() => handleDelete(promo)}
-                            className="p-1.5 rounded-lg hover:bg-rose-500/15 text-slate-400 hover:text-rose-400 transition"
+                            className="p-1.5 rounded-lg hover:bg-orange-500/15 text-slate-400 hover:text-orange-400 transition"
                             title="Xóa"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -398,7 +398,7 @@ export const AdminPromotionsPage: React.FC = () => {
             isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
           }`}>
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <h3 className="font-editorial text-xl font-bold flex items-center gap-2 text-pink-500">
+              <h3 className="font-editorial text-xl font-bold flex items-center gap-2 text-amber-500">
                 <Tag className="w-5 h-5" /> {editingPromo ? 'Chỉnh Sửa Mã Khuyến Mãi' : 'Tạo Mã Khuyến Mãi Mới'}
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="p-1.5 rounded-full hover:bg-slate-800 transition">
@@ -417,7 +417,7 @@ export const AdminPromotionsPage: React.FC = () => {
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
                   placeholder="Ví dụ: CHAOMUNG2026, LOVE20"
                   className={`w-full px-3.5 py-2.5 rounded-xl border font-mono font-bold uppercase focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-pink-400 focus:border-pink-500' : 'bg-stone-50 border-stone-200 focus:border-pink-500'
+                    isDark ? 'bg-slate-800 border-slate-700 text-amber-400 focus:border-amber-500' : 'bg-stone-50 border-stone-200 focus:border-amber-500'
                   }`}
                 />
               </div>
@@ -431,7 +431,7 @@ export const AdminPromotionsPage: React.FC = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Ví dụ: Giảm 20% tối đa 30.000 đ cho khách hàng mới"
                   className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-pink-500' : 'bg-stone-50 border-stone-200'
+                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500' : 'bg-stone-50 border-stone-200'
                   }`}
                 />
               </div>
@@ -533,7 +533,7 @@ export const AdminPromotionsPage: React.FC = () => {
                   id="isActiveCheck"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded text-pink-600 focus:ring-pink-500 w-4 h-4 cursor-pointer"
+                  className="rounded text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
                 />
                 <label htmlFor="isActiveCheck" className="font-semibold cursor-pointer">
                   Kích hoạt mã này ngay lập tức
@@ -552,7 +552,7 @@ export const AdminPromotionsPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold transition shadow-lg shadow-pink-500/25 flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold transition shadow-lg shadow-amber-500/25 flex items-center gap-2"
                 >
                   {saving ? 'Đang lưu...' : editingPromo ? 'Cập Nhật Mã' : 'Tạo Mã Khuyến Mãi'}
                 </button>

@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* KD Atelier Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-700 via-rose-600 to-amber-500 p-[2px] shadow-md shadow-rose-500/20 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 p-[2px] shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
               <div className="w-full h-full rounded-[14px] bg-[#12080a] flex items-center justify-center">
                 <span className="font-editorial text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200">
                   KD
@@ -65,7 +65,7 @@ export const Navbar: React.FC = () => {
             </div>
             <div>
               <span className="font-editorial text-xl font-bold tracking-tight flex items-center gap-1.5">
-                KD <span className="italic font-normal text-rose-500">Card</span>
+                KD <span className="italic font-normal text-orange-500">Card</span>
               </span>
               <span className={`text-[9px] tracking-widest block -mt-1 font-bold uppercase ${
                 isDark ? 'text-slate-400' : 'text-stone-500'
@@ -82,7 +82,7 @@ export const Navbar: React.FC = () => {
               to="/"
               className={`relative py-1.5 transition-colors ${
                 isHomeActive
-                  ? 'text-rose-500 font-bold'
+                  ? 'text-orange-500 font-bold'
                   : isDark
                   ? 'text-slate-300 hover:text-white'
                   : 'text-stone-600 hover:text-stone-900'
@@ -90,7 +90,7 @@ export const Navbar: React.FC = () => {
             >
               <span>Trang Chủ</span>
               {isHomeActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-rose-500 to-amber-500 rounded-full animate-fade" />
+                <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 to-amber-500 rounded-full animate-fade" />
               )}
             </Link>
 
@@ -99,7 +99,7 @@ export const Navbar: React.FC = () => {
               to="/templates"
               className={`relative py-1.5 transition-colors ${
                 isTemplatesActive
-                  ? 'text-rose-500 font-bold'
+                  ? 'text-orange-500 font-bold'
                   : isDark
                   ? 'text-slate-300 hover:text-white'
                   : 'text-stone-600 hover:text-stone-900'
@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
             >
               <span>Bộ Sưu Tập</span>
               {isTemplatesActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-rose-500 to-amber-500 rounded-full animate-fade" />
+                <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 to-amber-500 rounded-full animate-fade" />
               )}
             </Link>
 
@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
                 to="/dashboard"
                 className={`relative py-1.5 flex items-center gap-1.5 transition-colors ${
                   isDashboardActive
-                    ? 'text-rose-500 font-bold'
+                    ? 'text-orange-500 font-bold'
                     : isDark
                     ? 'text-slate-300 hover:text-white'
                     : 'text-stone-600 hover:text-stone-900'
@@ -126,7 +126,7 @@ export const Navbar: React.FC = () => {
                 <LayoutDashboard className="w-3.5 h-3.5" />
                 <span>Thiệp Của Tôi</span>
                 {isDashboardActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-rose-500 to-amber-500 rounded-full animate-fade" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 to-amber-500 rounded-full animate-fade" />
                 )}
               </Link>
             )}
@@ -174,14 +174,14 @@ export const Navbar: React.FC = () => {
                   onClick={() => setUserDropdown(!userDropdown)}
                   className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border transition active:scale-95 ${
                     isDark
-                      ? 'bg-slate-900 border-slate-800 hover:border-rose-500/40 text-white'
-                      : 'bg-white border-stone-200 hover:border-rose-300 text-stone-800 shadow-sm'
+                      ? 'bg-slate-900 border-slate-800 hover:border-orange-500/40 text-white'
+                      : 'bg-white border-stone-200 hover:border-orange-300 text-stone-800 shadow-sm'
                   }`}
                 >
                   <img
                     src={user?.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`}
                     alt="avatar"
-                    className="w-7 h-7 rounded-xl object-cover border border-rose-500/40"
+                    className="w-7 h-7 rounded-xl object-cover border border-orange-500/40"
                   />
                   <span className="text-xs font-semibold hidden sm:block max-w-[120px] truncate">
                     {user?.fullName || user?.email}
@@ -199,7 +199,7 @@ export const Navbar: React.FC = () => {
                   >
                     <div className={`px-4 py-2.5 border-b ${isDark ? 'border-slate-800' : 'border-stone-100'}`}>
                       <p className="text-[11px] font-medium opacity-70 truncate">{user?.email}</p>
-                      <p className="text-xs font-bold text-rose-500 mt-0.5">
+                      <p className="text-xs font-bold text-orange-500 mt-0.5">
                         Số dư: {user?.creditsBalance?.toLocaleString('vi-VN')} đ
                       </p>
                     </div>
@@ -211,7 +211,7 @@ export const Navbar: React.FC = () => {
                         isDark ? 'hover:bg-slate-800/80 text-slate-200' : 'hover:bg-stone-50 text-stone-700'
                       }`}
                     >
-                      <LayoutDashboard className="w-4 h-4 text-rose-500" /> Quản lý thiệp mời
+                      <LayoutDashboard className="w-4 h-4 text-orange-500" /> Quản lý thiệp mời
                     </Link>
 
                     <Link
@@ -242,7 +242,7 @@ export const Navbar: React.FC = () => {
                         logout();
                         navigate('/');
                       }}
-                      className={`w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition border-t mt-1 ${
+                      className={`w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-orange-500 hover:bg-orange-500/10 transition border-t mt-1 ${
                         isDark ? 'border-slate-800' : 'border-stone-100'
                       }`}
                     >
@@ -263,7 +263,7 @@ export const Navbar: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setShowRegister(true)}
-                  className="px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition"
+                  className="px-4 py-1.5 rounded-full text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20 active:scale-95 transition"
                 >
                   Đăng Ký
                 </button>

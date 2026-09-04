@@ -214,7 +214,7 @@ export const AdminTemplatesPage: React.FC = () => {
 
     setCustomHtml(`
 <div class="neon-wrapper">
-  <div class="floating-stars">✨ ✨ 💖 ✨ ✨</div>
+  <div class="floating-stars">✨ ✨ ✨ ✨ ✨</div>
   <div class="card-box">
     <div class="badge">💌 THIỆP SINH NHẬT ĐẶC BIỆT</div>
     <h1 class="title">{{greetingTitle}}</h1>
@@ -513,7 +513,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-editorial text-3xl font-bold flex items-center gap-2">
-            <Layers className="w-6 h-6 text-rose-500" /> Quản Lý Kho Template KD
+            <Layers className="w-6 h-6 text-orange-500" /> Quản Lý Kho Template KD
           </h2>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Tách biệt rõ ràng giữa <strong>Bản Nháp (Drafts)</strong> và <strong>Bản Công Khai (Public)</strong>. Tích hợp phân trang mượt mà và trực quan.
@@ -523,7 +523,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
         {activeTab === 'drafts' && (
           <button
             onClick={openCreateModal}
-            className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-500/20 active:scale-95 transition shrink-0"
+            className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-orange-500/20 active:scale-95 transition shrink-0"
           >
             <Plus className="w-4 h-4" /> Nạp Mẫu Bản Nháp Mới
           </button>
@@ -620,7 +620,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
           }}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
             selectedCategoryFilter === 'ALL'
-              ? 'bg-rose-500 text-white shadow-sm'
+              ? 'bg-orange-500 text-white shadow-sm'
               : isDark
               ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
               : 'bg-white border border-stone-200 text-stone-600 hover:text-stone-900'
@@ -643,7 +643,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 ${
                 isActiveCat
-                  ? 'bg-rose-500 text-white shadow-sm'
+                  ? 'bg-orange-500 text-white shadow-sm'
                   : isDark
                   ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
                   : 'bg-white border border-stone-200 text-stone-600 hover:text-stone-900'
@@ -722,7 +722,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                    isDark ? 'bg-slate-800 text-rose-300' : 'bg-rose-50 text-rose-700'
+                    isDark ? 'bg-slate-800 text-orange-300' : 'bg-orange-50 text-orange-700'
                   }`}>
                     {tpl.category}
                   </span>
@@ -772,8 +772,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                         onClick={() => handleDelete(tpl)}
                         className={`p-1.5 rounded-xl transition ${
                           isDark
-                            ? 'bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400'
-                            : 'bg-stone-50 hover:bg-rose-50 text-stone-400 hover:text-rose-600 border border-stone-200'
+                            ? 'bg-slate-800 hover:bg-orange-500/20 text-slate-400 hover:text-orange-400'
+                            : 'bg-stone-50 hover:bg-orange-50 text-stone-400 hover:text-orange-600 border border-stone-200'
                         }`}
                         title="Xóa bản nháp"
                       >
@@ -838,7 +838,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
               isDark ? 'border-slate-800' : 'border-stone-200'
             }`}>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center">
                   <Code className="w-4 h-4" />
                 </div>
                 <div>
@@ -879,7 +879,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 </button>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-8 h-8 rounded-xl bg-slate-800/40 hover:bg-rose-500/20 text-slate-400 hover:text-rose-500 flex items-center justify-center transition"
+                  className="w-8 h-8 rounded-xl bg-slate-800/40 hover:bg-orange-500/20 text-slate-400 hover:text-orange-500 flex items-center justify-center transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -929,19 +929,19 @@ document.getElementById('btn-music').addEventListener('click', () => {
                   onClick={() => fileInputRef.current?.click()}
                   className={`p-3 sm:p-3.5 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 ${
                     isDragging
-                      ? 'border-rose-500 bg-rose-500/10'
+                      ? 'border-orange-500 bg-orange-500/10'
                       : isDark
-                      ? 'border-slate-700/80 bg-slate-900/60 hover:border-rose-500/60 hover:bg-slate-900'
-                      : 'border-stone-300 bg-stone-50 hover:border-rose-400 hover:bg-rose-50/30'
+                      ? 'border-slate-700/80 bg-slate-900/60 hover:border-orange-500/60 hover:bg-slate-900'
+                      : 'border-stone-300 bg-stone-50 hover:border-orange-400 hover:bg-orange-50/30'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center shrink-0">
                       <UploadCloud className="w-5 h-5" />
                     </div>
                     <div className="text-left">
                       <p className="font-bold text-xs">
-                        Kéo thả file vào đây hoặc <span className="text-rose-500 underline">Bấm để chọn file</span>
+                        Kéo thả file vào đây hoặc <span className="text-orange-500 underline">Bấm để chọn file</span>
                       </p>
                       <p className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                         Hỗ trợ file <strong>.html</strong> (tự bóc tách CSS, JS) hoặc các file rời <strong>.html, .css, .js, .json</strong>
@@ -961,7 +961,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       ))}
                     </div>
                   ) : (
-                    <span className="text-[10px] font-semibold text-rose-400 px-2 py-1 rounded-lg bg-rose-500/10 shrink-0">
+                    <span className="text-[10px] font-semibold text-orange-400 px-2 py-1 rounded-lg bg-orange-500/10 shrink-0">
                       Auto-DOM Parser
                     </span>
                   )}
@@ -982,8 +982,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       placeholder="Ví dụ: Thiệp Sinh Nhật 3D Neon"
                       className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none transition ${
                         isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                       }`}
                     />
                   </div>
@@ -999,8 +999,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       placeholder="slug-duy-nhat"
                       className={`w-full px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none transition ${
                         isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                       }`}
                     />
                   </div>
@@ -1013,8 +1013,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       onChange={(e) => setCategory(e.target.value)}
                       className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none cursor-pointer transition ${
                         isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                       }`}
                     >
                       {categories.map((c) => (
@@ -1024,7 +1024,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       ))}
                       {categories.length === 0 && (
                         <>
-                          <option value="BIRTHDAY_LOVER">💖 Sinh nhật người yêu</option>
+                          <option value="BIRTHDAY_LOVER">✨ Sinh nhật người yêu</option>
                           <option value="BIRTHDAY_FRIENDS">🎉 Sinh nhật bạn bè</option>
                           <option value="LOVE_ANNIVERSARY">💍 Kỷ niệm tình yêu</option>
                           <option value="EVENT_INVITATION">💌 Thư mời sự kiện</option>
@@ -1045,8 +1045,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       placeholder="https://images.unsplash.com/..."
                       className={`w-full px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none transition ${
                         isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                       }`}
                     />
                   </div>
@@ -1058,7 +1058,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                         type="checkbox"
                         checked={isFree}
                         onChange={(e) => setIsFree(e.target.checked)}
-                        className="rounded text-rose-500 focus:ring-0"
+                        className="rounded text-orange-500 focus:ring-0"
                       />
                       <span>Miễn Phí</span>
                     </label>
@@ -1100,7 +1100,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       onClick={() => setActiveCodeTab('html')}
                       className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
                         activeCodeTab === 'html'
-                          ? 'bg-rose-500 text-white'
+                          ? 'bg-orange-500 text-white'
                           : isDark
                           ? 'bg-slate-800/60 text-slate-400 hover:text-white'
                           : 'bg-stone-100 text-stone-600'
@@ -1113,7 +1113,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       onClick={() => setActiveCodeTab('css')}
                       className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
                         activeCodeTab === 'css'
-                          ? 'bg-rose-500 text-white'
+                          ? 'bg-orange-500 text-white'
                           : isDark
                           ? 'bg-slate-800/60 text-slate-400 hover:text-white'
                           : 'bg-stone-100 text-stone-600'
@@ -1126,7 +1126,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       onClick={() => setActiveCodeTab('js')}
                       className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
                         activeCodeTab === 'js'
-                          ? 'bg-rose-500 text-white'
+                          ? 'bg-orange-500 text-white'
                           : isDark
                           ? 'bg-slate-800/60 text-slate-400 hover:text-white'
                           : 'bg-stone-100 text-stone-600'
@@ -1139,7 +1139,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       onClick={() => setActiveCodeTab('config')}
                       className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
                         activeCodeTab === 'config'
-                          ? 'bg-rose-500 text-white'
+                          ? 'bg-orange-500 text-white'
                           : isDark
                           ? 'bg-slate-800/60 text-slate-400 hover:text-white'
                           : 'bg-stone-100 text-stone-600'
@@ -1170,7 +1170,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                           customCss={customCss}
                           customJs={customJs}
                           data={defaultConfig || {
-                            greetingTitle: 'Chúc Mừng Sinh Nhật 💖',
+                            greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
                             recipientName: 'Bạn Thân',
                             senderName: 'Anh Khoa',
                             greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
@@ -1203,8 +1203,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                     placeholder="<div><h1>{{greetingTitle}}</h1><p>{{greetingMessage}}</p></div>"
                     className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
                       isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 )}
@@ -1218,8 +1218,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                     placeholder=".card-box { background: #111; color: #fff; padding: 20px; border-radius: 16px; }"
                     className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
                       isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 )}
@@ -1233,8 +1233,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                     placeholder="// window.CARD_DATA chứa dữ liệu người dùng nhập&#10;console.log(window.CARD_DATA);"
                     className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
                       isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 )}
@@ -1248,8 +1248,8 @@ document.getElementById('btn-music').addEventListener('click', () => {
                     placeholder='{\n  "greetingTitle": "Chúc Mừng Sinh Nhật",\n  "recipientName": "Em Yêu"\n}'
                     className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
                       isDark
-                        ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 )}
@@ -1269,7 +1269,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
 
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-rose-500/25 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
                 >
                   <span>
                     {!editingTemplate
@@ -1292,7 +1292,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
             {/* Top Phone Mockup Header Bar */}
             <div className="h-10 bg-slate-900 border-b border-slate-800 px-5 flex items-center justify-between text-white shrink-0">
               <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               </div>
@@ -1317,7 +1317,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 customCss={customCss}
                 customJs={customJs}
                 data={defaultConfig || {
-                  greetingTitle: 'Chúc Mừng Sinh Nhật 💖',
+                  greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
                   recipientName: 'Bạn Thân',
                   senderName: 'Anh Khoa',
                   greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',

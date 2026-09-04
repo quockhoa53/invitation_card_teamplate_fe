@@ -163,7 +163,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           }`}>
             <button
               onClick={onClose}
-              className="absolute top-5 right-5 text-slate-400 hover:text-rose-500 text-lg font-bold"
+              className="absolute top-5 right-5 text-slate-400 hover:text-orange-500 text-lg font-bold"
             >
               ✕
             </button>
@@ -176,7 +176,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -226,8 +226,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                     placeholder="example@gmail.com"
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -247,8 +247,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                     placeholder="••••••••"
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs focus:outline-none ${
                       isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -257,7 +257,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <LogIn className="w-4 h-4" />
                 {loading ? 'Đang xác thực...' : 'Đăng Nhập'}
@@ -269,7 +269,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <button
                 type="button"
                 onClick={onOpenRegister}
-                className="text-rose-500 hover:text-rose-600 font-bold ml-1"
+                className="text-orange-500 hover:text-orange-600 font-bold ml-1"
               >
                 Đăng ký ngay
               </button>
@@ -313,8 +313,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 onClick={() => handleGoogleAuthSubmit('anhkhoa.google@gmail.com', 'Anh Khoa Google')}
                 className={`w-full p-3 rounded-xl border flex items-center gap-3 text-left transition active:scale-95 ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 hover:border-rose-500 hover:bg-slate-800'
-                    : 'bg-stone-50 border-stone-200 hover:border-rose-300 hover:bg-stone-100'
+                    ? 'bg-slate-900 border-slate-700 hover:border-orange-500 hover:bg-slate-800'
+                    : 'bg-stone-50 border-stone-200 hover:border-orange-300 hover:bg-stone-100'
                 }`}
               >
                 <img
@@ -333,8 +333,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 onClick={() => handleGoogleAuthSubmit('linhdan.creative@gmail.com', 'Linh Đan')}
                 className={`w-full p-3 rounded-xl border flex items-center gap-3 text-left transition active:scale-95 ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 hover:border-rose-500 hover:bg-slate-800'
-                    : 'bg-stone-50 border-stone-200 hover:border-rose-300 hover:bg-stone-100'
+                    ? 'bg-slate-900 border-slate-700 hover:border-orange-500 hover:bg-slate-800'
+                    : 'bg-stone-50 border-stone-200 hover:border-orange-300 hover:bg-stone-100'
                 }`}
               >
                 <img
@@ -380,7 +380,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 type="button"
                 disabled={!googleEmailInput.trim()}
                 onClick={() => handleGoogleAuthSubmit(googleEmailInput, googleNameInput)}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white font-bold text-xs shadow hover:brightness-105 active:scale-95 transition disabled:opacity-50"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs shadow hover:brightness-105 active:scale-95 transition disabled:opacity-50"
               >
                 Đăng Nhập Với Tài Khoản Này
               </button>

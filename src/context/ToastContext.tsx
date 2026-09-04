@@ -118,14 +118,14 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     : 'bg-white/95 border-stone-200 text-stone-900 shadow-stone-400/40'
                 } ${
                   isSuccess ? 'border-emerald-500/40' :
-                  isError ? 'border-rose-500/40' :
+                  isError ? 'border-orange-500/40' :
                   isWarning ? 'border-amber-500/40' : 'border-sky-500/40'
                 }`}
               >
                 {/* Type Icon */}
                 <div className={`p-1.5 rounded-xl shrink-0 mt-0.5 ${
                   isSuccess ? 'bg-emerald-500/15 text-emerald-400' :
-                  isError ? 'bg-rose-500/15 text-rose-400' :
+                  isError ? 'bg-orange-500/15 text-orange-400' :
                   isWarning ? 'bg-amber-500/15 text-amber-400' : 'bg-sky-500/15 text-sky-400'
                 }`}>
                   {isSuccess && <CheckCircle2 className="w-5 h-5" />}
@@ -162,7 +162,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   transition={{ duration: (t.duration || 4000) / 1000, ease: 'linear' }}
                   className={`absolute bottom-0 left-0 h-[2.5px] ${
                     isSuccess ? 'bg-emerald-500' :
-                    isError ? 'bg-rose-500' :
+                    isError ? 'bg-orange-500' :
                     isWarning ? 'bg-amber-500' : 'bg-sky-500'
                   }`}
                 />
@@ -188,7 +188,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               <div className="flex items-center gap-3.5 mb-4">
                 <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
                   confirmDialog.type === 'danger'
-                    ? 'bg-rose-500/15 text-rose-500'
+                    ? 'bg-orange-500/15 text-orange-500'
                     : confirmDialog.type === 'warning'
                     ? 'bg-amber-500/15 text-amber-500'
                     : 'bg-indigo-500/15 text-indigo-500'
@@ -236,7 +236,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   onClick={handleConfirmAction}
                   className={`px-5 py-2.5 rounded-xl text-white text-xs font-bold transition shadow-lg flex items-center gap-1.5 ${
                     confirmDialog.type === 'danger'
-                      ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30'
+                      ? 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/30'
                       : confirmDialog.type === 'warning'
                       ? 'bg-amber-600 hover:bg-amber-500 shadow-amber-600/30'
                       : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30'

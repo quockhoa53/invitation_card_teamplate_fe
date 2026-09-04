@@ -120,7 +120,7 @@ export const AdminTransactionsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-editorial text-3xl font-bold flex items-center gap-2">
-            <CreditCard className="w-7 h-7 text-rose-500" /> Quản Lý Giao Dịch & Dòng Tiền
+            <CreditCard className="w-7 h-7 text-orange-500" /> Quản Lý Giao Dịch & Dòng Tiền
           </h2>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Kiểm soát biến động số dư VietQR, webhook SePay tự động và duyệt nạp tiền thủ công
@@ -140,8 +140,8 @@ export const AdminTransactionsPage: React.FC = () => {
             placeholder="Tìm theo mã đơn INV..., email, tên..."
             className={`w-full pl-9 pr-4 py-2 rounded-xl border text-xs focus:outline-none ${
               isDark
-                ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                : 'bg-white border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
             }`}
           />
         </div>
@@ -166,7 +166,7 @@ export const AdminTransactionsPage: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
                   : isDark
                   ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
                   : 'bg-white border border-stone-200 text-stone-600 hover:text-stone-900'
@@ -189,7 +189,7 @@ export const AdminTransactionsPage: React.FC = () => {
           </div>
         ) : transactions.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <CreditCard className="w-10 h-10 mx-auto opacity-30 text-rose-500" />
+            <CreditCard className="w-10 h-10 mx-auto opacity-30 text-orange-500" />
             <h4 className="font-editorial text-base font-bold">Không tìm thấy giao dịch nào</h4>
             <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
               Chưa có đơn nạp tiền nào khớp với tiêu chí tìm kiếm hiện tại.
@@ -240,7 +240,7 @@ export const AdminTransactionsPage: React.FC = () => {
                           <img
                             src={t.userAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${t.userEmail || 'user'}`}
                             alt="Avatar"
-                            className="w-7 h-7 rounded-xl object-cover border border-rose-500/30 shrink-0"
+                            className="w-7 h-7 rounded-xl object-cover border border-orange-500/30 shrink-0"
                           />
                           <div>
                             <p className="font-bold">{t.userFullName || 'Khách hàng'}</p>
@@ -252,7 +252,7 @@ export const AdminTransactionsPage: React.FC = () => {
                       {/* Transaction Type */}
                       <td className="py-3 px-4">
                         {t.type === 'CARD_PURCHASE' ? (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-500/15 text-pink-400 border border-pink-500/20">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/20">
                             Mua Thiệp
                           </span>
                         ) : t.type === 'WITHDRAWAL' ? (
@@ -273,7 +273,7 @@ export const AdminTransactionsPage: React.FC = () => {
                           return (
                             <div className="space-y-0.5">
                               {isExpense ? (
-                                <span className="font-bold font-mono text-sm text-rose-400">
+                                <span className="font-bold font-mono text-sm text-orange-400">
                                   -{t.amount.toLocaleString('vi-VN')} đ
                                 </span>
                               ) : (
@@ -282,7 +282,7 @@ export const AdminTransactionsPage: React.FC = () => {
                                 </span>
                               )}
                               {!isExpense && t.bonusAmount && t.bonusAmount > 0 ? (
-                                <div className="text-[10px] font-semibold text-pink-400 flex items-center gap-1">
+                                <div className="text-[10px] font-semibold text-amber-400 flex items-center gap-1">
                                   <span>🎁 Tặng +{t.bonusAmount.toLocaleString('vi-VN')} đ</span>
                                 </div>
                               ) : null}
@@ -354,8 +354,8 @@ export const AdminTransactionsPage: React.FC = () => {
                               onClick={() => handleCancel(t)}
                               className={`p-1.5 rounded-xl transition ${
                                 isDark
-                                  ? 'bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400'
-                                  : 'bg-stone-50 hover:bg-rose-50 text-stone-400 hover:text-rose-600 border border-stone-200'
+                                  ? 'bg-slate-800 hover:bg-orange-500/20 text-slate-400 hover:text-orange-400'
+                                  : 'bg-stone-50 hover:bg-orange-50 text-stone-400 hover:text-orange-600 border border-stone-200'
                               }`}
                               title="Hủy đơn giao dịch"
                             >

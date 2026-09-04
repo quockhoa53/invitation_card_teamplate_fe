@@ -254,11 +254,11 @@ export const Dashboard: React.FC = () => {
             <img
               src={user?.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`}
               alt="Avatar"
-              className="w-16 h-16 rounded-2xl border-2 border-rose-500/40 object-cover"
+              className="w-16 h-16 rounded-2xl border-2 border-orange-500/40 object-cover"
             />
             <div>
               <h1 className="font-editorial text-2xl sm:text-3xl font-bold flex items-center gap-2">
-                Xin chào, {user?.fullName || user?.email}! 💖
+                Xin chào, {user?.fullName || user?.email}! ✨
               </h1>
               <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                 Không gian quản lý và cá nhân hóa thiệp mời của bạn
@@ -271,7 +271,7 @@ export const Dashboard: React.FC = () => {
             <div className={`px-4 py-2.5 rounded-2xl border text-center ${
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-stone-50 border-stone-200'
             }`}>
-              <span className="text-lg font-black text-rose-500 block">{cards.length}</span>
+              <span className="text-lg font-black text-orange-500 block">{cards.length}</span>
               <span className={`text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                 Thiệp đã tạo
               </span>
@@ -280,7 +280,7 @@ export const Dashboard: React.FC = () => {
             <div className={`px-4 py-2.5 rounded-2xl border text-center ${
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-stone-50 border-stone-200'
             }`}>
-              <span className="text-lg font-black text-pink-500 block">{totalViews}</span>
+              <span className="text-lg font-black text-amber-500 block">{totalViews}</span>
               <span className={`text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
                 Lượt xem
               </span>
@@ -304,7 +304,7 @@ export const Dashboard: React.FC = () => {
               }`}
               title="Cài đặt bảo mật 2 bước qua Gmail (2FA)"
             >
-              <ShieldCheck className="w-4 h-4 text-rose-500" />
+              <ShieldCheck className="w-4 h-4 text-orange-500" />
               <span className="hidden sm:inline">2FA Gmail</span>
             </button>
           </div>
@@ -314,8 +314,8 @@ export const Dashboard: React.FC = () => {
         {user?.hasPassword === false && (
           <div className={`p-4 sm:p-5 rounded-3xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade ${
             isDark
-              ? 'bg-gradient-to-r from-amber-500/15 via-rose-500/10 to-transparent border-amber-500/30 text-amber-200'
-              : 'bg-gradient-to-r from-amber-50 to-rose-50 border-amber-200 text-amber-900 shadow-sm'
+              ? 'bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-transparent border-amber-500/30 text-amber-200'
+              : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 text-amber-900 shadow-sm'
           }`}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
@@ -331,7 +331,7 @@ export const Dashboard: React.FC = () => {
 
             <button
               onClick={() => setShowSetPasswordModal(true)}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 text-white font-bold text-xs shadow-md hover:brightness-105 active:scale-95 transition shrink-0 self-start sm:self-auto"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xs shadow-md hover:brightness-105 active:scale-95 transition shrink-0 self-start sm:self-auto"
             >
               Thiết Lập Mật Khẩu Ngay
             </button>
@@ -346,7 +346,7 @@ export const Dashboard: React.FC = () => {
               onClick={() => setActiveTab('cards')}
               className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shrink-0 ${
                 activeTab === 'cards'
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
                   : isDark
                   ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                   : 'bg-white text-stone-600 hover:text-stone-900 border border-stone-200'
@@ -355,7 +355,7 @@ export const Dashboard: React.FC = () => {
               <LayoutDashboard className="w-4 h-4" />
               <span>Thiệp Mời Của Tôi</span>
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                activeTab === 'cards' ? 'bg-white/20 text-white' : 'bg-rose-500/15 text-rose-500'
+                activeTab === 'cards' ? 'bg-white/20 text-white' : 'bg-orange-500/15 text-orange-500'
               }`}>
                 {cards.length}
               </span>
@@ -366,7 +366,7 @@ export const Dashboard: React.FC = () => {
               onClick={() => setActiveTab('purchased')}
               className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shrink-0 ${
                 activeTab === 'purchased'
-                  ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-md shadow-amber-500/20'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20'
                   : isDark
                   ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                   : 'bg-white text-stone-600 hover:text-stone-900 border border-stone-200'
@@ -407,14 +407,14 @@ export const Dashboard: React.FC = () => {
           {activeTab === 'cards' ? (
             <button
               onClick={() => setShowTemplateSelector(true)}
-              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
+              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
             >
               <PlusCircle className="w-4 h-4" /> Tạo Thiệp Mới
             </button>
           ) : activeTab === 'purchased' ? (
             <Link
               to="/templates"
-              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
+              className="px-5 py-2.5 rounded-2xl font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2 self-start sm:self-auto shrink-0"
             >
               <Sparkles className="w-4 h-4" /> + Mua Thêm Mẫu Mới
             </Link>
@@ -446,7 +446,7 @@ export const Dashboard: React.FC = () => {
               <div className={`p-12 text-center rounded-3xl border space-y-4 ${
                 isDark ? 'bg-[#121824]/60 border-slate-800' : 'bg-white border-stone-200 shadow-sm'
               }`}>
-                <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto">
                   <Sparkles className="w-8 h-8" />
                 </div>
                 <h3 className="font-editorial text-xl font-bold">Bạn chưa tạo thiệp mời nào</h3>
@@ -455,7 +455,7 @@ export const Dashboard: React.FC = () => {
                 </p>
                 <button
                   onClick={() => setShowTemplateSelector(true)}
-                  className="px-6 py-3 rounded-xl font-bold bg-rose-500 hover:bg-rose-600 text-white text-xs shadow-lg transition"
+                  className="px-6 py-3 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white text-xs shadow-lg transition"
                 >
                   Chọn Mẫu Ngay
                 </button>
@@ -469,7 +469,7 @@ export const Dashboard: React.FC = () => {
                       className={`rounded-3xl border shadow-lg overflow-hidden flex flex-col justify-between transition-all group ${
                         isDark
                           ? 'bg-[#121824] border-slate-800/80 hover:border-slate-700'
-                          : 'bg-white border-stone-200 hover:border-rose-300'
+                          : 'bg-white border-stone-200 hover:border-orange-300'
                       }`}
                     >
                       {/* Thumbnail / Header */}
@@ -499,10 +499,10 @@ export const Dashboard: React.FC = () => {
                           isDark ? 'text-slate-400' : 'text-stone-500'
                         }`}>
                           <span className="flex items-center gap-1">
-                            <Eye className="w-3.5 h-3.5 text-rose-500" /> {card.viewCount} lượt xem
+                            <Eye className="w-3.5 h-3.5 text-orange-500" /> {card.viewCount} lượt xem
                           </span>
                           <span className="flex items-center gap-1">
-                            <MessageCircle className="w-3.5 h-3.5 text-pink-500" /> {card.wishesCount} lời chúc
+                            <MessageCircle className="w-3.5 h-3.5 text-amber-500" /> {card.wishesCount} lời chúc
                           </span>
                         </div>
 
@@ -529,8 +529,8 @@ export const Dashboard: React.FC = () => {
                           }
                           className={`p-2 rounded-xl transition ${
                             isDark
-                              ? 'bg-slate-800 hover:bg-slate-700 text-rose-400'
-                              : 'bg-white hover:bg-stone-100 text-rose-600 border border-stone-200'
+                              ? 'bg-slate-800 hover:bg-slate-700 text-orange-400'
+                              : 'bg-white hover:bg-stone-100 text-orange-600 border border-stone-200'
                           }`}
                           title="Xem mã QR"
                         >
@@ -553,7 +553,7 @@ export const Dashboard: React.FC = () => {
 
                         <button
                           onClick={() => setEditingCard(card)}
-                          className="flex-1 py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-500 font-bold text-xs flex items-center justify-center gap-1.5 transition"
+                          className="flex-1 py-2 px-3 rounded-xl bg-orange-500/15 hover:bg-orange-500/25 text-orange-500 font-bold text-xs flex items-center justify-center gap-1.5 transition"
                         >
                           <Edit3 className="w-3.5 h-3.5" /> Chỉnh Sửa
                         </button>
@@ -562,8 +562,8 @@ export const Dashboard: React.FC = () => {
                           onClick={() => handleDeleteCard(card.id)}
                           className={`p-2 rounded-xl transition ${
                             isDark
-                              ? 'bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400'
-                              : 'bg-white hover:bg-rose-50 text-stone-400 hover:text-rose-600 border border-stone-200'
+                              ? 'bg-slate-800 hover:bg-orange-500/20 text-slate-400 hover:text-orange-400'
+                              : 'bg-white hover:bg-orange-50 text-stone-400 hover:text-orange-600 border border-stone-200'
                           }`}
                           title="Xóa thiệp"
                         >
@@ -627,7 +627,7 @@ export const Dashboard: React.FC = () => {
                 <div className="pt-2">
                   <Link
                     to="/templates"
-                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-xs shadow-lg transition hover:brightness-105 active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 text-white text-xs shadow-lg transition hover:brightness-105 active:scale-95"
                   >
                     Khám Phá Mẫu Thiệp Ngay <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
@@ -642,7 +642,7 @@ export const Dashboard: React.FC = () => {
                       className={`rounded-3xl border shadow-lg overflow-hidden flex flex-col justify-between transition-all group ${
                         isDark
                           ? 'bg-[#121824] border-slate-800/80 hover:border-slate-700'
-                          : 'bg-white border-stone-200 hover:border-rose-300'
+                          : 'bg-white border-stone-200 hover:border-orange-300'
                       }`}
                     >
                       {/* Thumbnail / Header */}
@@ -664,7 +664,7 @@ export const Dashboard: React.FC = () => {
 
                       {/* Template Info */}
                       <div className="p-5 space-y-3 flex-1">
-                        <h3 className="font-editorial text-lg font-bold truncate group-hover:text-rose-500 transition-colors">
+                        <h3 className="font-editorial text-lg font-bold truncate group-hover:text-orange-500 transition-colors">
                           {tpl.title}
                         </h3>
 
@@ -704,13 +704,13 @@ export const Dashboard: React.FC = () => {
                           }`}
                           title="Xem thử mẫu thiệp"
                         >
-                          <Eye className="w-4 h-4 text-rose-500" />
+                          <Eye className="w-4 h-4 text-orange-500" />
                           <span>Xem Thử</span>
                         </button>
 
                         <button
                           onClick={() => navigate(`/editor?templateId=${tpl.id}`)}
-                          className="flex-1 py-2 px-4 rounded-xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
+                          className="flex-1 py-2 px-4 rounded-xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
                         >
                           <span>Tạo Thiệp Mới</span>
                           <PlusCircle className="w-3.5 h-3.5" />
@@ -757,7 +757,7 @@ export const Dashboard: React.FC = () => {
 
               <div className="text-right">
                 <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số dư hiện tại:</span>
-                <strong className="text-base sm:text-lg font-bold text-rose-500 font-mono">
+                <strong className="text-base sm:text-lg font-bold text-orange-500 font-mono">
                   {user?.creditsBalance?.toLocaleString('vi-VN')} đ
                 </strong>
               </div>
@@ -827,7 +827,7 @@ export const Dashboard: React.FC = () => {
                             <td className="py-3 px-4">
                               <div className="space-y-0.5">
                                 {isExpense ? (
-                                  <span className="font-bold font-mono text-sm text-rose-500">
+                                  <span className="font-bold font-mono text-sm text-orange-500">
                                     -{tx.amount.toLocaleString('vi-VN')} đ
                                   </span>
                                 ) : (
@@ -836,7 +836,7 @@ export const Dashboard: React.FC = () => {
                                   </span>
                                 )}
                                 {!isExpense && tx.bonusAmount && tx.bonusAmount > 0 ? (
-                                  <div className="text-[10px] font-semibold text-pink-400">
+                                  <div className="text-[10px] font-semibold text-amber-400">
                                     🎁 Tặng +{tx.bonusAmount.toLocaleString('vi-VN')} đ
                                   </div>
                                 ) : null}
@@ -862,7 +862,7 @@ export const Dashboard: React.FC = () => {
 
                             <td className="py-3 px-4">
                               {isPurchase && tx.status === 'SUCCESS' ? (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-500/15 text-pink-400 border border-pink-500/30">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
                                   <ShoppingBag className="w-3 h-3" /> Mua Thiệp
                                 </span>
                               ) : isWithdrawal ? (
@@ -910,8 +910,8 @@ export const Dashboard: React.FC = () => {
                                     onClick={() => handleCancelUserTransaction(tx.orderCode)}
                                     className={`p-1.5 rounded-xl border transition ${
                                       isDark
-                                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20'
-                                        : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
+                                        ? 'bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/20'
+                                        : 'bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-100'
                                     }`}
                                     title="Hủy đơn này"
                                   >
@@ -991,8 +991,8 @@ export const Dashboard: React.FC = () => {
                   }}
                   className={`cursor-pointer rounded-2xl border p-4 transition-all hover:scale-102 flex flex-col justify-between group ${
                     isDark
-                      ? 'bg-slate-900/80 border-slate-800 hover:border-rose-500/60'
-                      : 'bg-stone-50 border-stone-200 hover:border-rose-300'
+                      ? 'bg-slate-900/80 border-slate-800 hover:border-orange-500/60'
+                      : 'bg-stone-50 border-stone-200 hover:border-orange-300'
                   }`}
                 >
                   <div className="aspect-[16/9] rounded-xl overflow-hidden bg-slate-950 mb-3">
@@ -1003,7 +1003,7 @@ export const Dashboard: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <h4 className="font-editorial text-base font-bold group-hover:text-rose-500 transition">
+                    <h4 className="font-editorial text-base font-bold group-hover:text-orange-500 transition">
                       {tpl.title}
                     </h4>
                     <p className={`text-xs line-clamp-2 mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
@@ -1014,7 +1014,7 @@ export const Dashboard: React.FC = () => {
                     <span className="text-xs font-bold text-emerald-500">
                       {tpl.isFree ? 'Miễn phí' : `${tpl.price.toLocaleString('vi-VN')} đ`}
                     </span>
-                    <span className="text-xs font-bold text-rose-500 group-hover:underline">
+                    <span className="text-xs font-bold text-orange-500 group-hover:underline">
                       Chọn Mẫu →
                     </span>
                   </div>
@@ -1103,7 +1103,7 @@ export const Dashboard: React.FC = () => {
                   setDemoTemplate(null);
                   navigate(`/editor?templateId=${tpl.id}`);
                 }}
-                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
               >
                 Tạo Thiệp Mới <ChevronRight className="w-3.5 h-3.5" />
               </button>

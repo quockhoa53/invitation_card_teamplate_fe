@@ -122,17 +122,17 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
   };
 
   return (
-    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#14080e] via-[#1a0c14] to-[#0a0508] text-white font-sans selection:bg-rose-500 selection:text-white pb-12">
-      {/* Soft Ambient Rose Glow */}
-      <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-rose-600/15 blur-[120px] pointer-events-none" />
-      <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-rose-950/50 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-rose-900/30 blur-[100px] pointer-events-none" />
+    <div className="relative min-h-full w-full overflow-x-hidden bg-gradient-to-b from-[#140b07] via-[#1a0e08] to-[#0a0604] text-white font-sans selection:bg-orange-500 selection:text-white pb-12">
+      {/* Soft Ambient Warm Orange Glow */}
+      <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-orange-500/15 blur-[120px] pointer-events-none" />
+      <div className="absolute top-10 left-1/3 w-80 h-80 rounded-full bg-amber-950/50 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-orange-900/20 blur-[100px] pointer-events-none" />
 
       {/* Floating Music Button */}
       {data.musicUrl && (
         <button
           onClick={toggleMusic}
-          className={`${isPreview ? 'absolute' : 'fixed'} top-4 right-4 z-40 flex items-center gap-2 bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-rose-400/40 shadow-xl transition-all active:scale-95 text-xs font-bold`}
+          className={`${isPreview ? 'absolute' : 'fixed'} top-4 right-4 z-40 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-full backdrop-blur-md border border-orange-400/40 shadow-xl transition-all active:scale-95 text-xs font-bold`}
         >
           {isPlayingMusic ? (
             <>
@@ -164,8 +164,8 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                 ? 'p-4 sm:p-5 rounded-[26px] space-y-3.5 max-w-[280px]'
                 : 'p-8 rounded-[36px] space-y-6 max-w-md'
             }`}>
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-3 h-3 text-rose-400" /> Thư Tình Sinh Nhật
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-orange-400" /> Thư Tình Sinh Nhật
               </div>
 
               <div className="space-y-1">
@@ -174,7 +174,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                 }`}>
                   Gửi Tặng {data.recipientName || 'Em Yêu'}
                 </h2>
-                <p className={`text-slate-400 ${isPreview ? 'text-[11px] leading-tight' : 'text-xs sm:text-sm'}`}>
+                <p className={`text-slate-300 ${isPreview ? 'text-[11px] leading-tight' : 'text-xs sm:text-sm'}`}>
                   Một món quà bất ngờ tràn ngập yêu thương đang chờ đón bạn!
                 </p>
               </div>
@@ -183,10 +183,10 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               <div className="py-1 sm:py-2 flex justify-center">
                 <div
                   onClick={handleOpenGift}
-                  className="cursor-pointer group relative p-4 rounded-3xl bg-rose-500/10 border border-rose-500/30 hover:border-rose-500/60 hover:scale-105 transition-all duration-300 shadow-inner"
+                  className="cursor-pointer group relative p-4 rounded-3xl bg-orange-500/10 border border-orange-500/30 hover:border-orange-500/60 hover:scale-105 transition-all duration-300 shadow-inner"
                 >
-                  <Gift className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 group-hover:rotate-12 transition-transform duration-300" />
-                  <span className="absolute -bottom-2 inset-x-0 text-[10px] font-bold text-rose-300 uppercase tracking-widest">
+                  <Gift className="w-12 h-12 sm:w-16 sm:h-16 text-orange-500 group-hover:rotate-12 transition-transform duration-300" />
+                  <span className="absolute -bottom-2 inset-x-0 text-[10px] font-bold text-orange-300 uppercase tracking-widest">
                     Mở Quà
                   </span>
                 </div>
@@ -194,7 +194,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
 
               <button
                 onClick={handleOpenGift}
-                className={`w-full font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-xl shadow-rose-950/60 active:scale-95 transition flex items-center justify-center gap-2 ${
+                className={`w-full font-semibold bg-orange-500 hover:bg-orange-600 text-white shadow-xl shadow-orange-950/60 active:scale-95 transition flex items-center justify-center gap-2 ${
                   isPreview ? 'py-2.5 px-4 rounded-xl text-xs' : 'py-3 px-6 rounded-2xl text-xs sm:text-sm'
                 }`}
               >
@@ -216,22 +216,22 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
         >
           {/* Header & Greeting Title */}
           <header className="space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-bold">
-              <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400" />
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold">
+              <Heart className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
               <span>Happy Birthday To My Love</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight">
               {data.greetingTitle || 'Chúc Mừng Sinh Nhật Người Yêu'}
             </h1>
-            <p className="text-slate-400 text-xs sm:text-sm font-medium">
-              Từ <span className="text-rose-500 font-bold">{data.senderName || 'Anh'}</span> với tất cả tình yêu thương
+            <p className="text-slate-300 text-xs sm:text-sm font-medium">
+              Từ <span className="text-orange-400 font-bold">{data.senderName || 'Anh'}</span> với tất cả tình yêu thương
             </p>
           </header>
 
           {/* Interactive 3D Cake & Candle Blow */}
-          <section className="relative p-6 sm:p-8 rounded-[36px] bg-gradient-to-b from-[#240e1a]/90 via-[#180911]/90 to-[#10060c]/90 border border-rose-500/30 shadow-2xl backdrop-blur-xl space-y-6">
-            <div className="absolute inset-2.5 rounded-[28px] border border-rose-500/15 pointer-events-none" />
+          <section className="relative p-6 sm:p-8 rounded-[36px] bg-gradient-to-b from-[#24140b]/90 via-[#180e07]/90 to-[#100905]/90 border border-orange-500/30 shadow-2xl backdrop-blur-xl space-y-6">
+            <div className="absolute inset-2.5 rounded-[28px] border border-orange-500/15 pointer-events-none" />
 
             <div className="relative inline-block py-2">
               {candleLit ? (
@@ -241,25 +241,48 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                   title="Chạm vào nến để thổi tắt!"
                 >
                   <div className="relative flex items-center justify-center">
-                    <div className="w-4 h-8 rounded-full bg-gradient-to-t from-rose-500 via-orange-400 to-yellow-200 animate-pulse shadow-lg shadow-orange-400/80" />
-                    <div className="absolute w-8 h-8 rounded-full bg-rose-400/20 blur-md pointer-events-none" />
+                    <div className="w-4 h-8 rounded-full bg-gradient-to-t from-orange-500 via-amber-400 to-yellow-200 animate-pulse shadow-lg shadow-orange-400/80" />
+                    <div className="absolute w-8 h-8 rounded-full bg-orange-400/20 blur-md pointer-events-none" />
                   </div>
-                  <div className="w-2 h-5 bg-rose-300 rounded-sm shadow" />
-                  <span className="text-[10px] text-rose-300 font-bold uppercase tracking-wider mt-1 opacity-80 group-hover:opacity-100 transition">
+                  <div className="w-2 h-5 bg-orange-300 rounded-sm shadow" />
+                  <span className="text-[10px] text-orange-300 font-bold uppercase tracking-wider mt-1 opacity-80 group-hover:opacity-100 transition">
                     ✨ Chạm để thổi nến
                   </span>
                 </div>
               ) : (
                 <div className="space-y-1 select-none animate-fade">
-                  <div className="text-xs text-rose-300 font-bold py-1 px-3 rounded-full bg-rose-500/20 border border-rose-500/40 inline-block shadow">
-                    🎉 Nến đã thổi tắt! Mọi ước nguyện đều thành hiện thực! 💖
+                  <div className="text-xs text-orange-300 font-bold py-1 px-3 rounded-full bg-orange-500/20 border border-orange-500/40 inline-block shadow">
+                    🎉 Nến đã thổi tắt! Mọi ước nguyện đều thành hiện thực! ✨
                   </div>
                   <div className="w-1.5 h-4 bg-slate-700 mx-auto rounded-sm" />
                 </div>
               )}
 
-              <div className="text-7xl sm:text-8xl select-none transform hover:scale-105 transition-transform duration-300 filter drop-shadow-[0_15px_25px_rgba(244,63,94,0.3)]">
-                🎂
+              {/* 3D Handcrafted Architectural Birthday Cake */}
+              <div className="relative w-44 sm:w-52 h-24 sm:h-28 mx-auto mt-2 flex flex-col items-center justify-end select-none">
+                {/* Cake Tier 2 */}
+                <div className="relative w-28 sm:w-34 h-10 rounded-t-2xl bg-gradient-to-r from-orange-300 via-amber-200 to-orange-300 border border-orange-200/60 shadow-md flex items-center justify-center overflow-hidden">
+                  <div className="absolute top-0 inset-x-0 h-2 bg-white/70 rounded-full blur-[0.5px]" />
+                  <div className="flex gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                  </div>
+                </div>
+
+                {/* Cake Tier 1 (Base) */}
+                <div className="relative w-40 sm:w-48 h-14 rounded-2xl bg-gradient-to-r from-orange-400 via-amber-300 to-orange-400 border border-orange-200/50 shadow-xl flex items-center justify-center overflow-hidden">
+                  <div className="absolute top-0 inset-x-0 h-2.5 bg-white/80 rounded-full blur-[0.5px]" />
+                  <div className="flex gap-2.5">
+                    <div className="w-2 h-2 rounded-full bg-orange-600/40" />
+                    <div className="w-2 h-2 rounded-full bg-amber-600/40" />
+                    <div className="w-2 h-2 rounded-full bg-orange-600/40" />
+                    <div className="w-2 h-2 rounded-full bg-amber-600/40" />
+                  </div>
+                </div>
+
+                {/* Cake Plate Stand */}
+                <div className="w-48 sm:w-56 h-3 rounded-full bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 shadow-xl border-t border-white/20 -mt-1" />
               </div>
             </div>
 
@@ -267,7 +290,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               {candleLit ? (
                 <button
                   onClick={handleBlowCandle}
-                  className="px-6 py-3 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white shadow-xl shadow-rose-600/30 hover:scale-103 active:scale-95 transition text-xs sm:text-sm flex items-center justify-center gap-2 mx-auto"
+                  className="px-6 py-3 rounded-2xl font-bold bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white shadow-xl shadow-orange-500/30 hover:scale-103 active:scale-95 transition text-xs sm:text-sm flex items-center justify-center gap-2 mx-auto"
                 >
                   <Flame className="w-4 h-4 fill-white" />
                   <span>Thổi Nến & Nhận Điều Ước ✨</span>
@@ -275,7 +298,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               ) : (
                 <button
                   onClick={() => setCandleLit(true)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-rose-300 text-xs font-semibold hover:bg-slate-700 transition active:scale-95"
+                  className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-orange-300 text-xs font-semibold hover:bg-slate-700 transition active:scale-95"
                 >
                   Thắp Lại Nến 🕯️
                 </button>
@@ -284,22 +307,22 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
           </section>
 
           {/* Romantic Wax-Sealed Handwritten Love Letter */}
-          <section className="relative p-6 sm:p-8 rounded-[36px] bg-[#1e0a15]/90 border border-rose-500/30 shadow-2xl backdrop-blur-xl text-left space-y-4">
-            <div className="flex items-center justify-between border-b border-rose-500/20 pb-3">
-              <span className="text-xs uppercase tracking-widest text-rose-400 font-bold flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-rose-300" /> Bức Thư Tình Yêu
+          <section className="relative p-6 sm:p-8 rounded-[36px] bg-[#1e110a]/90 border border-orange-500/30 shadow-2xl backdrop-blur-xl text-left space-y-4">
+            <div className="flex items-center justify-between border-b border-orange-500/20 pb-3">
+              <span className="text-xs uppercase tracking-widest text-orange-400 font-bold flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-orange-300" /> Bức Thư Tình Yêu
               </span>
-              <span className="text-[11px] text-rose-300/70">{data.birthdayDate || 'Hôm Nay'}</span>
+              <span className="text-[11px] text-orange-300/70">{data.birthdayDate || 'Hôm Nay'}</span>
             </div>
 
-            <div className="font-editorial text-sm sm:text-base leading-relaxed text-rose-100 min-h-[90px] whitespace-pre-line">
+            <div className="font-editorial text-sm sm:text-base leading-relaxed text-orange-100 min-h-[90px] whitespace-pre-line">
               {typedMessage}
-              <span className="inline-block w-1.5 h-4 bg-rose-400 ml-1 animate-pulse" />
+              <span className="inline-block w-1.5 h-4 bg-orange-400 ml-1 animate-pulse" />
             </div>
 
-            <div className="text-right pt-3 border-t border-rose-500/20 text-xs sm:text-sm text-rose-300 font-serif italic">
+            <div className="text-right pt-3 border-t border-orange-500/20 text-xs sm:text-sm text-orange-300 font-serif italic">
               Yêu em trọn vẹn,<br />
-              <strong className="text-rose-200">{data.senderName || 'Anh'}</strong> 💖
+              <strong className="text-orange-200">{data.senderName || 'Anh'}</strong> ✨
             </div>
           </section>
 
@@ -307,10 +330,10 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
           {data.photos && data.photos.length > 0 && (
             <section className="space-y-4 text-center">
               <div>
-                <h3 className="font-editorial text-xl sm:text-2xl font-bold text-rose-200">
+                <h3 className="font-editorial text-xl sm:text-2xl font-bold text-orange-200">
                   Khoảnh Khắc Ngọt Ngào
                 </h3>
-                <p className="text-rose-300/70 text-xs">Mỗi bức ảnh là một kỷ niệm vô giá của hai ta</p>
+                <p className="text-orange-300/70 text-xs">Mỗi bức ảnh là một kỷ niệm vô giá của hai ta</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -338,16 +361,16 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
           )}
 
           {/* Wishes Wall & Guestbook */}
-          <section className="p-5 rounded-3xl bg-[#180911]/90 border border-slate-800 space-y-4 text-left">
+          <section className="p-5 rounded-3xl bg-[#180e07]/90 border border-slate-800 space-y-4 text-left">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-rose-300 flex items-center gap-1.5">
-                <MessageCircle className="w-4 h-4 text-rose-400" /> Sổ Lưu Bút ({wishes ? wishes.length : 0})
+              <h3 className="text-sm font-bold text-orange-300 flex items-center gap-1.5">
+                <MessageCircle className="w-4 h-4 text-orange-400" /> Sổ Lưu Bút ({wishes ? wishes.length : 0})
               </h3>
 
               {onSendWish && (
                 <button
                   onClick={() => setShowWishesModal(true)}
-                  className="px-3.5 py-1.5 rounded-xl font-bold bg-rose-600 hover:bg-rose-500 text-white text-xs flex items-center gap-1 shadow-md active:scale-95 transition"
+                  className="px-3.5 py-1.5 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white text-xs flex items-center gap-1 shadow-md active:scale-95 transition"
                 >
                   <Send className="w-3.5 h-3.5" /> Gửi Lời Chúc
                 </button>
@@ -359,11 +382,11 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                 wishes.map((w, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-2xl bg-[#240e1a] border border-rose-500/20 shadow text-xs space-y-1"
+                    className="p-3.5 rounded-2xl bg-[#24140b] border border-orange-500/20 shadow text-xs space-y-1"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-rose-300">{w.senderName}</span>
-                      <span className="text-sm">{w.emotionIcon || '💖'}</span>
+                      <span className="font-bold text-orange-300">{w.senderName}</span>
+                      <span className="text-sm">{w.emotionIcon || '✨'}</span>
                     </div>
                     <p className="text-slate-300">{w.message}</p>
                   </div>
@@ -386,11 +409,11 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="max-w-md w-full bg-slate-900 border border-rose-500/40 rounded-3xl p-6 shadow-2xl space-y-4"
+              className="max-w-md w-full bg-slate-900 border border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-4"
             >
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h4 className="text-lg font-bold text-rose-300 flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-rose-400" /> Gửi Lời Chúc Yêu Thương
+                <h4 className="text-lg font-bold text-orange-300 flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-orange-400" /> Gửi Lời Chúc Yêu Thương
                 </h4>
                 <button
                   onClick={() => setShowWishesModal(false)}
@@ -409,7 +432,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
                     placeholder="Tên hoặc biệt danh..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-rose-500 focus:outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-orange-500 focus:outline-none"
                   />
                 </div>
 
@@ -421,7 +444,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                     value={wishText}
                     onChange={(e) => setWishText(e.target.value)}
                     placeholder="Viết lời chúc ngọt ngào..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-rose-500 focus:outline-none resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:border-orange-500 focus:outline-none resize-none"
                   />
                 </div>
 
@@ -436,7 +459,7 @@ export const LoverBirthdayTemplate: React.FC<TemplateProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white font-bold shadow-lg hover:brightness-110 active:scale-95 transition text-xs"
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white font-bold shadow-lg hover:brightness-110 active:scale-95 transition text-xs"
                   >
                     {isSubmitting ? 'Đang gửi...' : 'Gửi Ngay'}
                   </button>

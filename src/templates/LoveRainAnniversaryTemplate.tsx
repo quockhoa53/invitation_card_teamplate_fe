@@ -488,19 +488,19 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
       {/* Top Floating Controls */}
       <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
         {/* Milestone Badge */}
-        <div className="pointer-events-auto px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/30 text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 shadow-md">
-          <Calendar className="w-3 h-3 text-cyan-400 animate-pulse" />
+        <div className="pointer-events-auto px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-500/30 text-[11px] font-bold text-orange-300 flex items-center gap-1.5 shadow-md">
+          <Calendar className="w-3 h-3 text-orange-400 animate-pulse" />
           <span>{milestoneBadgeText}</span>
         </div>
 
         {/* Audio Toggle */}
         <button
           onClick={toggleMusic}
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-pink-500/30 text-pink-300 text-[11px] font-bold shadow-md active:scale-95 transition"
+          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-orange-500/30 text-orange-300 text-[11px] font-bold shadow-md active:scale-95 transition"
         >
           {isPlayingMusic ? (
             <>
-              <Volume2 className="w-3.5 h-3.5 text-rose-300 animate-pulse" />
+              <Volume2 className="w-3.5 h-3.5 text-orange-300 animate-pulse" />
               <span>Âm Nhạc</span>
             </>
           ) : (
@@ -516,7 +516,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
       <div className="absolute bottom-3 left-0 right-0 z-30 flex items-center justify-center gap-2 pointer-events-none px-4">
         <button
           onClick={() => setShowLetterModal(true)}
-          className="pointer-events-auto px-5 py-2 rounded-full font-semibold text-xs bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-950/60 active:scale-95 transition flex items-center gap-1.5"
+          className="pointer-events-auto px-5 py-2 rounded-full font-semibold text-xs bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-950/60 active:scale-95 transition flex items-center gap-1.5"
         >
           <Heart className="w-3.5 h-3.5 fill-white" />
           <span>Mở Bức Thư Tình</span>
@@ -527,7 +527,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
           className="pointer-events-auto p-2 rounded-full bg-slate-900/90 border border-slate-700 text-slate-300 hover:text-white shadow-md active:scale-95 transition"
           title="Gửi lời chúc"
         >
-          <MessageCircle className="w-3.5 h-3.5 text-rose-400" />
+          <MessageCircle className="w-3.5 h-3.5 text-orange-400" />
         </button>
       </div>
 
@@ -540,7 +540,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
             exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
           >
-            <div className="relative max-w-md w-full rounded-3xl p-6 sm:p-8 bg-[#0f1422] border border-rose-500/30 shadow-2xl text-center space-y-6">
+            <div className="relative max-w-md w-full rounded-3xl p-6 sm:p-8 bg-[#0f1422] border border-orange-500/30 shadow-2xl text-center space-y-6">
               <button
                 onClick={() => setShowLetterModal(false)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-white"
@@ -549,7 +549,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
               </button>
 
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-semibold">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-semibold">
                   <Sparkles className="w-3.5 h-3.5" /> Thư Tình Kỷ Niệm
                 </div>
                 <h3 className="font-editorial text-2xl font-bold text-white">
@@ -560,7 +560,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
               {/* Days Together Counter Display */}
               <div className="grid grid-cols-4 gap-2 p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
                 <div>
-                  <span className="font-editorial text-xl sm:text-2xl font-bold text-rose-500 block">
+                  <span className="font-editorial text-xl sm:text-2xl font-bold text-orange-500 block">
                     {timeTogether.days}
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400">Ngày</span>
@@ -593,7 +593,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => setShowLetterModal(false)}
-                  className="w-full py-2.5 rounded-xl font-semibold text-xs bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-950/50 active:scale-95 transition"
+                  className="w-full py-2.5 rounded-xl font-semibold text-xs bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-950/50 active:scale-95 transition"
                 >
                   Trở Lại Màn Hình Tương Tác
                 </button>
@@ -630,7 +630,7 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
                   placeholder="Nhập tên của bạn..."
                   value={senderName}
                   onChange={(e) => setSenderName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none focus:border-rose-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none focus:border-orange-500"
                   required
                 />
                 <textarea
@@ -638,13 +638,13 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
                   placeholder="Viết lời chúc gửi tới cặp đôi..."
                   value={wishText}
                   onChange={(e) => setWishText(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none focus:border-rose-500 resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white outline-none focus:border-orange-500 resize-none"
                   required
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-md shadow-rose-950/50"
+                  className="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-md shadow-orange-950/50"
                 >
                   <Send className="w-3.5 h-3.5" /> Gửi Lời Chúc Ngay
                 </button>

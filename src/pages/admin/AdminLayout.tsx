@@ -34,7 +34,7 @@ export const AdminLayout: React.FC = () => {
       <div className={`min-h-screen flex flex-col items-center justify-center p-4 text-center space-y-4 ${
         isDark ? 'bg-[#0b0f17] text-white' : 'bg-[#faf8f5] text-stone-800'
       }`}>
-        <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto">
           <Shield className="w-8 h-8" />
         </div>
         <h2 className="font-editorial text-3xl font-bold">Khu Vực Dành Riêng Cho Quản Trị Viên</h2>
@@ -43,7 +43,7 @@ export const AdminLayout: React.FC = () => {
         </p>
         <Link
           to="/"
-          className="px-6 py-2.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold transition"
+          className="px-6 py-2.5 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition"
         >
           Trở Về Trang Chủ
         </Link>
@@ -95,7 +95,7 @@ export const AdminLayout: React.FC = () => {
                 {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
               </button>
 
-              <Link to="/" className="text-slate-400 hover:text-rose-500 p-1" title="Về trang chủ">
+              <Link to="/" className="text-slate-400 hover:text-orange-500 p-1" title="Về trang chủ">
                 <ArrowLeft className="w-4 h-4" />
               </Link>
             </div>
@@ -112,7 +112,7 @@ export const AdminLayout: React.FC = () => {
                   to={item.path}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                     isActive
-                      ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/20'
+                      ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20'
                       : isDark
                       ? 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
                       : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
@@ -163,8 +163,8 @@ export const AdminLayout: React.FC = () => {
             }}
             className={`w-full py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition ${
               isDark
-                ? 'bg-slate-800 border-slate-700 hover:bg-rose-500/20 text-rose-400'
-                : 'bg-stone-50 border-stone-200 hover:bg-rose-50 text-rose-600'
+                ? 'bg-slate-800 border-slate-700 hover:bg-orange-500/20 text-orange-400'
+                : 'bg-stone-50 border-stone-200 hover:bg-orange-50 text-orange-600'
             }`}
           >
             <LogOut className="w-3.5 h-3.5" /> Đăng Xuất

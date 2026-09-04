@@ -191,14 +191,14 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-sm active:scale-95 ${
               isDark
-                ? 'bg-slate-900/90 border-slate-700/80 text-white hover:border-rose-500'
-                : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-rose-400'
+                ? 'bg-slate-900/90 border-slate-700/80 text-white hover:border-orange-500'
+                : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-orange-400'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-rose-500 shadow-sm shadow-rose-500/60 shrink-0 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/60 shrink-0 animate-pulse" />
             <span className="truncate max-w-[140px] sm:max-w-[170px]">{currentTab.fullName}</span>
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-slate-400 ${
-              isDropdownOpen ? 'rotate-180 text-rose-500' : ''
+              isDropdownOpen ? 'rotate-180 text-orange-500' : ''
             }`} />
           </button>
 
@@ -226,8 +226,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                       className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-all ${
                         isSelected
                           ? isDark
-                            ? 'bg-rose-500/15 text-rose-300 font-semibold border border-rose-500/30'
-                            : 'bg-rose-50 text-rose-600 font-semibold border border-rose-200'
+                            ? 'bg-orange-500/15 text-orange-400 font-semibold border border-orange-500/30'
+                            : 'bg-orange-50 text-orange-600 font-semibold border border-orange-200'
                           : isDark
                           ? 'hover:bg-slate-800/60 text-slate-300'
                           : 'hover:bg-slate-100 text-slate-700'
@@ -236,7 +236,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0 transition-colors ${
                           isSelected
-                            ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
+                            ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/30'
                             : isDark
                             ? 'bg-slate-800 text-slate-400'
                             : 'bg-slate-100 text-slate-600'
@@ -250,7 +250,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                           </p>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-rose-500 shrink-0 ml-1" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-orange-500 shrink-0 ml-1" />}
                     </button>
                   );
                 })}
@@ -267,7 +267,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
             onClick={() => setDeviceMode('mobile')}
             className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold flex items-center gap-1 transition-all ${
               deviceMode === 'mobile'
-                ? 'bg-rose-500 text-white shadow-sm'
+                ? 'bg-orange-500 text-white shadow-sm'
                 : isDark
                 ? 'text-slate-400 hover:text-white'
                 : 'text-stone-600 hover:text-stone-900'
@@ -281,7 +281,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
             onClick={() => setDeviceMode('desktop')}
             className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold flex items-center gap-1 transition-all ${
               deviceMode === 'desktop'
-                ? 'bg-rose-500 text-white shadow-sm'
+                ? 'bg-orange-500 text-white shadow-sm'
                 : isDark
                 ? 'text-slate-400 hover:text-white'
                 : 'text-stone-600 hover:text-stone-900'
@@ -294,8 +294,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
       </div>
 
       {/* Interactive Prompt Hint */}
-      <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 py-0.5">
-        <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+      <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-medium text-slate-400 py-0.5">
+        <Sparkles className="w-3.5 h-3.5 text-orange-500" />
         <span>Trải nghiệm tương tác trực tiếp trên màn hình</span>
       </div>
 
@@ -303,7 +303,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
       <div className="relative flex justify-center items-center">
         {/* Glow ambient background */}
         <div className={`absolute -inset-2 rounded-[44px] blur-2xl pointer-events-none ${
-          isDark ? 'bg-rose-500/15' : 'bg-rose-500/10'
+          isDark ? 'bg-orange-500/15' : 'bg-orange-500/10'
         }`} />
 
         <AnimatePresence mode="wait">
@@ -331,7 +331,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 </div>
 
                 {/* Template Render Container (Full Native Smooth Scroll Enabled) */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(244,63,94,0.3)_transparent]">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(249,115,22,0.3)_transparent]">
                   {activeTemplate && (
                     <TemplateRenderer
                       slug={activeTemplate.slug}
@@ -368,7 +368,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 {/* Web Browser Top Bar */}
                 <div className="h-5 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between text-white shrink-0">
                   <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   </div>
@@ -377,7 +377,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 </div>
 
                 {/* Template Render Container (Full Native Smooth Scroll Enabled) */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(244,63,94,0.3)_transparent]">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-950 text-white relative scroll-smooth overscroll-contain touch-pan-y [scrollbar-width:thin] [scrollbar-color:rgba(249,115,22,0.3)_transparent]">
                   {activeTemplate && (
                     <TemplateRenderer
                       slug={activeTemplate.slug}

@@ -167,7 +167,7 @@ export const AdminCategoriesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-editorial text-3xl font-bold flex items-center gap-2">
-            <FolderTree className="w-7 h-7 text-rose-500" /> Quản Lý Loại Template
+            <FolderTree className="w-7 h-7 text-orange-500" /> Quản Lý Loại Template
           </h2>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Phân loại danh mục thiệp mời, thứ tự hiển thị và quản lý nhãn dán
@@ -188,15 +188,15 @@ export const AdminCategoriesPage: React.FC = () => {
               placeholder="Tìm theo tên, mã code..."
               className={`w-full pl-9 pr-4 py-2 rounded-xl border text-xs focus:outline-none ${
                 isDark
-                  ? 'bg-slate-900 border-slate-800 text-white focus:border-rose-500'
-                  : 'bg-white border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                  ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                  : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
               }`}
             />
           </div>
 
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-500 text-white text-xs font-bold shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 text-white text-xs font-bold shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 shrink-0"
           >
             <Plus className="w-4 h-4" /> Thêm Loại Mới
           </button>
@@ -213,7 +213,7 @@ export const AdminCategoriesPage: React.FC = () => {
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto">
               <FolderTree className="w-7 h-7" />
             </div>
             <h4 className="font-editorial text-lg font-bold">Chưa Có Loại Template Nào</h4>
@@ -222,7 +222,7 @@ export const AdminCategoriesPage: React.FC = () => {
             </p>
             <button
               onClick={openCreateModal}
-              className="px-5 py-2.5 rounded-xl bg-rose-500 text-white font-bold text-xs shadow transition"
+              className="px-5 py-2.5 rounded-xl bg-orange-500 text-white font-bold text-xs shadow transition"
             >
               Tạo Loại Đầu Tiên
             </button>
@@ -235,8 +235,8 @@ export const AdminCategoriesPage: React.FC = () => {
                   key={cat.id}
                   className={`p-5 rounded-2xl border flex flex-col justify-between transition-all group ${
                     isDark
-                      ? 'bg-slate-900/70 border-slate-800 hover:border-rose-500/50 hover:bg-slate-900'
-                      : 'bg-stone-50 border-stone-200 hover:border-rose-300 hover:bg-white shadow-sm'
+                      ? 'bg-slate-900/70 border-slate-800 hover:border-orange-500/50 hover:bg-slate-900'
+                      : 'bg-stone-50 border-stone-200 hover:border-orange-300 hover:bg-white shadow-sm'
                   }`}
                 >
                   <div className="space-y-3">
@@ -249,7 +249,7 @@ export const AdminCategoriesPage: React.FC = () => {
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           cat.isActive
                             ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
-                            : 'bg-rose-500/15 text-rose-500 border border-rose-500/30'
+                            : 'bg-orange-500/15 text-orange-500 border border-orange-500/30'
                         }`}>
                           {cat.isActive ? 'Hoạt động' : 'Tạm khóa'}
                         </span>
@@ -262,10 +262,10 @@ export const AdminCategoriesPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-editorial text-base font-bold group-hover:text-rose-500 transition">
+                      <h4 className="font-editorial text-base font-bold group-hover:text-orange-500 transition">
                         {cat.name}
                       </h4>
-                      <p className="font-mono text-[10px] opacity-70 tracking-wider text-rose-400 mt-0.5">
+                      <p className="font-mono text-[10px] opacity-70 tracking-wider text-orange-400 mt-0.5">
                         {cat.code}
                       </p>
                     </div>
@@ -310,8 +310,8 @@ export const AdminCategoriesPage: React.FC = () => {
                         onClick={() => handleDelete(cat.id, cat.name)}
                         className={`p-1.5 rounded-lg text-xs font-semibold transition ${
                           isDark
-                            ? 'bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400'
-                            : 'bg-white hover:bg-rose-50 text-stone-400 hover:text-rose-600 border border-stone-200'
+                            ? 'bg-slate-800 hover:bg-orange-500/20 text-slate-400 hover:text-orange-400'
+                            : 'bg-white hover:bg-orange-50 text-stone-400 hover:text-orange-600 border border-stone-200'
                         }`}
                         title="Xóa danh mục"
                       >
@@ -349,7 +349,7 @@ export const AdminCategoriesPage: React.FC = () => {
           }`}>
             <div className="flex items-center justify-between border-b pb-4 dark:border-slate-800">
               <h3 className="font-editorial text-xl font-bold flex items-center gap-2">
-                <FolderTree className="w-5 h-5 text-rose-500" />
+                <FolderTree className="w-5 h-5 text-orange-500" />
                 {editingCategory ? 'Chỉnh Sửa Loại Template' : 'Thêm Loại Template Mới'}
               </h3>
               <button
@@ -361,7 +361,7 @@ export const AdminCategoriesPage: React.FC = () => {
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -376,7 +376,7 @@ export const AdminCategoriesPage: React.FC = () => {
                     required
                     value={emoji}
                     onChange={(e) => setEmoji(e.target.value)}
-                    placeholder="💖"
+                    placeholder="✨"
                     className={`w-full text-center py-2.5 rounded-xl border text-base focus:outline-none ${
                       isDark
                         ? 'bg-slate-900 border-slate-700 text-white'
@@ -456,7 +456,7 @@ export const AdminCategoriesPage: React.FC = () => {
                       type="checkbox"
                       checked={isActive}
                       onChange={(e) => setIsActive(e.target.checked)}
-                      className="rounded text-rose-500 focus:ring-rose-500 w-4 h-4 cursor-pointer"
+                      className="rounded text-orange-500 focus:ring-orange-500 w-4 h-4 cursor-pointer"
                     />
                     <span>Kích Hoạt Sử Dụng</span>
                   </label>
@@ -476,7 +476,7 @@ export const AdminCategoriesPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-500 text-white font-bold shadow-lg hover:brightness-105 active:scale-95 transition disabled:opacity-50"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 text-white font-bold shadow-lg hover:brightness-105 active:scale-95 transition disabled:opacity-50"
                 >
                   {saving ? 'Đang lưu...' : editingCategory ? 'Cập Nhật' : 'Tạo Loại Mới'}
                 </button>

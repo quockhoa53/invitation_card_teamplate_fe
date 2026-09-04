@@ -81,13 +81,13 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
       }`}>
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-rose-500 text-lg font-bold"
+          className="absolute top-5 right-5 text-slate-400 hover:text-orange-500 text-lg font-bold"
         >
           ✕
         </button>
 
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-amber-500/20 text-rose-500 border border-rose-500/30 flex items-center justify-center mx-auto shadow-inner">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500/20 to-amber-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center mx-auto shadow-inner">
             <Mail className="w-7 h-7" />
           </div>
           <h3 className="font-editorial text-2xl sm:text-3xl font-bold">Xác Thực 2 Bước (2FA)</h3>
@@ -97,7 +97,7 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center gap-2">
+          <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -122,8 +122,8 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
               placeholder="123456"
               className={`w-full text-center text-3xl tracking-[0.35em] font-mono py-3.5 rounded-2xl border focus:outline-none transition ${
                 isDark
-                  ? 'bg-slate-900 border-rose-500/40 text-rose-300 focus:border-rose-400'
-                  : 'bg-rose-50/50 border-rose-300 text-stone-900 focus:border-rose-500'
+                  ? 'bg-slate-900 border-orange-500/40 text-orange-300 focus:border-orange-400'
+                  : 'bg-orange-50/50 border-orange-300 text-stone-900 focus:border-orange-500'
               }`}
             />
           </div>
@@ -131,7 +131,7 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           <button
             type="submit"
             disabled={loading || code.trim().length < 6}
-            className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-rose-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs sm:text-sm shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50"
           >
             {loading ? 'Đang xác minh...' : 'Xác Nhận & Đăng Nhập'}
           </button>
@@ -145,7 +145,7 @@ export const TwoFactorModal: React.FC<TwoFactorModalProps> = ({
           <button
             onClick={handleResendOtp}
             disabled={countdown > 0 || resending}
-            className="font-bold text-rose-500 hover:text-rose-400 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 transition"
+            className="font-bold text-orange-500 hover:text-orange-400 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin' : ''}`} />
             {countdown > 0 ? `Gửi lại sau (${countdown}s)` : 'Gửi lại mã OTP'}

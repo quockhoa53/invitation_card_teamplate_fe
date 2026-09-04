@@ -66,7 +66,7 @@ export const AdminStatsPage: React.FC = () => {
             <span className={`text-xs font-bold uppercase ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
               Tổng Thiệp Mời
             </span>
-            <div className="p-2 rounded-xl bg-rose-500/15 text-rose-500">
+            <div className="p-2 rounded-xl bg-orange-500/15 text-orange-500">
               <LayoutDashboard className="w-4 h-4" />
             </div>
           </div>

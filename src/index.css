@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-heading: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --primary: #f97316;
   }
 
   body {
@@ -13,12 +16,29 @@
   }
 
   /* Dark theme root */
+  html.dark {
+    color-scheme: dark;
+  }
+
   html.dark body {
     background-color: #080b11;
     color: #f8fafc;
   }
 
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark h5,
+  html.dark h6 {
+    color: #ffffff;
+  }
+
   /* Light theme root */
+  html.light {
+    color-scheme: light;
+  }
+
   html.light body {
     background-color: #fbfbfb;
     color: #0f172a;

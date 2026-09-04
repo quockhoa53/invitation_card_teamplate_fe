@@ -96,7 +96,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <h3 className="font-editorial text-lg font-bold flex items-center gap-2 text-rose-500">
+          <h3 className="font-editorial text-lg font-bold flex items-center gap-2 text-orange-500">
             <ShoppingBag className="w-5 h-5" /> Mua & Mở Khóa Mẫu Thiệp
           </h3>
           <button
@@ -120,7 +120,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
               <button
                 type="button"
                 onClick={handleStartEditing}
-                className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 text-white text-xs shadow-lg shadow-rose-500/25 hover:brightness-105 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 transition flex items-center justify-center gap-2"
               >
                 <span>Bắt Đầu Tạo Thiệp Ngay</span>
                 <ArrowRight className="w-4 h-4" />
@@ -139,7 +139,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                 className="w-16 h-16 rounded-xl object-cover border border-slate-700 shrink-0"
               />
               <div className="space-y-1 flex-1">
-                <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">
+                <span className="text-[10px] font-bold text-orange-500 uppercase tracking-wider">
                   Mẫu Thiệp Trả Phí
                 </span>
                 <h4 className="font-bold text-sm line-clamp-1">{template.title}</h4>
@@ -155,9 +155,9 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
             }`}>
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-slate-400 font-semibold">
-                  <Wallet className="w-4 h-4 text-rose-400" /> Tổng Số Dư Ví Của Bạn:
+                  <Wallet className="w-4 h-4 text-orange-400" /> Tổng Số Dư Ví Của Bạn:
                 </span>
-                <strong className={`text-sm font-mono ${hasEnoughBalance ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <strong className={`text-sm font-mono ${hasEnoughBalance ? 'text-emerald-400' : 'text-orange-400'}`}>
                   {totalBalance.toLocaleString('vi-VN')} đ
                 </strong>
               </div>
@@ -165,7 +165,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
               <div className="text-[11px] text-slate-400 space-y-1 pt-1 border-t border-slate-700/40">
                 <div className="flex justify-between">
                   <span>• Tiền thưởng khuyến mãi:</span>
-                  <span className="font-mono text-pink-400">+{bonusBal.toLocaleString('vi-VN')} đ</span>
+                  <span className="font-mono text-amber-400">+{bonusBal.toLocaleString('vi-VN')} đ</span>
                 </div>
                 <div className="flex justify-between">
                   <span>• Tiền nạp thực tế:</span>
@@ -181,10 +181,10 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                   </p>
                 </div>
               ) : (
-                <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[11px] space-y-0.5">
+                <div className="p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] space-y-0.5">
                   <p className="font-bold">⚠️ Số dư ví hiện tại không đủ!</p>
                   <p className="text-slate-400">
-                    Bạn còn thiếu <strong className="text-rose-400">{missingAmount.toLocaleString('vi-VN')} đ</strong> để mua mẫu thiệp này.
+                    Bạn còn thiếu <strong className="text-orange-400">{missingAmount.toLocaleString('vi-VN')} đ</strong> để mua mẫu thiệp này.
                   </p>
                 </div>
               )}
@@ -209,7 +209,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                     onClose();
                     navigate('/payment');
                   }}
-                  className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs shadow-lg shadow-rose-500/25 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 text-white text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-2"
                 >
                   <CreditCard className="w-4 h-4" />
                   Nạp Tiền Vào Ví Ngay (Thiếu {missingAmount.toLocaleString('vi-VN')} đ)

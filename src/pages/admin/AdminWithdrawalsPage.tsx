@@ -121,7 +121,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-editorial text-2xl sm:text-3xl font-bold flex items-center gap-2">
-            <ArrowDownToLine className="w-7 h-7 text-rose-500" /> Quản Lý Yêu Cầu Rút Tiền
+            <ArrowDownToLine className="w-7 h-7 text-orange-500" /> Quản Lý Yêu Cầu Rút Tiền
           </h1>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
             Duyệt yêu cầu rút tiền của khách hàng. Quét mã QR chuyển khoản nhanh và xác nhận hoàn tất.
@@ -149,7 +149,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                 statusFilter === tab.key
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
+                  ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
                   : isDark
                   ? 'text-slate-400 hover:text-white hover:bg-slate-800'
                   : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
@@ -173,8 +173,8 @@ export const AdminWithdrawalsPage: React.FC = () => {
             placeholder="Tìm theo Tên, STK, Email..."
             className={`w-full pl-9 pr-4 py-2 rounded-xl text-xs border focus:outline-none ${
               isDark
-                ? 'bg-slate-900 border-slate-700 text-white focus:border-rose-500'
-                : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-rose-500'
+                ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
             }`}
           />
         </div>
@@ -215,7 +215,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                     {/* User */}
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-rose-400 shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-orange-400 shrink-0">
                           {item.accountHolder?.charAt(0) || 'U'}
                         </div>
                         <div>
@@ -235,7 +235,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                     {/* Bank Info */}
                     <td className="py-3.5 px-4">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 font-semibold text-rose-400">
+                        <div className="flex items-center gap-1.5 font-semibold text-orange-400">
                           <Building className="w-3.5 h-3.5" />
                           <span>{item.bankName}</span>
                         </div>
@@ -246,7 +246,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                           <button
                             onClick={() => copyToClipboard(item.accountNumber)}
                             title="Sao chép STK"
-                            className="p-1 hover:text-rose-400 transition"
+                            className="p-1 hover:text-orange-400 transition"
                           >
                             {copiedAcc === item.accountNumber ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           </button>
@@ -268,7 +268,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                           <Clock className="w-3 h-3" /> Chờ Duyệt
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/20">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-400 border border-orange-500/20">
                           <XCircle className="w-3 h-3" /> Đã Từ Chối
                         </span>
                       )}
@@ -298,7 +298,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                           </button>
                           <button
                             onClick={() => handleReject(item)}
-                            className="px-2.5 py-1.5 rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 border border-rose-500/30 text-xs font-semibold transition flex items-center gap-1"
+                            className="px-2.5 py-1.5 rounded-lg bg-orange-500/15 text-orange-400 hover:bg-orange-500/25 border border-orange-500/30 text-xs font-semibold transition flex items-center gap-1"
                           >
                             <X className="w-3.5 h-3.5" /> Từ Chối
                           </button>
@@ -337,7 +337,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
             isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
           }`}>
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-editorial text-lg font-bold flex items-center gap-2 text-rose-500">
+              <h3 className="font-editorial text-lg font-bold flex items-center gap-2 text-orange-500">
                 <QrCode className="w-5 h-5" /> Quét QR Chuyển Khoản Cho Khách
               </h3>
               <button
@@ -363,7 +363,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
 
               <div className="p-3.5 rounded-xl bg-slate-800/50 border border-slate-700/50 text-xs text-left space-y-1">
                 <p><strong className="text-slate-400">Ngân hàng:</strong> {activeQrPayout.bankName}</p>
-                <p><strong className="text-slate-400">Số tài khoản:</strong> <span className="font-mono font-bold text-rose-400">{activeQrPayout.accountNumber}</span></p>
+                <p><strong className="text-slate-400">Số tài khoản:</strong> <span className="font-mono font-bold text-orange-400">{activeQrPayout.accountNumber}</span></p>
                 <p><strong className="text-slate-400">Tên chủ thẻ:</strong> {activeQrPayout.accountHolder}</p>
                 <p><strong className="text-slate-400">Số tiền:</strong> <span className="text-emerald-400 font-bold">{activeQrPayout.amount.toLocaleString('vi-VN')} đ</span></p>
               </div>

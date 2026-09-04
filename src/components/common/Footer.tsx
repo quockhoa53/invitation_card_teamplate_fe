@@ -18,21 +18,23 @@ export const Footer: React.FC = () => {
           {/* Brand Column */}
           <div className="md:col-span-5 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-xl bg-rose-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-rose-500/20 group-hover:scale-105 transition">
+              <div className="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/20 group-hover:scale-105 transition">
                 KD
               </div>
               <div className="flex flex-col">
-                <span className="font-editorial text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-none">
+                <span className={`font-editorial text-lg font-bold tracking-tight leading-none ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>
                   KD Card Atelier
                 </span>
-                <span className="text-[10px] uppercase tracking-widest text-rose-500 font-semibold mt-0.5">
+                <span className="text-[10px] uppercase tracking-widest text-orange-500 font-semibold mt-0.5">
                   Interactive Greeting Platform
                 </span>
               </div>
             </Link>
 
             <p className={`text-xs sm:text-sm leading-relaxed max-w-sm ${
-              isDark ? 'text-slate-400' : 'text-slate-500'
+              isDark ? 'text-slate-300' : 'text-slate-500'
             }`}>
               Nền tảng thiệp mời tương tác và thư điện tử độc bản. Giúp bạn trao gửi trọn vẹn yêu thương và bất ngờ đến người thân yêu chỉ trong vài giây.
             </p>
@@ -47,27 +49,29 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
             {/* Column 1: Bộ Sưu Tập */}
             <div className="space-y-3">
-              <h4 className="text-xs uppercase font-bold tracking-wider text-slate-900 dark:text-white">
+              <h4 className={`text-xs uppercase font-bold tracking-wider ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
                 Bộ Sưu Tập
               </h4>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <Link to="/templates" className="hover:text-rose-500 transition-colors">
+                  <Link to="/templates" className="hover:text-orange-500 transition-colors">
                     Sinh Nhật Người Yêu
                   </Link>
                 </li>
                 <li>
-                  <Link to="/templates" className="hover:text-rose-500 transition-colors">
+                  <Link to="/templates" className="hover:text-orange-500 transition-colors">
                     Kỷ Niệm Tình Yêu
                   </Link>
                 </li>
                 <li>
-                  <Link to="/templates" className="hover:text-rose-500 transition-colors">
+                  <Link to="/templates" className="hover:text-orange-500 transition-colors">
                     Đại Tiệc Bạn Bè
                   </Link>
                 </li>
                 <li>
-                  <Link to="/templates" className="hover:text-rose-500 transition-colors">
+                  <Link to="/templates" className="hover:text-orange-500 transition-colors">
                     Thư Mời Sự Kiện & Cưới
                   </Link>
                 </li>
@@ -76,47 +80,51 @@ export const Footer: React.FC = () => {
 
             {/* Column 2: Tính Năng */}
             <div className="space-y-3">
-              <h4 className="text-xs uppercase font-bold tracking-wider text-slate-900 dark:text-white">
+              <h4 className={`text-xs uppercase font-bold tracking-wider ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
                 Tính Năng
               </h4>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Thổi nến 3D cảm ứng</span>
+                  <span className="text-slate-400">Thổi nến 3D cảm ứng</span>
                 </li>
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Hộp quà mở nắp 3D</span>
+                  <span className="text-slate-400">Hộp quà mở nắp 3D</span>
                 </li>
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Mã QR động chuẩn in ấn</span>
+                  <span className="text-slate-400">Mã QR động chuẩn in ấn</span>
                 </li>
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Khóa mật khẩu riêng tư</span>
+                  <span className="text-slate-400">Khóa mật khẩu riêng tư</span>
                 </li>
               </ul>
             </div>
 
             {/* Column 3: Hỗ Trợ & Pháp Lý */}
             <div className="space-y-3 col-span-2 sm:col-span-1">
-              <h4 className="text-xs uppercase font-bold tracking-wider text-slate-900 dark:text-white">
+              <h4 className={`text-xs uppercase font-bold tracking-wider ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
                 Hỗ Trợ
               </h4>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <Link to="/templates" className="hover:text-rose-500 transition-colors inline-flex items-center gap-1">
+                  <Link to="/templates" className="hover:text-orange-500 transition-colors inline-flex items-center gap-1">
                     <span>Hướng Dẫn Tạo Thiệp</span>
                     <ArrowUpRight className="w-3 h-3 text-slate-400" />
                   </Link>
                 </li>
                 <li>
-                  <a href="mailto:nguyenquockhoa5549@gmail.com" className="hover:text-rose-500 transition-colors">
+                  <a href="mailto:nguyenquockhoa5549@gmail.com" className="hover:text-orange-500 transition-colors">
                     Liên Hệ Hỗ Trợ
                   </a>
                 </li>
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Chính Sách Bảo Mật</span>
+                  <span className="text-slate-400">Chính Sách Bảo Mật</span>
                 </li>
                 <li>
-                  <span className="text-slate-500 dark:text-slate-400">Điều Khoản Dịch Vụ</span>
+                  <span className="text-slate-400">Điều Khoản Dịch Vụ</span>
                 </li>
               </ul>
             </div>
@@ -129,8 +137,8 @@ export const Footer: React.FC = () => {
         }`}>
           <p>© 2026 KD Card Atelier. Mọi quyền được bảo lưu.</p>
           <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-1 text-slate-500">
-              Thiết kế độc quyền bởi <span className="font-semibold text-rose-500">KD Atelier</span>
+            <span className="inline-flex items-center gap-1 text-slate-400">
+              Thiết kế độc quyền bởi <span className="font-semibold text-orange-500">KD Atelier</span>
             </span>
           </div>
         </div>

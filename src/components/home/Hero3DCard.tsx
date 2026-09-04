@@ -49,7 +49,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
       {/* Ambient Glow behind 3D Card */}
       <div
         className={`absolute inset-0 rounded-[36px] blur-3xl transition-opacity duration-700 pointer-events-none ${
-          isDark ? 'bg-gradient-to-tr from-rose-500/20 via-amber-500/20 to-rose-600/10' : 'bg-rose-400/25'
+          isDark ? 'bg-gradient-to-tr from-orange-500/20 via-amber-500/20 to-orange-600/10' : 'bg-orange-400/25'
         } ${isHovered ? 'opacity-100 scale-105' : 'opacity-50 scale-95'}`}
       />
 
@@ -77,7 +77,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
         >
           {/* Subtle Geometric / Art Deco Line Accents */}
           <div className="absolute inset-3 rounded-[28px] border border-amber-500/20 pointer-events-none" />
-          <div className="absolute inset-4 rounded-[24px] border border-rose-500/15 pointer-events-none" />
+          <div className="absolute inset-4 rounded-[24px] border border-orange-500/15 pointer-events-none" />
 
           {/* Top Header of Card */}
           <div className="relative z-10 flex items-center justify-between">
@@ -85,7 +85,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
               <span className="font-editorial text-xs font-black tracking-widest uppercase text-amber-500">
                 KD ATELIER
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
             </div>
 
             <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${
@@ -101,7 +101,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
           <div className="relative z-10 my-auto text-center space-y-4">
             {/* Wax Seal */}
             <div className="relative inline-block group/seal">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-rose-700 via-rose-600 to-amber-600 p-[3px] shadow-lg shadow-rose-900/40 flex items-center justify-center mx-auto transform group-hover/seal:scale-105 transition-transform duration-300">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-orange-700 via-orange-600 to-amber-600 p-[3px] shadow-lg shadow-orange-900/40 flex items-center justify-center mx-auto transform group-hover/seal:scale-105 transition-transform duration-300">
                 <div className="w-full h-full rounded-full bg-[#12080a] border border-amber-400/40 flex flex-col items-center justify-center text-amber-400 shadow-inner">
                   <span className="font-editorial text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200">
                     KD
@@ -112,7 +112,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
                 </div>
               </div>
 
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-rose-500 text-[9px] font-extrabold text-white uppercase tracking-wider shadow">
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-orange-500 text-[9px] font-extrabold text-white uppercase tracking-wider shadow">
                 Chạm để mở
               </div>
             </div>
@@ -134,7 +134,7 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
           <div className="relative z-10 pt-3 border-t border-amber-500/20 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <div className={`p-1.5 rounded-xl border ${
-                isDark ? 'bg-slate-900 border-slate-700 text-rose-400' : 'bg-white border-stone-200 text-rose-600'
+                isDark ? 'bg-slate-900 border-slate-700 text-orange-400' : 'bg-white border-stone-200 text-orange-600'
               }`}>
                 <QrCode className="w-4 h-4" />
               </div>
@@ -144,8 +144,8 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-500 font-bold text-[10px]">
-              <Play className="w-3 h-3 fill-rose-500" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-500 font-bold text-[10px]">
+              <Play className="w-3 h-3 fill-orange-500" />
               <span>Xem Thử Ngay</span>
             </div>
           </div>
@@ -164,12 +164,12 @@ export const Hero3DCard: React.FC<{ isDark: boolean; onOpenDemo?: () => void }> 
         <div
           className={`absolute -bottom-4 -left-4 px-3 py-1.5 rounded-2xl border shadow-xl flex items-center gap-1.5 text-xs font-semibold backdrop-blur-xl ${
             isDark
-              ? 'bg-slate-900/90 border-slate-700 text-rose-300'
-              : 'bg-white/90 border-stone-200 text-rose-600'
+              ? 'bg-slate-900/90 border-slate-700 text-orange-300'
+              : 'bg-white/90 border-stone-200 text-orange-600'
           }`}
           style={{ transform: 'translateZ(40px)' }}
         >
-          <Volume2 className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
+          <Volume2 className="w-3.5 h-3.5 text-orange-500 animate-pulse" />
           <span className="text-[11px]">Tích hợp âm nhạc</span>
         </div>
       </div>

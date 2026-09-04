@@ -69,8 +69,8 @@ export const PublicCardPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4">
-        <div className="w-12 h-12 border-4 border-rose-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs font-semibold text-rose-300 animate-pulse">Đang tải thiệp mời...</p>
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs font-semibold text-orange-300 animate-pulse">Đang tải thiệp mời...</p>
       </div>
     );
   }
@@ -78,14 +78,14 @@ export const PublicCardPage: React.FC = () => {
   if (error || !card) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 text-center text-white space-y-4">
-        <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 rounded-full bg-orange-500/10 text-orange-400 flex items-center justify-center mx-auto">
           <AlertCircle className="w-8 h-8" />
         </div>
         <h2 className="text-2xl font-bold">Thiệp Mời Không Tồn Tại Hoặc Đã Bị Ẩn</h2>
         <p className="text-xs text-slate-400 max-w-sm">{error || 'Vui lòng kiểm tra lại đường dẫn chia sẻ.'}</p>
         <a
           href="/"
-          className="px-6 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition"
+          className="px-6 py-2.5 rounded-full bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold transition shadow-lg shadow-orange-500/20"
         >
           Trở Về Trang Chủ
         </a>
@@ -100,20 +100,20 @@ export const PublicCardPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-radial-at-c from-slate-900 via-slate-950 to-[#05070e] flex items-center justify-center p-4 text-white relative overflow-hidden">
         {/* Background Glowing Circles */}
-        <div className="absolute w-96 h-96 bg-rose-600/10 rounded-full blur-3xl pointer-events-none -top-20 -left-20 animate-pulse" />
+        <div className="absolute w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none -top-20 -left-20 animate-pulse" />
         <div className="absolute w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none -bottom-20 -right-20 animate-pulse" />
 
-        <div className="max-w-md w-full bg-slate-900/80 backdrop-blur-xl border border-amber-500/30 rounded-[36px] p-8 sm:p-10 shadow-2xl text-center space-y-6 relative z-10">
+        <div className="max-w-md w-full bg-slate-900/80 backdrop-blur-xl border border-orange-500/30 rounded-[36px] p-8 sm:p-10 shadow-2xl text-center space-y-6 relative z-10">
           {/* Glowing Lock Icon */}
           <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500 to-rose-500 rounded-3xl blur-md opacity-40 animate-pulse" />
-            <div className="relative w-18 h-18 bg-gradient-to-tr from-amber-500/20 to-rose-500/20 border border-amber-400/50 rounded-3xl flex items-center justify-center text-amber-400 shadow-inner">
+            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500 to-orange-500 rounded-3xl blur-md opacity-40 animate-pulse" />
+            <div className="relative w-18 h-18 bg-gradient-to-tr from-amber-500/20 to-orange-500/20 border border-amber-400/50 rounded-3xl flex items-center justify-center text-amber-400 shadow-inner">
               <Lock className="w-8 h-8" />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] font-black uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-[10px] font-black uppercase tracking-wider">
               <ShieldCheck className="w-3 h-3" /> Thiệp Được Khóa Bảo Vệ
             </span>
             <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-white tracking-tight">
@@ -125,8 +125,8 @@ export const PublicCardPage: React.FC = () => {
           </div>
 
           {passcodeError && (
-            <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-center gap-2 animate-bounce">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <div className="p-3.5 rounded-2xl bg-orange-500/15 border border-orange-500/30 text-orange-300 text-xs flex items-center justify-center gap-2 animate-bounce">
+              <AlertCircle className="w-4 h-4 shrink-0 text-orange-400" />
               <span className="font-medium">{passcodeError}</span>
             </div>
           )}
@@ -143,7 +143,7 @@ export const PublicCardPage: React.FC = () => {
                   setPasscodeError('');
                 }}
                 placeholder="Nhập mật khẩu mở thiệp..."
-                className="w-full text-center py-3.5 pl-5 pr-12 rounded-2xl bg-slate-950/80 border border-amber-500/40 text-white text-sm tracking-widest font-mono focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition shadow-inner"
+                className="w-full text-center py-3.5 pl-5 pr-12 rounded-2xl bg-slate-950/80 border border-orange-500/40 text-white text-sm tracking-widest font-mono focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition shadow-inner"
               />
               <button
                 type="button"
@@ -158,7 +158,7 @@ export const PublicCardPage: React.FC = () => {
             <button
               type="submit"
               disabled={verifyingPasscode || !passcode.trim()}
-              className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 text-white text-sm shadow-xl shadow-rose-500/25 hover:brightness-110 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 text-white text-sm shadow-xl shadow-orange-500/25 hover:brightness-110 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
               <span>{verifyingPasscode ? 'Đang xác thực...' : 'Mở Khóa Thiệp Mời'}</span>

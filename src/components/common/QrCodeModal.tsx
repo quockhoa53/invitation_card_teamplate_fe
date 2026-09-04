@@ -113,7 +113,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
 
         {/* Modal Header */}
         <div className="text-center mb-4">
-          <div className="inline-flex p-2.5 rounded-2xl bg-rose-500/10 text-rose-500 mb-2">
+          <div className="inline-flex p-2.5 rounded-2xl bg-orange-500/10 text-orange-500 mb-2">
             <QrCode className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold">Mã QR Thiệp</h3>
@@ -137,7 +137,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                 onClick={() => handleSelectShape('default')}
                 className={`py-1.5 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
                   selectedShape === 'default'
-                    ? 'bg-slate-900 text-white shadow-sm ring-2 ring-rose-500'
+                    ? 'bg-slate-900 text-white shadow-sm ring-2 ring-orange-500'
                     : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-slate-400'
                 }`}
               >
@@ -150,11 +150,11 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                 onClick={() => handleSelectShape('heart')}
                 className={`py-1.5 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
                   selectedShape === 'heart'
-                    ? 'bg-rose-500 text-white shadow-sm'
-                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-rose-300'
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-orange-300'
                 }`}
               >
-                <Heart className="w-3.5 h-3.5 text-rose-300 fill-current" />
+                <Heart className="w-3.5 h-3.5 text-orange-300 fill-current" />
                 <span className="text-[10px]">Trái Tim</span>
               </button>
 
@@ -163,8 +163,8 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                 onClick={() => handleSelectShape('square')}
                 className={`py-1.5 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
                   selectedShape === 'square'
-                    ? 'bg-rose-500 text-white shadow-sm'
-                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-rose-300'
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-orange-300'
                 }`}
               >
                 <Square className="w-3.5 h-3.5" />
@@ -176,8 +176,8 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                 onClick={() => handleSelectShape('circle')}
                 className={`py-1.5 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
                   selectedShape === 'circle'
-                    ? 'bg-rose-500 text-white shadow-sm'
-                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-rose-300'
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-orange-300'
                 }`}
               >
                 <Circle className="w-3.5 h-3.5" />
@@ -189,8 +189,8 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                 onClick={() => handleSelectShape('chat')}
                 className={`py-1.5 px-1 rounded-xl text-xs font-bold flex flex-col items-center gap-1 transition ${
                   selectedShape === 'chat'
-                    ? 'bg-rose-500 text-white shadow-sm'
-                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-rose-300'
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white border text-stone-700 hover:border-orange-300'
                 }`}
               >
                 <MessageCircle className="w-3.5 h-3.5" />
@@ -212,7 +212,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
                   title={c.name}
                   onClick={() => setSelectedColor(c.hex)}
                   className={`w-6 h-6 rounded-full transition-transform border-2 ${
-                    selectedColor === c.hex ? 'scale-125 border-rose-500 shadow-md' : 'border-transparent hover:scale-110'
+                    selectedColor === c.hex ? 'scale-125 border-orange-500 shadow-md' : 'border-transparent hover:scale-110'
                   }`}
                   style={{ backgroundColor: c.hex }}
                 />
@@ -286,7 +286,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
         <div className="grid grid-cols-2 gap-2 mt-4">
           <button
             onClick={handleDownloadQR}
-            className="py-2.5 px-3 rounded-xl text-xs font-bold bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center gap-1.5 shadow-md shadow-rose-500/20 active:scale-95 transition"
+            className="py-2.5 px-3 rounded-xl text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/20 active:scale-95 transition"
           >
             <Download className="w-4 h-4" /> Tải Mã QR (PNG)
           </button>

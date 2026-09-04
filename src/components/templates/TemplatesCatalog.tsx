@@ -159,13 +159,15 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
       {/* 1. Sleek Minimalist Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-500 text-xs font-bold tracking-wide">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold tracking-wide">
             <Sparkles className="w-3.5 h-3.5" /> Bộ Sưu Tập Thiệp Mời Độc Quyền
           </div>
-          <h1 className="font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+          <h1 className={`font-editorial text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             Khám Phá & Tuyển Chọn Mẫu Thiệp
           </h1>
-          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-300' : 'text-stone-500'}`}>
             Tuyển chọn những ấn phẩm thiệp mời 3D, sinh nhật và sự kiện tương tác độc bản
           </p>
         </div>
@@ -183,8 +185,8 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
             placeholder="Tìm kiếm mẫu thiệp..."
             className={`w-full pl-10 pr-9 py-2.5 rounded-2xl border text-xs focus:outline-none transition-all ${
               isDark
-                ? 'bg-[#121824] border-slate-800 text-white focus:border-rose-500'
-                : 'bg-white border-stone-200 text-stone-900 focus:border-rose-500 shadow-sm'
+                ? 'bg-[#121824] border-slate-800 text-white focus:border-orange-500'
+                : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
             }`}
           />
           {filters.searchQuery && (
@@ -193,7 +195,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
                 setFilters((prev) => ({ ...prev, searchQuery: '' }));
                 setPage(1);
               }}
-              className="absolute right-3 top-3 text-slate-400 hover:text-rose-500"
+              className="absolute right-3 top-3 text-slate-400 hover:text-orange-500"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -223,9 +225,9 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all active:scale-95 flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-rose-500 text-white shadow-md shadow-rose-500/25 font-bold'
+                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25 font-bold'
                     : isDark
-                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'text-slate-300 hover:text-white hover:bg-slate-800'
                     : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
                 }`}
               >
@@ -284,7 +286,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
             <button
               onClick={resetFilters}
               title="Đặt lại bộ lọc"
-              className="p-1.5 rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 text-xs transition"
+              className="p-1.5 rounded-xl border border-orange-500/30 text-orange-400 hover:bg-orange-500/10 text-xs transition"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -308,16 +310,16 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
         <div className={`text-center py-16 px-4 rounded-3xl border space-y-3 ${
           isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
         }`}>
-          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="font-editorial text-xl font-bold">Không tìm thấy mẫu thiệp phù hợp</h3>
-          <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+          <h3 className={`font-editorial text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Không tìm thấy mẫu thiệp phù hợp</h3>
+          <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-300' : 'text-stone-500'}`}>
             Không có kết quả nào khớp với bộ lọc. Hãy thử tìm từ khóa khác hoặc đặt lại bộ lọc.
           </p>
           <button
             onClick={resetFilters}
-            className="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs shadow transition"
+            className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow transition"
           >
             Hiển Thị Tất Cả
           </button>
@@ -360,7 +362,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
             {/* Top Phone Mockup Bar */}
             <div className="h-10 bg-slate-900 border-b border-slate-800 px-5 flex items-center justify-between text-white shrink-0">
               <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               </div>
@@ -408,7 +410,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
                   setDemoTemplate(null);
                   handleUseTemplate(tpl);
                 }}
-                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
               >
                 Sử Dụng Mẫu Này <ChevronRight className="w-3.5 h-3.5" />
               </button>
