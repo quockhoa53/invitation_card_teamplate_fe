@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import { WithdrawalItem } from '../../types';
 import { Pagination } from '../../components/common/Pagination';
+import { TableRowSkeleton } from '../../components/common/Skeleton';
 import {
   ArrowDownToLine,
   Search,
@@ -196,20 +197,17 @@ export const AdminWithdrawalsPage: React.FC = () => {
                 <th className="py-3.5 px-4 font-semibold text-right">Thao Tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/40">
-              {loading ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-12 text-slate-500">
-                    Đang tải danh sách yêu cầu rút tiền...
-                  </td>
-                </tr>
-              ) : withdrawals.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-12 text-slate-500">
-                    Không tìm thấy yêu cầu rút tiền nào phù hợp.
-                  </td>
-                </tr>
-              ) : (
+            {loading ? (
+              <TableRowSkeleton rows={5} cols={6} />
+            ) : (
+              <tbody className="divide-y divide-slate-800/40">
+                {withdrawals.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center py-12 text-slate-500">
+                      Không tìm thấy yêu cầu rút tiền nào phù hợp.
+                    </td>
+                  </tr>
+                ) : (
                 withdrawals.map((item) => (
                   <tr key={item.id} className={`transition hover:${isDark ? 'bg-slate-850/40' : 'bg-stone-50/80'}`}>
                     {/* User */}
@@ -313,6 +311,7 @@ export const AdminWithdrawalsPage: React.FC = () => {
                 ))
               )}
             </tbody>
+          )}
           </table>
         </div>
 

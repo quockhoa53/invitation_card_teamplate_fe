@@ -5,6 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { Template, TemplateCategory } from '../../types';
 import { DynamicCodeRenderer } from '../../templates/DynamicCodeRenderer';
 import { Pagination } from '../../components/common/Pagination';
+import { UserCardSkeleton } from '../../components/common/Skeleton';
 import {
   Layers,
   Plus,
@@ -70,6 +71,7 @@ export const AdminTemplatesPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchTemplates = async () => {
+    setLoading(true);
     try {
       const [tplRes, catRes] = await Promise.all([
         api.getAdminTemplates(),
@@ -679,9 +681,16 @@ document.getElementById('btn-music').addEventListener('click', () => {
       )}
 
       {/* Templates Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pagedList.map((tpl) => {
-          const isPub = tpl.isPublished ?? false;
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <UserCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pagedList.map((tpl) => {
+            const isPub = tpl.isPublished ?? false;
 
           return (
             <div
@@ -810,6 +819,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
           );
         })}
       </div>
+    )}
 
       {/* Pagination Bar */}
       {currentList.length > 0 && (

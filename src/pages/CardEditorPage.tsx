@@ -57,8 +57,28 @@ export const CardEditorPage: React.FC = () => {
 
   if (loading || !template) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-slate-950 p-4 sm:p-6 space-y-6 animate-pulse">
+        {/* Top bar skeleton */}
+        <div className="h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between px-6">
+          <div className="h-6 w-48 bg-slate-800 rounded-lg" />
+          <div className="flex gap-3">
+            <div className="h-9 w-24 bg-slate-800 rounded-xl" />
+            <div className="h-9 w-28 bg-slate-800 rounded-xl" />
+          </div>
+        </div>
+        {/* Split editor skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="h-[650px] rounded-3xl bg-slate-900 border border-slate-800 p-6 space-y-4">
+            <div className="h-8 w-40 bg-slate-800 rounded-xl" />
+            <div className="h-12 w-full bg-slate-800 rounded-xl" />
+            <div className="h-28 w-full bg-slate-800 rounded-xl" />
+            <div className="h-12 w-full bg-slate-800 rounded-xl" />
+            <div className="h-12 w-full bg-slate-800 rounded-xl" />
+          </div>
+          <div className="h-[650px] rounded-3xl bg-slate-900 border border-slate-800 p-6 flex flex-col justify-center items-center">
+            <div className="w-4/5 h-4/5 rounded-2xl bg-slate-800" />
+          </div>
+        </div>
       </div>
     );
   }

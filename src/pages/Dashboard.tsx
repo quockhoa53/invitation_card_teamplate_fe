@@ -9,6 +9,7 @@ import { QrCodeModal } from '../components/common/QrCodeModal';
 import { Pagination } from '../components/common/Pagination';
 import { TemplateCardItem } from '../components/home/TemplateCardItem';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
+import { UserCardSkeleton, TableRowSkeleton } from '../components/common/Skeleton';
 import {
   PlusCircle,
   QrCode,
@@ -433,13 +434,8 @@ export const Dashboard: React.FC = () => {
           <>
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className={`h-64 rounded-3xl animate-pulse ${
-                      isDark ? 'bg-slate-900' : 'bg-stone-200'
-                    }`}
-                  />
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <UserCardSkeleton key={i} />
                 ))}
               </div>
             ) : cards.length === 0 ? (
@@ -764,8 +760,22 @@ export const Dashboard: React.FC = () => {
             </div>
 
             {loadingTransactions ? (
-              <div className={`text-center py-12 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                Đang tải lịch sử giao dịch...
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className={`border-b font-bold uppercase text-[10px] ${
+                    isDark ? 'border-slate-800 text-slate-400' : 'border-stone-200 text-stone-500'
+                  }`}>
+                    <tr>
+                      <th className="py-3 px-4">Mã Đơn</th>
+                      <th className="py-3 px-4">Số Tiền</th>
+                      <th className="py-3 px-4">Phương Thức</th>
+                      <th className="py-3 px-4">Trạng Thái</th>
+                      <th className="py-3 px-4">Thời Gian Tạo</th>
+                      <th className="py-3 px-4 text-right">Hành Động</th>
+                    </tr>
+                  </thead>
+                  <TableRowSkeleton rows={5} cols={6} />
+                </table>
               </div>
             ) : userTransactions.length === 0 ? (
               <div className="text-center py-12 space-y-4">

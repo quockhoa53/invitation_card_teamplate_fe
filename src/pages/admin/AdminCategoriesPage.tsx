@@ -4,6 +4,7 @@ import { useToast } from '../../context/ToastContext';
 import { TemplateCategory } from '../../types';
 import { api } from '../../services/api';
 import { Pagination } from '../../components/common/Pagination';
+import { Skeleton } from '../../components/common/Skeleton';
 import {
   FolderTree,
   Plus,
@@ -208,8 +209,28 @@ export const AdminCategoriesPage: React.FC = () => {
         isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
       }`}>
         {loading ? (
-          <div className={`text-center py-10 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Đang tải danh sách loại template...
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className={`p-5 rounded-2xl border space-y-4 ${
+                  isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-stone-50 border-stone-200'
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <Skeleton className="w-10 h-10 rounded-xl" />
+                  <Skeleton className="w-16 h-5 rounded-full" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-3/4 rounded-lg" />
+                  <Skeleton className="h-3.5 w-1/2 rounded" />
+                </div>
+                <div className="flex gap-2 pt-2 border-t border-slate-800/30">
+                  <Skeleton className="h-8 flex-1 rounded-xl" />
+                  <Skeleton className="h-8 flex-1 rounded-xl" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="text-center py-12 space-y-3">

@@ -68,9 +68,15 @@ export const PublicCardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-4">
-        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs font-semibold text-orange-300 animate-pulse">Đang tải thiệp mời...</p>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 animate-pulse">
+          <div className="w-full aspect-[16/10] rounded-2xl bg-slate-800/80" />
+          <div className="space-y-2 py-2">
+            <div className="h-6 w-3/4 bg-slate-800 rounded-lg mx-auto" />
+            <div className="h-4 w-1/2 bg-slate-800/60 rounded mx-auto" />
+          </div>
+          <div className="h-10 w-full bg-slate-800 rounded-xl" />
+        </div>
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import { useTheme } from '../../context/ThemeContext';
 import { AdminStats } from '../../types';
 import { Users, Layers, LayoutDashboard, DollarSign, TrendingUp } from 'lucide-react';
+import { StatsCardSkeleton, TableRowSkeleton } from '../../components/common/Skeleton';
 
 export const AdminStatsPage: React.FC = () => {
   const { theme } = useTheme();
@@ -28,7 +29,42 @@ export const AdminStatsPage: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className={`p-8 text-center ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Đang tải số liệu thống kê...</div>;
+    return (
+      <div className="space-y-8">
+        <div>
+          <h2 className="font-editorial text-3xl font-bold">Tổng Quan Quản Trị Hệ Thống</h2>
+          <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+            Báo cáo thống kê thời gian thực người dùng, doanh thu và các lượt tạo thiệp
+          </p>
+        </div>
+
+        <StatsCardSkeleton />
+
+        <div className={`p-6 rounded-3xl border space-y-4 ${
+          isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+        }`}>
+          <div className={`h-6 w-44 rounded-xl animate-pulse ${isDark ? 'bg-slate-800' : 'bg-stone-200'}`} />
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className={`border-b font-bold uppercase text-[10px] ${
+                isDark ? 'border-slate-800 text-slate-400' : 'border-stone-200 text-stone-500'
+              }`}>
+                <tr>
+                  <th className="py-3 px-4">Mã Đơn</th>
+                  <th className="py-3 px-4">Khách Hàng</th>
+                  <th className="py-3 px-4">Loại GD</th>
+                  <th className="py-3 px-4">Số Tiền</th>
+                  <th className="py-3 px-4">Phương Thức</th>
+                  <th className="py-3 px-4">Trạng Thái</th>
+                  <th className="py-3 px-4">Thời Gian</th>
+                </tr>
+              </thead>
+              <TableRowSkeleton rows={5} cols={7} />
+            </table>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

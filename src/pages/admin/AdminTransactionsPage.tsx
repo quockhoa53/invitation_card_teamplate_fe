@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import { TransactionItem } from '../../types';
 import { Pagination } from '../../components/common/Pagination';
+import { TableRowSkeleton } from '../../components/common/Skeleton';
 import {
   CreditCard,
   Search,
@@ -184,8 +185,24 @@ export const AdminTransactionsPage: React.FC = () => {
         isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
       }`}>
         {loading ? (
-          <div className={`text-center py-12 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            Đang tải dữ liệu giao dịch...
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className={`border-b font-bold uppercase text-[10px] ${
+                isDark ? 'border-slate-800 text-slate-400' : 'border-stone-200 text-stone-500'
+              }`}>
+                <tr>
+                  <th className="py-3 px-4">Mã Đơn</th>
+                  <th className="py-3 px-4">Khách Hàng</th>
+                  <th className="py-3 px-4">Loại GD</th>
+                  <th className="py-3 px-4">Số Tiền & Thưởng</th>
+                  <th className="py-3 px-4">Phương Thức</th>
+                  <th className="py-3 px-4">Trạng Thái</th>
+                  <th className="py-3 px-4">Thời Gian Tạo</th>
+                  <th className="py-3 px-4 text-right">Hành Động</th>
+                </tr>
+              </thead>
+              <TableRowSkeleton rows={6} cols={8} />
+            </table>
           </div>
         ) : transactions.length === 0 ? (
           <div className="text-center py-12 space-y-3">

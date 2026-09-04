@@ -9,6 +9,7 @@ import { TemplateCardItem } from '../home/TemplateCardItem';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
 import { PurchaseTemplateModal } from './PurchaseTemplateModal';
 import { Pagination } from '../common/Pagination';
+import { TemplateCardSkeleton } from '../common/Skeleton';
 import {
   Search,
   Sparkles,
@@ -298,12 +299,7 @@ export const TemplatesCatalog: React.FC<{ isStandalonePage?: boolean }> = ({ isS
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div
-              key={i}
-              className={`aspect-[3/4] rounded-3xl animate-pulse ${
-                isDark ? 'bg-slate-900/60' : 'bg-stone-200/70'
-              }`}
-            />
+            <TemplateCardSkeleton key={i} />
           ))}
         </div>
       ) : filteredTemplates.length === 0 ? (

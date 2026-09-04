@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import { PromotionItem } from '../../types';
 import { Pagination } from '../../components/common/Pagination';
+import { TableRowSkeleton } from '../../components/common/Skeleton';
 import {
   Tag,
   Search,
@@ -259,20 +260,17 @@ export const AdminPromotionsPage: React.FC = () => {
                 <th className="py-3.5 px-4 font-semibold text-right">Thao Tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/40">
-              {loading ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-12 text-slate-500">
-                    Đang tải danh sách mã khuyến mãi...
-                  </td>
-                </tr>
-              ) : promotions.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-12 text-slate-500">
-                    Chưa có mã khuyến mãi nào. Hãy bấm "Thêm Mã Khuyến Mãi Mới"!
-                  </td>
-                </tr>
-              ) : (
+            {loading ? (
+              <TableRowSkeleton rows={5} cols={7} />
+            ) : (
+              <tbody className="divide-y divide-slate-800/40">
+                {promotions.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-12 text-slate-500">
+                      Chưa có mã khuyến mãi nào. Hãy bấm "Thêm Mã Khuyến Mãi Mới"!
+                    </td>
+                  </tr>
+                ) : (
                 promotions.map((promo) => {
                   const usagePercent = promo.maxUsage ? Math.min(100, Math.round((promo.usedCount / promo.maxUsage) * 100)) : 0;
                   return (
@@ -375,6 +373,7 @@ export const AdminPromotionsPage: React.FC = () => {
                 })
               )}
             </tbody>
+          )}
           </table>
         </div>
 
