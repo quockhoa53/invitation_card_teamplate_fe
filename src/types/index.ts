@@ -297,3 +297,5 @@ export interface EventInvitationData {
   themeColor?: string;
   enableRsvp?: boolean;
 }
+
+export type { TemplateSchemaKey, TemplateFieldSchema, FieldType, TemplateSectionGroup } from './schema';

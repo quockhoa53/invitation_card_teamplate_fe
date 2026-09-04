@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../../services/api';
 import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
-import { Template, TemplateCategory } from '../../types';
+import { Template, TemplateCategory, TemplateSchemaKey } from '../../types';
 import { DynamicCodeRenderer } from '../../templates/DynamicCodeRenderer';
-import { TemplateFormBuilder } from '../../components/admin/TemplateFormBuilder';
+import { validateConfigKeys } from '../../utils/templateSchema';
 import { Pagination } from '../../components/common/Pagination';
 import { UserCardSkeleton } from '../../components/common/Skeleton';
 import {
@@ -26,6 +26,14 @@ import {
   CheckCircle2,
   ArrowLeft,
   Save,
+  KeyRound,
+  Copy,
+  ExternalLink,
+  AlertCircle,
+  Wand2,
+  Search,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export const AdminTemplatesPage: React.FC = () => {
@@ -38,13 +46,18 @@ export const AdminTemplatesPage: React.FC = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('ALL');
   const [loading, setLoading] = useState(true);
 
+  // Schema Keys state from DB
+  const [schemaKeys, setSchemaKeys] = useState<TemplateSchemaKey[]>([]);
+  const [showSchemaCheatSheet, setShowSchemaCheatSheet] = useState(true);
+  const [schemaSearchQuery, setSchemaSearchQuery] = useState('');
+
   // Active view tab: 'drafts' (Bản nháp) | 'published' (Bản công khai)
   const [activeTab, setActiveTab] = useState<'drafts' | 'published'>('drafts');
 
   // Pagination states for Drafts & Published
   const [draftPage, setDraftPage] = useState(1);
   const [publishedPage, setPublishedPage] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(8);
 
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'editor'>('list');
@@ -61,8 +74,8 @@ export const AdminTemplatesPage: React.FC = () => {
   const [defaultConfig, setDefaultConfig] = useState('{}');
   const [templateType, setTemplateType] = useState<'BUILT_IN' | 'CUSTOM_CODE'>('CUSTOM_CODE');
 
-  // Custom Code Tabs
-  const [activeCodeTab, setActiveCodeTab] = useState<'preview' | 'html' | 'css' | 'js' | 'config' | 'builder'>('preview');
+  // Custom Code Tabs (Removed visual builder, pure code and JSON config)
+  const [activeCodeTab, setActiveCodeTab] = useState<'preview' | 'html' | 'css' | 'js' | 'config'>('preview');
   const [customHtml, setCustomHtml] = useState('');
   const [customCss, setCustomCss] = useState('');
   const [customJs, setCustomJs] = useState('');
@@ -76,15 +89,19 @@ export const AdminTemplatesPage: React.FC = () => {
   const fetchTemplates = async () => {
     setLoading(true);
     try {
-      const [tplRes, catRes] = await Promise.all([
+      const [tplRes, catRes, keysRes] = await Promise.all([
         api.getAdminTemplates(),
         api.getAdminCategories(),
+        api.getAdminSchemaKeys(),
       ]);
       if (tplRes.success && tplRes.data) {
         setTemplates(tplRes.data);
       }
       if (catRes.success && catRes.data) {
         setCategories(catRes.data);
+      }
+      if (keysRes.success && keysRes.data) {
+        setSchemaKeys(keysRes.data);
       }
     } catch (err) {
       console.error(err);
@@ -114,6 +131,38 @@ export const AdminTemplatesPage: React.FC = () => {
     if (!editingTemplate) {
       setSlug(slugify(val));
     }
+  };
+
+  // Real-time JSON validation against Schema Keys
+  const configValidation = React.useMemo(() => {
+    if (!defaultConfig || defaultConfig.trim() === '' || defaultConfig.trim() === '{}') {
+      return { isValid: true, invalidKeys: [], allKeys: [], parseError: null };
+    }
+    try {
+      const parsed = JSON.parse(defaultConfig);
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+        return { isValid: false, invalidKeys: [], allKeys: [], parseError: 'JSON phải là một đối tượng Object {}' };
+      }
+      const validation = validateConfigKeys(parsed, schemaKeys);
+      return { ...validation, parseError: null };
+    } catch (e: any) {
+      return { isValid: false, invalidKeys: [], allKeys: [], parseError: e.message || 'Cú pháp JSON không hợp lệ' };
+    }
+  }, [defaultConfig, schemaKeys]);
+
+  const formatJson = () => {
+    try {
+      const parsed = JSON.parse(defaultConfig);
+      setDefaultConfig(JSON.stringify(parsed, null, 2));
+      toast.success('Đã định dạng JSON chuẩn đẹp!');
+    } catch (e: any) {
+      toast.error('Không thể định dạng', 'Cú pháp JSON đang bị lỗi: ' + e.message);
+    }
+  };
+
+  const copyKeyToClipboard = (keyName: string) => {
+    navigator.clipboard.writeText(keyName);
+    toast.success(`Đã copy key "${keyName}" vào bộ nhớ tạm!`);
   };
 
   // Parse standalone HTML file
@@ -196,7 +245,25 @@ export const AdminTemplatesPage: React.FC = () => {
     setCustomHtml(newHtml);
     setCustomCss(newCss);
     setCustomJs(newJs);
-    if (newConfig && newConfig !== '{}') setDefaultConfig(newConfig);
+    if (newConfig && newConfig !== '{}') {
+      setDefaultConfig(newConfig);
+      try {
+        const parsed = JSON.parse(newConfig);
+        if (schemaKeys.length > 0) {
+          const val = validateConfigKeys(parsed, schemaKeys);
+          if (!val.isValid) {
+            toast.warning(
+              'File Config JSON có key chưa đăng ký!',
+              `Phát hiện ${val.invalidKeys.length} key: [${val.invalidKeys.join(', ')}]. Bạn có thể xem tab Config (JSON) hoặc bổ sung vào Quản Lý Schema Keys.`
+            );
+          } else {
+            toast.success('File Config JSON hợp lệ!', `Đã nhận diện thành công ${val.allKeys.length} trường cấu hình.`);
+          }
+        }
+      } catch (e) {
+        toast.warning('File JSON không đúng cú pháp!', 'Vui lòng kiểm tra lại nội dung file JSON.');
+      }
+    }
     setTemplateType('CUSTOM_CODE');
     setUploadedFilesInfo(fileNames);
     setUploadStatus(`Đã nạp ${fileNames.length} file: ${fileNames.join(', ')}`);
@@ -424,6 +491,22 @@ document.getElementById('btn-music').addEventListener('click', () => {
       toast.error('Vui lòng nhập slug (URL) cho template');
       return;
     }
+
+    // Strict validation of Config JSON keys against Schema Keys
+    if (configValidation.parseError) {
+      toast.error('Lỗi cú pháp Config JSON', configValidation.parseError);
+      setActiveCodeTab('config');
+      return;
+    }
+    if (schemaKeys.length > 0 && !configValidation.isValid) {
+      toast.error(
+        'Config JSON chứa key chưa đăng ký trong Schema!',
+        `Các trường [${configValidation.invalidKeys.join(', ')}] chưa có trong từ điển hệ thống. Vui lòng thêm tại "Quản Lý Schema Keys" hoặc điều chỉnh JSON.`
+      );
+      setActiveCodeTab('config');
+      return;
+    }
+
     try {
       const publishStatus = editingTemplate ? (editingTemplate.isPublished ?? false) : false;
 
@@ -875,21 +958,6 @@ document.getElementById('btn-music').addEventListener('click', () => {
 
                   <button
                     type="button"
-                    onClick={() => setActiveCodeTab('builder')}
-                    className={`px-3 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
-                      activeCodeTab === 'builder'
-                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
-                        : isDark
-                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                        : 'bg-stone-100 text-stone-600'
-                    }`}
-                  >
-                    <Layers className="w-3.5 h-3.5" />
-                    Trường Nhập (Form Builder)
-                  </button>
-
-                  <button
-                    type="button"
                     onClick={() => setActiveCodeTab('html')}
                     className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
                       activeCodeTab === 'html'
@@ -933,7 +1001,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                   <button
                     type="button"
                     onClick={() => setActiveCodeTab('config')}
-                    className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
                       activeCodeTab === 'config'
                         ? 'bg-orange-500 text-white shadow-md'
                         : isDark
@@ -941,7 +1009,21 @@ document.getElementById('btn-music').addEventListener('click', () => {
                         : 'bg-stone-100 text-stone-600'
                     }`}
                   >
-                    Config (JSON) {defaultConfig && defaultConfig !== '{}' ? `(${defaultConfig.length} ký tự)` : ''}
+                    <KeyRound className="w-3.5 h-3.5" />
+                    <span>Config (JSON)</span>
+                    {configValidation.parseError ? (
+                      <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                        Lỗi JSON
+                      </span>
+                    ) : configValidation.invalidKeys.length > 0 ? (
+                      <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                        {configValidation.invalidKeys.length} key lạ
+                      </span>
+                    ) : (
+                      <span className="text-[10px] opacity-75">
+                        ({configValidation.allKeys.length} keys)
+                      </span>
+                    )}
                   </button>
                 </div>
 
@@ -990,17 +1072,6 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 </div>
               )}
 
-              {/* Tab: Form Builder */}
-              {activeCodeTab === 'builder' && (
-                <div className="p-1">
-                  <TemplateFormBuilder
-                    configString={defaultConfig}
-                    onChangeConfig={setDefaultConfig}
-                    isDark={isDark}
-                  />
-                </div>
-              )}
-
               {/* Tab: HTML Editor */}
               {activeCodeTab === 'html' && (
                 <textarea
@@ -1046,19 +1117,161 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 />
               )}
 
-              {/* Tab: Config JSON Editor */}
+              {/* Tab: Config JSON Editor & Master Schema Key Validator */}
               {activeCodeTab === 'config' && (
-                <textarea
-                  rows={26}
-                  value={defaultConfig}
-                  onChange={(e) => setDefaultConfig(e.target.value)}
-                  placeholder='{\n  "greetingTitle": "Chúc Mừng Sinh Nhật",\n  "recipientName": "Em Yêu"\n}'
-                  className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
-                    isDark
-                      ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-orange-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                  }`}
-                />
+                <div className="space-y-3">
+                  {/* Top Bar: Actions & Links */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl border bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-transparent border-orange-500/20">
+                    <div className="flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-orange-400" />
+                      <span className="text-xs font-bold text-orange-300">Từ Điển Schema Keys & Đối Soát JSON</span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={formatJson}
+                        className="px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 transition active:scale-95"
+                      >
+                        <Wand2 className="w-3.5 h-3.5" /> Format JSON
+                      </button>
+
+                      <a
+                        href="/admin/schema-keys"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-2.5 py-1 rounded-xl text-xs font-bold bg-indigo-600/80 hover:bg-indigo-600 text-white flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" /> Quản Lý Schema Keys
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => setShowSchemaCheatSheet(!showSchemaCheatSheet)}
+                        className={`px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition active:scale-95 ${
+                          showSchemaCheatSheet
+                            ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
+                            : isDark
+                            ? 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
+                            : 'bg-white text-stone-700 border-stone-200'
+                        }`}
+                      >
+                        <span>Tra cứu Key ({schemaKeys.length})</span>
+                        {showSchemaCheatSheet ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Validation Alerts */}
+                  {configValidation.parseError && (
+                    <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2 font-medium">
+                      <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                      <span><strong>Lỗi Cú Pháp JSON:</strong> {configValidation.parseError}</span>
+                    </div>
+                  )}
+
+                  {!configValidation.parseError && configValidation.invalidKeys.length > 0 && (
+                    <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex flex-col gap-2">
+                      <div className="flex items-center gap-2 font-bold text-red-300">
+                        <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                        <span>Phát hiện {configValidation.invalidKeys.length} key trong JSON chưa được khai báo trong hệ thống:</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 pl-6">
+                        {configValidation.invalidKeys.map((k) => (
+                          <span key={k} className="px-2 py-0.5 rounded-lg bg-red-500/20 text-red-200 border border-red-500/40 font-mono text-[11px] font-bold">
+                            "{k}"
+                          </span>
+                        ))}
+                      </div>
+                      <p className="pl-6 text-[11px] text-red-300/80 leading-relaxed">
+                        ⚠️ Khi người dùng tạo thiệp, hệ thống sẽ <strong>không thể tạo ô nhập form</strong> cho các key trên. Hãy vào trang{' '}
+                        <a href="/admin/schema-keys" target="_blank" rel="noreferrer" className="underline text-red-200 font-bold hover:text-white inline-flex items-center gap-0.5">
+                          Quản Lý Schema Keys <ExternalLink className="w-2.5 h-2.5" />
+                        </a>{' '}
+                        để đăng ký định dạng (Text, Image, Âm nhạc...) hoặc xóa các key này khỏi JSON để lưu template.
+                      </p>
+                    </div>
+                  )}
+
+                  {!configValidation.parseError && configValidation.invalidKeys.length === 0 && configValidation.allKeys.length > 0 && (
+                    <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-medium text-emerald-300">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                        <span>Tất cả {configValidation.allKeys.length} key trong JSON đều hợp lệ và tương thích 100% với form tùy biến người dùng!</span>
+                      </div>
+                      <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
+                        STATUS: READY
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Quick-Lookup Cheat Sheet */}
+                  {showSchemaCheatSheet && (
+                    <div className={`p-3.5 rounded-2xl border text-xs space-y-2.5 ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'}`}>
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <KeyRound className="w-3.5 h-3.5 text-orange-400" />
+                          <span className="font-bold">Danh Sách Key Hợp Lệ Trong Hệ Thống:</span>
+                          <span className="text-[11px] text-stone-400">(Bấm vào key để copy nhanh)</span>
+                        </div>
+                        <div className="relative w-48">
+                          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400" />
+                          <input
+                            type="text"
+                            value={schemaSearchQuery}
+                            onChange={(e) => setSchemaSearchQuery(e.target.value)}
+                            placeholder="Lọc key..."
+                            className={`w-full pl-8 pr-2.5 py-1 rounded-xl text-xs border outline-none ${
+                              isDark ? 'bg-slate-950 border-slate-800 text-white focus:border-orange-500' : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500'
+                            }`}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="max-h-36 overflow-y-auto flex flex-wrap gap-1.5 pr-1">
+                        {schemaKeys
+                          .filter((k) =>
+                            !schemaSearchQuery ||
+                            k.keyName.toLowerCase().includes(schemaSearchQuery.toLowerCase()) ||
+                            k.label.toLowerCase().includes(schemaSearchQuery.toLowerCase()) ||
+                            (k.sectionName && k.sectionName.toLowerCase().includes(schemaSearchQuery.toLowerCase()))
+                          )
+                          .map((k) => (
+                            <button
+                              key={k.keyName}
+                              type="button"
+                              onClick={() => copyKeyToClipboard(k.keyName)}
+                              title={`Click để copy "${k.keyName}"\nNhãn: ${k.label}\nLoại: ${k.fieldType}\nNhóm: ${k.sectionName}`}
+                              className={`px-2 py-1 rounded-lg border font-mono text-[11px] flex items-center gap-1.5 transition active:scale-95 ${
+                                isDark
+                                  ? 'bg-slate-800/80 border-slate-700 text-slate-200 hover:bg-orange-500/20 hover:border-orange-500/50 hover:text-orange-300'
+                                  : 'bg-white border-stone-200 text-stone-700 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600'
+                              }`}
+                            >
+                              <span>{k.keyName}</span>
+                              <span className="text-[9px] px-1 py-0.2 rounded bg-stone-500/20 text-stone-400 font-sans font-bold">
+                                {k.fieldType}
+                              </span>
+                              <Copy className="w-2.5 h-2.5 opacity-50" />
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Config JSON Textarea */}
+                  <textarea
+                    rows={20}
+                    value={defaultConfig}
+                    onChange={(e) => setDefaultConfig(e.target.value)}
+                    placeholder='{\n  "greetingTitle": "Chúc Mừng Sinh Nhật",\n  "recipientName": "Em Yêu"\n}'
+                    className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
+                      isDark
+                        ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-orange-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                    }`}
+                  />
+                </div>
               )}
             </div>
           </div>

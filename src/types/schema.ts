@@ -29,3 +29,19 @@ export interface TemplateSectionGroup {
   icon?: string;
   fields: TemplateFieldSchema[];
 }
+
+export interface TemplateSchemaKey {
+  id: string;
+  keyName: string;
+  label: string;
+  fieldType: FieldType;
+  sectionName: string;
+  placeholder?: string;
+  description?: string;
+  defaultValue?: string;
+  isRequired?: boolean;
+  displayOrder?: number;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}

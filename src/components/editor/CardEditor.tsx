@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
-import { Template, Card } from '../../types';
+import { Template, Card, TemplateSchemaKey } from '../../types';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
 import { api } from '../../services/api';
 import {
@@ -46,6 +46,17 @@ export const CardEditor: React.FC<CardEditorProps> = ({
   const { confirmModal } = useToast();
   const isDark = theme === 'dark';
 
+  // Master Schema Keys from DB
+  const [schemaKeys, setSchemaKeys] = useState<TemplateSchemaKey[]>([]);
+
+  useEffect(() => {
+    api.getSchemaKeys().then((res) => {
+      if (res.success && res.data) {
+        setSchemaKeys(res.data);
+      }
+    }).catch(console.error);
+  }, []);
+
   const [title, setTitle] = useState(initialCard ? initialCard.title : `Thiệp ${selectedTemplate.title}`);
   const [slug, setSlug] = useState(initialCard ? initialCard.slug : '');
   const [passcode, setPasscode] = useState('');
@@ -68,10 +79,10 @@ export const CardEditor: React.FC<CardEditorProps> = ({
     }
   });
 
-  // Dynamically parse schema and group fields by logical sections
+  // Dynamically parse schema and group fields by logical sections using master DB schema keys
   const dynamicFields = React.useMemo(() => {
-    return parseTemplateSchema(selectedTemplate.defaultConfig, customData);
-  }, [selectedTemplate.defaultConfig]);
+    return parseTemplateSchema(selectedTemplate.defaultConfig, customData, schemaKeys);
+  }, [selectedTemplate.defaultConfig, schemaKeys]);
 
   const dynamicSections = React.useMemo(() => {
     return groupFieldsBySection(dynamicFields);

@@ -6,6 +6,7 @@ import {
   PublicCard,
   Template,
   TemplateCategory,
+  TemplateSchemaKey,
   User,
   CardWish,
   PaymentOrder,
@@ -302,6 +303,42 @@ export const api = {
 
   deleteAdminCategory: async (id: string): Promise<ApiResponse<void>> => {
     const res = await apiClient.delete(`/admin/categories/${id}`);
+    return res.data;
+  },
+
+  // Schema Keys Master Dictionary
+  getSchemaKeys: async (): Promise<ApiResponse<TemplateSchemaKey[]>> => {
+    const res = await apiClient.get('/schema-keys');
+    return res.data;
+  },
+
+  getAdminSchemaKeys: async (): Promise<ApiResponse<TemplateSchemaKey[]>> => {
+    const res = await apiClient.get('/admin/schema-keys');
+    return res.data;
+  },
+
+  createAdminSchemaKey: async (data: Partial<TemplateSchemaKey>): Promise<ApiResponse<TemplateSchemaKey>> => {
+    const res = await apiClient.post('/admin/schema-keys', data);
+    return res.data;
+  },
+
+  updateAdminSchemaKey: async (id: string, data: Partial<TemplateSchemaKey>): Promise<ApiResponse<TemplateSchemaKey>> => {
+    const res = await apiClient.put(`/admin/schema-keys/${id}`, data);
+    return res.data;
+  },
+
+  toggleAdminSchemaKeyStatus: async (id: string): Promise<ApiResponse<TemplateSchemaKey>> => {
+    const res = await apiClient.patch(`/admin/schema-keys/${id}/toggle-status`);
+    return res.data;
+  },
+
+  seedAdminSchemaKeys: async (): Promise<ApiResponse<TemplateSchemaKey[]>> => {
+    const res = await apiClient.post('/admin/schema-keys/seed-defaults');
+    return res.data;
+  },
+
+  deleteAdminSchemaKey: async (id: string): Promise<ApiResponse<void>> => {
+    const res = await apiClient.delete(`/admin/schema-keys/${id}`);
     return res.data;
   },
 

@@ -17,6 +17,7 @@ import { AdminTemplatesPage } from './pages/admin/AdminTemplatesPage';
 import { AdminTransactionsPage } from './pages/admin/AdminTransactionsPage';
 import { AdminWithdrawalsPage } from './pages/admin/AdminWithdrawalsPage';
 import { AdminPromotionsPage } from './pages/admin/AdminPromotionsPage';
+import { AdminSchemaKeysPage } from './pages/admin/AdminSchemaKeysPage';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
@@ -103,6 +104,7 @@ export const AppContent: React.FC = () => {
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="categories" element={<AdminCategoriesPage />} />
           <Route path="templates" element={<AdminTemplatesPage />} />
+          <Route path="schema-keys" element={<AdminSchemaKeysPage />} />
           <Route path="transactions" element={<AdminTransactionsPage />} />
           <Route path="withdrawals" element={<AdminWithdrawalsPage />} />
           <Route path="promotions" element={<AdminPromotionsPage />} />

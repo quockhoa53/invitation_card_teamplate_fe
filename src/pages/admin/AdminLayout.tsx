@@ -17,6 +17,7 @@ import {
   CreditCard,
   ArrowDownToLine,
   Tag,
+  KeyRound,
 } from 'lucide-react';
 import { AdminTwoFactorModal } from './AdminTwoFactorPage';
 
@@ -57,6 +58,7 @@ export const AdminLayout: React.FC = () => {
     { path: '/admin/withdrawals', label: 'Duyệt Rút Tiền', icon: ArrowDownToLine },
     { path: '/admin/promotions', label: 'Mã Khuyến Mãi', icon: Tag },
     { path: '/admin/templates', label: 'Quản Lý Template', icon: Layers },
+    { path: '/admin/schema-keys', label: 'Quản Lý Schema Keys', icon: KeyRound },
     { path: '/admin/categories', label: 'Quản Lý Loại Template', icon: FolderTree },
     { path: '/admin/users', label: 'Quản Lý Người Dùng', icon: Users },
   ];

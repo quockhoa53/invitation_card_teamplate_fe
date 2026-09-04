@@ -1,4 +1,4 @@
-import { TemplateFieldSchema, TemplateSectionGroup } from '../types/schema';
+import { TemplateFieldSchema, TemplateSectionGroup, TemplateSchemaKey } from '../types/schema';
 
 // Standard Vietnamese label dictionary for well-known keys
 const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
@@ -138,9 +138,43 @@ const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
 const IGNORED_KEYS = new Set(['_schema', 'musicTitle', 'isPublished']);
 
 /**
- * Parses template config to extract explicit schema or auto-infer fields.
+ * Validates keys in a template's defaultConfig JSON against the master schema keys database.
  */
-export function parseTemplateSchema(defaultConfigRaw: string | any, customData: any = {}): TemplateFieldSchema[] {
+export function validateConfigKeys(
+  configJson: string | Record<string, any>,
+  validSchemaKeys: TemplateSchemaKey[]
+): { isValid: boolean; invalidKeys: string[]; allKeys: string[] } {
+  let parsed: Record<string, any> = {};
+  if (typeof configJson === 'string') {
+    try {
+      parsed = JSON.parse(configJson);
+    } catch {
+      return { isValid: false, invalidKeys: [], allKeys: [] };
+    }
+  } else if (typeof configJson === 'object' && configJson !== null) {
+    parsed = configJson;
+  }
+
+  // Create lookup set from DB master schema keys
+  const validKeySet = new Set(validSchemaKeys.map((k) => k.keyName));
+  const allKeys = Object.keys(parsed).filter((k) => !IGNORED_KEYS.has(k));
+  const invalidKeys = allKeys.filter((k) => !validKeySet.has(k));
+
+  return {
+    isValid: invalidKeys.length === 0,
+    invalidKeys,
+    allKeys,
+  };
+}
+
+/**
+ * Parses template config to extract explicit schema, DB master keys, or auto-infer fields.
+ */
+export function parseTemplateSchema(
+  defaultConfigRaw: string | any,
+  customData: any = {},
+  dbSchemaKeys?: TemplateSchemaKey[]
+): TemplateFieldSchema[] {
   let parsedConfig: any = {};
   if (typeof defaultConfigRaw === 'string') {
     try {
@@ -167,7 +201,15 @@ export function parseTemplateSchema(defaultConfigRaw: string | any, customData: 
     }));
   }
 
-  // 2. Auto-inference: Analyze keys present in defaultConfig and customData
+  // Build DB key lookup map if provided
+  const dbKeyMap = new Map<string, TemplateSchemaKey>();
+  if (dbSchemaKeys && Array.isArray(dbSchemaKeys)) {
+    for (const k of dbSchemaKeys) {
+      dbKeyMap.set(k.keyName, k);
+    }
+  }
+
+  // 2. Inference: Analyze keys present in defaultConfig and customData
   const combinedData = { ...parsedConfig, ...customData };
   const fields: TemplateFieldSchema[] = [];
   const processedKeys = new Set<string>();
@@ -179,8 +221,24 @@ export function parseTemplateSchema(defaultConfigRaw: string | any, customData: 
     processedKeys.add(key);
 
     const val = combinedData[key];
-    const known = KNOWN_FIELD_META[key];
 
+    // Priority 1: Check master DB schema keys
+    if (dbKeyMap.has(key)) {
+      const dbKey = dbKeyMap.get(key)!;
+      fields.push({
+        key,
+        label: dbKey.label || key,
+        type: (dbKey.fieldType as TemplateFieldSchema['type']) || 'text',
+        section: dbKey.sectionName || 'Tùy Chỉnh Nội Dung',
+        placeholder: dbKey.placeholder || undefined,
+        defaultValue: dbKey.defaultValue || undefined,
+        rows: dbKey.fieldType === 'textarea' ? 4 : undefined,
+      });
+      continue;
+    }
+
+    // Priority 2: Check standard built-in known fields
+    const known = KNOWN_FIELD_META[key];
     if (known) {
       fields.push({
         key,
@@ -193,7 +251,7 @@ export function parseTemplateSchema(defaultConfigRaw: string | any, customData: 
       continue;
     }
 
-    // Infer type dynamically from value and key name
+    // Priority 3: Dynamic type inference
     let type: TemplateFieldSchema['type'] = 'text';
     let section = 'Tùy Chỉnh Nội Dung';
 
