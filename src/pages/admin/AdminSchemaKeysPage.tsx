@@ -25,7 +25,14 @@ import {
   X,
   HelpCircle,
   FolderTree,
+  Upload,
+  FileJson,
+  Download,
+  AlertCircle,
+  Sparkles,
+  FileCode,
 } from 'lucide-react';
+import { KNOWN_FIELD_META } from '../../utils/templateSchema';
 
 const FIELD_TYPE_CONFIG: Record<FieldType, { label: string; icon: any; color: string }> = {
   text: { label: 'Văn bản ngắn', icon: Type, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
@@ -75,6 +82,232 @@ export const AdminSchemaKeysPage: React.FC = () => {
   const [formDefaultValue, setFormDefaultValue] = useState('');
   const [formIsRequired, setFormIsRequired] = useState(false);
   const [formDisplayOrder, setFormDisplayOrder] = useState(0);
+
+  // JSON Import Modal State
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importTab, setImportTab] = useState<'file' | 'text'>('file');
+  const [importJsonInput, setImportJsonInput] = useState('');
+  const [importFileName, setImportFileName] = useState('');
+  const [importOverwrite, setImportOverwrite] = useState(false);
+  const [parsedImportKeys, setParsedImportKeys] = useState<any[]>([]);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
+
+  const openImportModal = () => {
+    setImportJsonInput('');
+    setImportFileName('');
+    setParsedImportKeys([]);
+    setImportError(null);
+    setImportOverwrite(false);
+    setImportTab('file');
+    setShowImportModal(true);
+  };
+
+  const parseJsonContent = (text: string) => {
+    try {
+      setImportError(null);
+      if (!text.trim()) {
+        setParsedImportKeys([]);
+        return;
+      }
+      const parsed = JSON.parse(text);
+      const result: any[] = [];
+      const existingKeyNames = new Set(keys.map((k) => k.keyName));
+
+      if (Array.isArray(parsed)) {
+        // Format A: Array of schema key objects
+        parsed.forEach((item, index) => {
+          if (typeof item === 'object' && item !== null && item.keyName) {
+            const keyName = String(item.keyName).trim();
+            const known = KNOWN_FIELD_META[keyName];
+            result.push({
+              keyName,
+              label: item.label || known?.label || keyName,
+              fieldType: item.fieldType || known?.type || 'text',
+              sectionName: item.sectionName || known?.section || 'Tùy Chỉnh Nội Dung',
+              placeholder: item.placeholder || known?.placeholder || '',
+              description: item.description || '',
+              defaultValue: item.defaultValue || '',
+              isRequired: Boolean(item.isRequired),
+              displayOrder: item.displayOrder ?? keys.length + index + 1,
+              isActive: item.isActive ?? true,
+              isExisting: existingKeyNames.has(keyName),
+            });
+          }
+        });
+      } else if (typeof parsed === 'object' && parsed !== null) {
+        // Format B: Template config JSON dictionary { "recipientName": "Bống", ... }
+        let orderOffset = 1;
+        for (const [rawKey, val] of Object.entries(parsed)) {
+          if (rawKey === '_schema' || rawKey === 'isPublished') continue;
+          const keyName = rawKey.trim();
+          const known = KNOWN_FIELD_META[keyName];
+
+          let fieldType: FieldType = 'text';
+          let sectionName = 'Tùy Chỉnh Nội Dung';
+
+          if (known) {
+            fieldType = (known.type as FieldType) || 'text';
+            sectionName = known.section || 'Tùy Chỉnh Nội Dung';
+          } else {
+            const lower = keyName.toLowerCase();
+            if (Array.isArray(val)) {
+              fieldType = lower.includes('photo') || lower.includes('gallery') ? 'gallery' : 'keywords';
+              sectionName = fieldType === 'gallery' ? 'Album Ảnh Kỷ Niệm' : 'Hiệu Ứng Từ Khóa Rơi';
+            } else if (lower === 'musicurl' || lower.includes('audio')) {
+              fieldType = 'music';
+              sectionName = 'Nhạc Nền Thiệp Mời';
+            } else if (lower.includes('photo') || lower.includes('image') || lower.includes('avatar') || lower.includes('thumb')) {
+              fieldType = 'image';
+              sectionName = 'Hình Ảnh';
+            } else if (lower.includes('datetime')) {
+              fieldType = 'datetime';
+              sectionName = 'Thời Gian & Địa Điểm';
+            } else if (lower.includes('date') || lower.includes('day')) {
+              fieldType = 'date';
+              sectionName = 'Thời Gian & Địa Điểm';
+            } else if (typeof val === 'number') {
+              fieldType = 'number';
+            } else if (
+              lower.includes('message') ||
+              lower.includes('letter') ||
+              lower.includes('wish') ||
+              (typeof val === 'string' && val.length > 50)
+            ) {
+              fieldType = 'textarea';
+              sectionName = 'Nội Dung Lời Chúc';
+            }
+          }
+
+          const formattedLabel =
+            known?.label ||
+            keyName
+              .replace(/([A-Z])/g, ' $1')
+              .replace(/_/g, ' ')
+              .replace(/^\w/, (c) => c.toUpperCase());
+
+          result.push({
+            keyName,
+            label: formattedLabel,
+            fieldType,
+            sectionName,
+            placeholder: known?.placeholder || `Nhập ${formattedLabel.toLowerCase()}...`,
+            description: '',
+            defaultValue: typeof val === 'string' && val.length < 100 ? val : '',
+            isRequired: false,
+            displayOrder: keys.length + orderOffset++,
+            isActive: true,
+            isExisting: existingKeyNames.has(keyName),
+          });
+        }
+      } else {
+        setImportError('Dữ liệu JSON không hợp lệ. Phải là mảng danh sách các key hoặc object cấu hình template');
+        setParsedImportKeys([]);
+        return;
+      }
+
+      if (result.length === 0) {
+        setImportError('Không tìm thấy trường dữ liệu nào trong file JSON');
+      }
+      setParsedImportKeys(result);
+    } catch (err: any) {
+      setImportError('Lỗi cú pháp JSON: ' + err.message);
+      setParsedImportKeys([]);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImportFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setImportJsonInput(content);
+      parseJsonContent(content);
+    };
+    reader.onerror = () => {
+      setImportError('Không thể đọc file đã chọn');
+    };
+    reader.readAsText(file);
+  };
+
+  const handleDownloadSampleJson = () => {
+    const sample = [
+      {
+        keyName: 'moment1Photo',
+        label: 'Ảnh Khoảnh Khắc 1',
+        fieldType: 'image',
+        sectionName: '5 Khoảnh Khắc Kỷ Niệm',
+        placeholder: 'https://...',
+      },
+      {
+        keyName: 'moment1Text',
+        label: 'Nội Dung Khoảnh Khắc 1',
+        fieldType: 'text',
+        sectionName: '5 Khoảnh Khắc Kỷ Niệm',
+        placeholder: 'Ngày đầu tiên nắm tay...',
+      },
+      {
+        keyName: 'birthdayDate',
+        label: 'Ngày Sinh Nhật',
+        fieldType: 'date',
+        sectionName: 'Thời Gian & Địa Điểm',
+        placeholder: 'YYYY-MM-DD',
+      },
+    ];
+
+    const blob = new Blob([JSON.stringify(sample, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'schema_keys_sample.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExecuteImport = async () => {
+    if (parsedImportKeys.length === 0) {
+      toast.error('Chưa có key nào để import', 'Vui lòng kiểm tra lại nội dung file JSON');
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const payload = parsedImportKeys.map((item) => ({
+        keyName: item.keyName,
+        label: item.label,
+        fieldType: item.fieldType,
+        sectionName: item.sectionName,
+        placeholder: item.placeholder,
+        description: item.description,
+        defaultValue: item.defaultValue,
+        isRequired: item.isRequired,
+        displayOrder: item.displayOrder,
+        isActive: item.isActive,
+      }));
+
+      const res = await api.importAdminSchemaKeys(payload, importOverwrite);
+      if (res.success) {
+        const stats = res.data;
+        toast.success(
+          'Import Schema Keys Thành Công!',
+          stats
+            ? `Tổng nộp: ${stats.totalSubmitted}, Tạo mới: ${stats.createdCount}, Cập nhật: ${stats.updatedCount}, Bỏ qua: ${stats.skippedCount}`
+            : 'Đã thêm các trường dữ liệu vào hệ thống'
+        );
+        setShowImportModal(false);
+        fetchKeys();
+      } else {
+        toast.error('Lỗi khi import', res.message || 'Không thể lưu keys');
+      }
+    } catch (err: any) {
+      toast.error('Lỗi khi import keys', err.message);
+    } finally {
+      setIsImporting(false);
+    }
+  };
 
   const fetchKeys = async () => {
     setLoading(true);
@@ -226,6 +459,19 @@ export const AdminSchemaKeysPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap shrink-0">
+          <button
+            type="button"
+            onClick={openImportModal}
+            className={`px-3.5 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-1.5 transition ${
+              isDark
+                ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-sky-400'
+                : 'bg-white hover:bg-stone-50 border-stone-200 text-sky-600 shadow-sm'
+            }`}
+            title="Import các schema keys bằng file JSON hoặc dán JSON cấu hình"
+          >
+            <Upload className="w-4 h-4 text-sky-500" /> Import Bằng JSON
+          </button>
+
           <button
             type="button"
             onClick={handleSeedDefaults}
@@ -610,6 +856,258 @@ export const AdminSchemaKeysPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* ================= MODAL IMPORT SCHEMA KEYS BẰNG JSON ================= */}
+      {showImportModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div
+            className={`w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl border shadow-2xl overflow-hidden ${
+              isDark ? 'bg-[#121824] border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
+            }`}
+          >
+            {/* Modal Header */}
+            <div className={`p-5 border-b flex items-center justify-between shrink-0 ${isDark ? 'border-slate-800' : 'border-stone-200'}`}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <FileJson className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base flex items-center gap-2">
+                    Import Schema Keys Bằng JSON
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      Tự Động Suy Luận
+                    </span>
+                  </h3>
+                  <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                    Nhập file JSON cấu hình template hoặc danh sách keys để nạp vào từ điển hệ thống
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowImportModal(false)}
+                className={`p-2 rounded-xl transition ${isDark ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-stone-100 text-stone-500'}`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body - Scrollable */}
+            <div className="p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
+              {/* Tabs: File Upload vs Raw Text */}
+              <div className="flex items-center justify-between gap-3">
+                <div className={`flex items-center p-1 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-stone-100 border-stone-200'}`}>
+                  <button
+                    type="button"
+                    onClick={() => setImportTab('file')}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                      importTab === 'file'
+                        ? 'bg-sky-500 text-white shadow-sm'
+                        : isDark ? 'text-slate-400 hover:text-white' : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    <Upload className="w-3.5 h-3.5" /> Tải Lên File .JSON
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportTab('text')}
+                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                      importTab === 'text'
+                        ? 'bg-sky-500 text-white shadow-sm'
+                        : isDark ? 'text-slate-400 hover:text-white' : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    <FileCode className="w-3.5 h-3.5" /> Dán Trực Tiếp JSON
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadSampleJson}
+                  className={`px-3 py-1.5 rounded-xl border text-[11px] font-bold flex items-center gap-1.5 transition ${
+                    isDark ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300' : 'bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-600'
+                  }`}
+                  title="Tải file mẫu JSON để tham khảo cấu trúc"
+                >
+                  <Download className="w-3.5 h-3.5 text-sky-400" /> Tải JSON Mẫu
+                </button>
+              </div>
+
+              {/* Tab 1: File Upload */}
+              {importTab === 'file' ? (
+                <div className="relative">
+                  <label
+                    className={`border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer transition text-center ${
+                      importFileName
+                        ? 'border-sky-500/50 bg-sky-500/5'
+                        : isDark
+                        ? 'border-slate-700 hover:border-sky-500/50 bg-slate-900/50 hover:bg-slate-900'
+                        : 'border-stone-300 hover:border-sky-500/50 bg-stone-50 hover:bg-sky-50/50'
+                    }`}
+                  >
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-3">
+                      <FileJson className="w-6 h-6" />
+                    </div>
+                    {importFileName ? (
+                      <div>
+                        <p className="text-xs font-bold text-sky-400">Đã chọn: {importFileName}</p>
+                        <p className={`text-[11px] mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                          Nhấp hoặc kéo thả file khác để thay thế
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-xs font-bold">Kéo thả file .json vào đây hoặc <span className="text-sky-400 underline">chọn từ máy tính</span></p>
+                        <p className={`text-[11px] mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                          Chấp nhận file <code className="text-sky-400">config.json</code> của template hoặc mảng định nghĩa keys
+                        </p>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              ) : (
+                /* Tab 2: Raw JSON Textarea */
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-bold">Nội Dung JSON</label>
+                    <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                      Hỗ trợ mảng [ &#123; keyName: "..." &#125; ] hoặc đối tượng &#123; "key": "value" &#125;
+                    </span>
+                  </div>
+                  <textarea
+                    rows={7}
+                    value={importJsonInput}
+                    onChange={(e) => {
+                      setImportJsonInput(e.target.value);
+                      parseJsonContent(e.target.value);
+                    }}
+                    placeholder={`{\n  "recipientName": "Bống",\n  "birthdayDate": "2026-10-25",\n  "moment1Photo": "https://...",\n  "moment1Text": "Khoảnh khắc 1"\n}`}
+                    className={`w-full p-3.5 rounded-2xl border font-mono text-xs focus:outline-none transition ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-sky-200 focus:border-sky-500'
+                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-sky-500'
+                    }`}
+                  />
+                </div>
+              )}
+
+              {/* Error Alert */}
+              {importError && (
+                <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{importError}</span>
+                </div>
+              )}
+
+              {/* Preview Table if Keys Detected */}
+              {parsedImportKeys.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <span className="text-xs font-bold">Danh Sách Keys Nhận Diện ({parsedImportKeys.length})</span>
+                    </div>
+                    <label className="flex items-center gap-2 text-xs cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={importOverwrite}
+                        onChange={(e) => setImportOverwrite(e.target.checked)}
+                        className="rounded border-slate-700 text-sky-500 focus:ring-sky-500"
+                      />
+                      <span className={isDark ? 'text-slate-300' : 'text-stone-700'}>
+                        Ghi đè nếu key đã tồn tại trong hệ thống
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className={`rounded-2xl border overflow-hidden max-h-56 overflow-y-auto ${
+                    isDark ? 'border-slate-800 bg-slate-900/50' : 'border-stone-200 bg-stone-50'
+                  }`}>
+                    <table className="w-full text-left text-xs">
+                      <thead className={`sticky top-0 ${isDark ? 'bg-slate-900 text-slate-400' : 'bg-stone-100 text-stone-600'}`}>
+                        <tr>
+                          <th className="p-2.5 pl-3">Tên Key</th>
+                          <th className="p-2.5">Nhãn Gợi Ý</th>
+                          <th className="p-2.5">Kiểu Trường</th>
+                          <th className="p-2.5">Nhóm Mục</th>
+                          <th className="p-2.5 text-center">Trạng Thái</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800">
+                        {parsedImportKeys.map((item, idx) => (
+                          <tr key={idx} className={isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-100/50'}>
+                            <td className="p-2.5 pl-3 font-mono font-bold text-sky-400">{item.keyName}</td>
+                            <td className="p-2.5">{item.label}</td>
+                            <td className="p-2.5">
+                              <span className={`px-2 py-0.5 rounded-lg text-[10px] font-semibold border ${
+                                FIELD_TYPE_CONFIG[item.fieldType as FieldType]?.color || 'bg-slate-500/10 text-slate-400'
+                              }`}>
+                                {item.fieldType}
+                              </span>
+                            </td>
+                            <td className="p-2.5 text-stone-400 text-[11px]">{item.sectionName}</td>
+                            <td className="p-2.5 text-center">
+                              {item.isExisting ? (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                  {importOverwrite ? 'Cập nhật' : 'Đã có (bỏ qua)'}
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                  Mới
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className={`p-4 border-t flex items-center justify-between shrink-0 ${isDark ? 'border-slate-800 bg-[#121824]' : 'border-stone-200 bg-stone-50'}`}>
+              <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                {parsedImportKeys.length > 0
+                  ? `Sẵn sàng import ${parsedImportKeys.length} keys`
+                  : 'Hãy chọn file hoặc dán JSON để xem trước'}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowImportModal(false)}
+                  className={`px-4 py-2 rounded-xl border text-xs font-semibold transition ${
+                    isDark ? 'border-slate-800 text-slate-400 hover:bg-slate-800' : 'border-stone-200 text-stone-600 hover:bg-stone-100'
+                  }`}
+                >
+                  Đóng
+                </button>
+                <button
+                  type="button"
+                  disabled={parsedImportKeys.length === 0 || isImporting}
+                  onClick={handleExecuteImport}
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-sky-500/20 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isImporting ? (
+                    'Đang Import...'
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5" />
+                      Xác Nhận Import ({parsedImportKeys.length} Keys)
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { TemplateFieldSchema, TemplateSectionGroup, TemplateSchemaKey } from '../types/schema';
 
 // Standard Vietnamese label dictionary for well-known keys
-const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
+export const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
   recipientName: {
     label: 'Tên Người Nhận',
     type: 'text',

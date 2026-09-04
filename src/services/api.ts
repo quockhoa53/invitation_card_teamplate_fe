@@ -337,6 +337,14 @@ export const api = {
     return res.data;
   },
 
+  importAdminSchemaKeys: async (
+    keys: Partial<TemplateSchemaKey>[],
+    overwrite: boolean = false
+  ): Promise<ApiResponse<{ totalSubmitted: number; createdCount: number; updatedCount: number; skippedCount: number; keys: TemplateSchemaKey[] }>> => {
+    const res = await apiClient.post('/admin/schema-keys/import', { keys, overwrite });
+    return res.data;
+  },
+
   deleteAdminSchemaKey: async (id: string): Promise<ApiResponse<void>> => {
     const res = await apiClient.delete(`/admin/schema-keys/${id}`);
     return res.data;
