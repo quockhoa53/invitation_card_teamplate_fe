@@ -193,6 +193,7 @@ export interface AdminStats {
     userName: string;
     amount: number;
     paymentMethod: string;
+    type?: string;
     status: string;
     createdAt: string;
   }[];

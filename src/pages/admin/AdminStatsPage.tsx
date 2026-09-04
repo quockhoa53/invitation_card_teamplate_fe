@@ -108,7 +108,7 @@ export const AdminStatsPage: React.FC = () => {
             {stats?.totalRevenue?.toLocaleString('vi-VN')} đ
           </p>
           <span className={`text-[11px] font-medium ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-            {stats?.totalTransactions} giao dịch
+            {stats?.totalTransactions} lượt nạp / thanh toán thành công
           </span>
         </div>
       </div>
@@ -128,6 +128,7 @@ export const AdminStatsPage: React.FC = () => {
                 <tr>
                   <th className="py-3 px-4">Mã Đơn</th>
                   <th className="py-3 px-4">Khách Hàng</th>
+                  <th className="py-3 px-4">Loại GD</th>
                   <th className="py-3 px-4">Số Tiền</th>
                   <th className="py-3 px-4">Phương Thức</th>
                   <th className="py-3 px-4">Trạng Thái</th>
@@ -135,33 +136,64 @@ export const AdminStatsPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-stone-100'}`}>
-                {stats.recentTransactions.map((tx, idx) => (
-                  <tr key={idx} className={`transition ${
-                    isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-50'
-                  }`}>
-                    <td className="py-3 px-4 font-mono font-bold text-amber-500">{tx.orderCode}</td>
-                    <td className="py-3 px-4">
-                      <p className="font-semibold">{tx.userName}</p>
-                      <p className="text-[10px] opacity-70">{tx.userEmail}</p>
-                    </td>
-                    <td className="py-3 px-4 font-bold text-emerald-500">
-                      {tx.amount.toLocaleString('vi-VN')} đ
-                    </td>
-                    <td className="py-3 px-4 font-mono">{tx.paymentMethod}</td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          tx.status === 'SUCCESS'
-                            ? 'bg-emerald-500/15 text-emerald-500'
-                            : 'bg-amber-500/15 text-amber-500'
-                        }`}
-                      >
-                        {tx.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 opacity-70">{tx.createdAt}</td>
-                  </tr>
-                ))}
+                {stats.recentTransactions.map((tx, idx) => {
+                  const isDeduct = tx.paymentMethod === 'WALLET' || tx.type === 'CARD_PURCHASE' || tx.orderCode?.startsWith('BUY') || tx.type === 'WITHDRAWAL' || tx.orderCode?.startsWith('WDR');
+                  const isPurchase = tx.type === 'CARD_PURCHASE' || tx.orderCode?.startsWith('BUY') || tx.paymentMethod === 'WALLET';
+                  const isWithdrawal = tx.type === 'WITHDRAWAL' || tx.orderCode?.startsWith('WDR');
+
+                  return (
+                    <tr key={idx} className={`transition ${
+                      isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-50'
+                    }`}>
+                      <td className="py-3 px-4 font-mono font-bold text-amber-500">{tx.orderCode}</td>
+                      <td className="py-3 px-4">
+                        <p className="font-semibold">{tx.userName}</p>
+                        <p className="text-[10px] opacity-70">{tx.userEmail}</p>
+                      </td>
+                      <td className="py-3 px-4">
+                        {isPurchase ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/20">
+                            Mua Thiệp
+                          </span>
+                        ) : isWithdrawal ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
+                            Rút Tiền
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                            Nạp Tiền
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 font-bold font-mono">
+                        {isDeduct ? (
+                          <span className="text-orange-400">-{tx.amount.toLocaleString('vi-VN')} đ</span>
+                        ) : (
+                          <span className="text-emerald-500">+{tx.amount.toLocaleString('vi-VN')} đ</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
+                        }`}>
+                          {tx.paymentMethod === 'WALLET' ? 'VÍ KD' : (tx.paymentMethod || 'VIETQR')}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            tx.status === 'SUCCESS'
+                              ? 'bg-emerald-500/15 text-emerald-500'
+                              : 'bg-amber-500/15 text-amber-500'
+                          }`}
+                        >
+                          {tx.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 opacity-70">{tx.createdAt}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
