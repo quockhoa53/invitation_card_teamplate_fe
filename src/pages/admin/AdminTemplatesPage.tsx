@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import { Template, TemplateCategory } from '../../types';
 import { DynamicCodeRenderer } from '../../templates/DynamicCodeRenderer';
+import { TemplateFormBuilder } from '../../components/admin/TemplateFormBuilder';
 import { Pagination } from '../../components/common/Pagination';
 import { UserCardSkeleton } from '../../components/common/Skeleton';
 import {
@@ -59,7 +60,7 @@ export const AdminTemplatesPage: React.FC = () => {
   const [templateType, setTemplateType] = useState<'BUILT_IN' | 'CUSTOM_CODE'>('CUSTOM_CODE');
 
   // Custom Code Tabs
-  const [activeCodeTab, setActiveCodeTab] = useState<'preview' | 'html' | 'css' | 'js' | 'config'>('preview');
+  const [activeCodeTab, setActiveCodeTab] = useState<'preview' | 'html' | 'css' | 'js' | 'config' | 'builder'>('preview');
   const [customHtml, setCustomHtml] = useState('');
   const [customCss, setCustomCss] = useState('');
   const [customJs, setCustomJs] = useState('');
@@ -1157,6 +1158,20 @@ document.getElementById('btn-music').addEventListener('click', () => {
                     >
                       Config (JSON) {defaultConfig && defaultConfig !== '{}' ? `(${defaultConfig.length} ký tự)` : ''}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCodeTab('builder')}
+                      className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition flex items-center gap-1.5 ${
+                        activeCodeTab === 'builder'
+                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
+                          : isDark
+                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                          : 'bg-stone-100 text-stone-600'
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      Trường Nhập (Form Builder)
+                    </button>
                   </div>
 
                   {customHtml && (
@@ -1262,6 +1277,17 @@ document.getElementById('btn-music').addEventListener('click', () => {
                         : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                     }`}
                   />
+                )}
+
+                {/* Form Builder Tab */}
+                {activeCodeTab === 'builder' && (
+                  <div className="p-1">
+                    <TemplateFormBuilder
+                      configString={defaultConfig}
+                      onChangeConfig={setDefaultConfig}
+                      isDark={isDark}
+                    />
+                  </div>
                 )}
               </div>
 

@@ -25,6 +25,9 @@ import {
 } from 'lucide-react';
 import { QrCodeModal } from '../common/QrCodeModal';
 import { MusicStoryPicker } from '../common/MusicStoryPicker';
+import { parseTemplateSchema, groupFieldsBySection } from '../../utils/templateSchema';
+import { TemplateSectionGroup } from '../../types/schema';
+import { DynamicFieldRenderer } from './DynamicFieldRenderer';
 
 interface CardEditorProps {
   initialCard?: Card | null;
@@ -65,50 +68,73 @@ export const CardEditor: React.FC<CardEditorProps> = ({
     }
   });
 
-  // Collapsible sections state
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
-    basic: false,
-    content: false,
-    map: false,
-    music: false,
-    photos: false,
-  });
+  // Dynamically parse schema and group fields by logical sections
+  const dynamicFields = React.useMemo(() => {
+    return parseTemplateSchema(selectedTemplate.defaultConfig, customData);
+  }, [selectedTemplate.defaultConfig]);
 
-  const toggleSection = (sectionKey: string) => {
+  const dynamicSections = React.useMemo(() => {
+    return groupFieldsBySection(dynamicFields);
+  }, [dynamicFields]);
+
+  // Collapsible sections state
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (sectionId: string) => {
     setCollapsedSections((prev) => ({
       ...prev,
-      [sectionKey]: !prev[sectionKey],
+      [sectionId]: !prev[sectionId],
     }));
   };
 
-  const areAllCollapsed = Object.values(collapsedSections).every(Boolean);
+  const isCollapsed = (sectionId: string) => Boolean(collapsedSections[sectionId]);
+
+  const areAllCollapsed = React.useMemo(() => {
+    const allIds = ['basic', ...dynamicSections.map((s) => s.id)];
+    return allIds.length > 0 && allIds.every((id) => Boolean(collapsedSections[id]));
+  }, [collapsedSections, dynamicSections]);
 
   const toggleAllSections = () => {
+    const allIds = ['basic', ...dynamicSections.map((s) => s.id)];
     const nextState = !areAllCollapsed;
-    setCollapsedSections({
-      basic: nextState,
-      content: nextState,
-      map: nextState,
-      music: nextState,
-      photos: nextState,
-    });
+    const nextMap: Record<string, boolean> = {};
+    for (const id of allIds) {
+      nextMap[id] = nextState;
+    }
+    setCollapsedSections(nextMap);
   };
 
-  // Check if template actually supports photo albums
-  const supportsPhotos = Boolean(
-    // 1. If defaultConfig explicitly contains a photos array definition
-    (selectedTemplate?.defaultConfig && /"photos"\s*:\s*\[/i.test(selectedTemplate.defaultConfig)) ||
-    // 2. If existing card or data already has photos configured
-    (Array.isArray(customData?.photos) && customData.photos.length > 0) ||
-    // 3. If dynamic custom HTML/JS explicitly references data.photos or photos
-    (selectedTemplate?.customHtml && /photos/i.test(selectedTemplate.customHtml)) ||
-    // 4. If standard template slug explicitly includes photos (nguoi-yeu, ban-be, vinyl)
-    (selectedTemplate?.slug && (
-      selectedTemplate.slug.includes('nguoi-yeu') ||
-      selectedTemplate.slug.includes('ban-be') ||
-      selectedTemplate.slug.includes('vinyl')
-    ))
-  );
+  const getSectionIcon = (secTitle: string) => {
+    const lower = secTitle.toLowerCase();
+    if (lower.includes('lời chúc') || lower.includes('nội dung')) return <Sparkles className="w-4 h-4" />;
+    if (lower.includes('thời gian') || lower.includes('địa điểm')) return <Calendar className="w-4 h-4" />;
+    if (lower.includes('bản đồ') || lower.includes('tọa độ') || lower.includes('khoảng cách')) return <Sparkles className="w-4 h-4" />;
+    if (lower.includes('ảnh') || lower.includes('album')) return <ImageIcon className="w-4 h-4" />;
+    if (lower.includes('nhạc')) return <Music className="w-4 h-4" />;
+    return <Sparkles className="w-4 h-4" />;
+  };
+
+  const getSectionSummary = (section: TemplateSectionGroup) => {
+    const lower = section.title.toLowerCase();
+    if (lower.includes('nhạc')) {
+      return customData.musicTitle || (customData.musicUrl ? 'Đã chọn bài hát' : 'Chưa chọn nhạc');
+    }
+    if (lower.includes('ảnh') || lower.includes('album')) {
+      const count = (customData.photos || []).length;
+      return count > 0 ? `${count} ảnh đã thêm` : 'Chưa có ảnh nào';
+    }
+    if (lower.includes('lời chúc')) {
+      if (customData.recipientName || customData.senderName) {
+        return `${customData.recipientName ? `Gửi: ${customData.recipientName}` : ''}${
+          customData.recipientName && customData.senderName ? ' • ' : ''
+        }${customData.senderName ? `Từ: ${customData.senderName}` : ''}`;
+      }
+    }
+    if (lower.includes('bản đồ')) {
+      if (customData.distanceKm) return `Khoảng cách: ${customData.distanceKm} km`;
+    }
+    return `${section.fields.length} mục tùy biến`;
+  };
 
   const [devicePreview, setDevicePreview] = useState<'mobile' | 'desktop'>('mobile');
   const [loading, setLoading] = useState(false);
@@ -445,689 +471,65 @@ export const CardEditor: React.FC<CardEditorProps> = ({
               )}
             </div>
 
-            {/* Section 2: Template Content Customization */}
-            <div className={`rounded-2xl border transition-all ${
-              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-            }`}>
-              <button
-                type="button"
-                onClick={() => toggleSection('content')}
-                className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
-              >
-                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
-                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                    <Sparkles className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
-                      Nội Dung Lời Chúc & Tùy Chỉnh
-                    </h3>
-                    {(customData.recipientName || customData.senderName) ? (
-                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                        {customData.recipientName ? `Người nhận: ${customData.recipientName}` : ''}
-                        {customData.recipientName && customData.senderName ? ' • ' : ''}
-                        {customData.senderName ? `Người gửi: ${customData.senderName}` : ''}
-                      </p>
-                    ) : (
-                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                        Tùy biến lời chúc, ngày kỷ niệm & thông điệp
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
-                  <span className="text-[11px] hidden sm:inline font-medium">
-                    {collapsedSections.content ? 'Mở rộng' : 'Thu gọn'}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.content ? '-rotate-90' : ''}`} />
-                </div>
-              </button>
-
-              {!collapsedSections.content && (
-                <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
-                  <div className="pt-4 space-y-4">
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                    Tên người nhận
-                  </label>
-                  <input
-                    type="text"
-                    value={customData.recipientName || ''}
-                    onChange={(e) => updateField('recipientName', e.target.value)}
-                    placeholder="Em Yêu, Bạn Thân, Quý Khách..."
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                    Tên người gửi
-                  </label>
-                  <input
-                    type="text"
-                    value={customData.senderName || ''}
-                    onChange={(e) => updateField('senderName', e.target.value)}
-                    placeholder="Anh, Tôi, Ban Tổ Chức..."
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                  Tiêu đề chúc mừng
-                </label>
-                <input
-                  type="text"
-                  value={customData.greetingTitle || ''}
-                  onChange={(e) => updateField('greetingTitle', e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                    isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+            {/* Dynamic Template Sections rendered via Schema Engine */}
+            {dynamicSections.map((section) => {
+              const isSecCollapsed = isCollapsed(section.id);
+              return (
+                <div
+                  key={section.id}
+                  className={`rounded-2xl border transition-all ${
+                    isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
                   }`}
-                />
-              </div>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                  {selectedTemplate.slug.includes('map') || customData.distanceKm !== undefined
-                    ? '💌 Lời nhắn gửi yêu thương (Xuất hiện cùng ảnh khi khoảng cách về 0 KM)'
-                    : 'Thông điệp / Lời chúc chính'}
-                </label>
-                <textarea
-                  rows={4}
-                  value={customData.greetingMessage || ''}
-                  onChange={(e) => updateField('greetingMessage', e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none resize-none ${
-                    isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                  }`}
-                />
-              </div>
-
-              {/* Date pickers depending on template type */}
-              {customData.birthdayDate !== undefined && (
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
-                    isDark ? 'text-slate-300' : 'text-stone-700'
-                  }`}>
-                    <Calendar className="w-3.5 h-3.5 text-orange-500" /> Ngày sinh nhật
-                  </label>
-                  <input
-                    type="date"
-                    value={customData.birthdayDate || ''}
-                    onChange={(e) => updateField('birthdayDate', e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-              )}
-
-              {customData.anniversaryStartDate !== undefined && (
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
-                    isDark ? 'text-slate-300' : 'text-stone-700'
-                  }`}>
-                    <Calendar className="w-3.5 h-3.5 text-amber-500" /> Ngày bắt đầu yêu nhau (đếm ngày)
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={customData.anniversaryStartDate ? customData.anniversaryStartDate.substring(0, 16) : ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      updateField('anniversaryStartDate', val);
-                      if (val) {
-                        const start = new Date(val);
-                        const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
-                        const years = Math.max(1, Math.floor(diffDays / 365));
-                        if (customData.milestoneUnit === 'YEARS') {
-                          updateField('milestoneText', `${years} Năm Yêu Nhau`);
-                        } else if (customData.milestoneUnit === 'DAYS' || !customData.milestoneUnit) {
-                          updateField('milestoneText', `${diffDays} Ngày Yêu Nhau`);
-                        }
-                      }
-                    }}
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-              )}
-
-              {(customData.anniversaryStartDate !== undefined ||
-                selectedTemplate.category === 'LOVE_ANNIVERSARY' ||
-                selectedTemplate.slug?.includes('mua') ||
-                selectedTemplate.slug?.includes('rain') ||
-                selectedTemplate.slug?.includes('love') ||
-                selectedTemplate.slug?.includes('ky-niem') ||
-                selectedTemplate.title?.toLowerCase().includes('mưa') ||
-                selectedTemplate.title?.toLowerCase().includes('love') ||
-                selectedTemplate.title?.toLowerCase().includes('kỷ niệm') ||
-                customData.fallingWords !== undefined ||
-                customData.keyword1 !== undefined) && (
-                <div className="space-y-3 pt-2 border-t border-dashed border-slate-700/50">
-                  {/* Mốc Kỷ Niệm: Bao Nhiêu Ngày hay Bao Nhiêu Năm */}
-                  <div>
-                    <label className={`block text-xs font-bold mb-1.5 flex items-center gap-1.5 ${
-                      isDark ? 'text-cyan-300' : 'text-stone-800'
-                    }`}>
-                      <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Kiểu hiển thị mốc kỷ niệm
-                    </label>
-                    <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-700 text-xs mb-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          updateField('milestoneUnit', 'DAYS');
-                          const start = customData.anniversaryStartDate ? new Date(customData.anniversaryStartDate) : new Date(Date.now() - 1000 * 86400000);
-                          const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
-                          updateField('milestoneText', `${diffDays} Ngày Yêu Nhau`);
-                        }}
-                        className={`py-1 px-2 rounded-lg font-semibold transition ${
-                          (customData.milestoneUnit || 'DAYS') === 'DAYS'
-                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Theo Số Ngày
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          updateField('milestoneUnit', 'YEARS');
-                          const start = customData.anniversaryStartDate ? new Date(customData.anniversaryStartDate) : new Date(Date.now() - 1000 * 86400000);
-                          const diffDays = Math.max(1, Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24)));
-                          const years = Math.max(1, Math.floor(diffDays / 365));
-                          updateField('milestoneText', `${years} Năm Yêu Nhau`);
-                        }}
-                        className={`py-1 px-2 rounded-lg font-semibold transition ${
-                          customData.milestoneUnit === 'YEARS'
-                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Theo Số Năm
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => updateField('milestoneUnit', 'CUSTOM')}
-                        className={`py-1 px-2 rounded-lg font-semibold transition ${
-                          customData.milestoneUnit === 'CUSTOM'
-                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        Tùy Biến
-                      </button>
-                    </div>
-
-                    <input
-                      type="text"
-                      value={customData.milestoneText || ''}
-                      onChange={(e) => updateField('milestoneText', e.target.value)}
-                      placeholder={
-                        customData.milestoneUnit === 'YEARS'
-                          ? 'Ví dụ: 3 Năm Bên Nhau'
-                          : customData.milestoneUnit === 'CUSTOM'
-                          ? 'Ví dụ: Kỷ Niệm 08/06/2023'
-                          : 'Ví dụ: 1000 Ngày Yêu Nhau (để trống sẽ tự tính số ngày)'
-                      }
-                      className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-700 text-cyan-300 focus:border-cyan-400'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-cyan-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* 5 Từ Khóa Rơi (Keywords) */}
-                  <div className="space-y-2 pt-1">
-                    <label className={`block text-xs font-bold flex items-center gap-1.5 ${
-                      isDark ? 'text-cyan-300' : 'text-stone-800'
-                    }`}>
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" /> 5 Từ khóa phát sáng rơi liên tục (Nhập 5 câu bạn thích):
-                    </label>
-
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 1:</span>
-                        <input
-                          type="text"
-                          value={customData.keyword1 || ''}
-                          onChange={(e) => updateField('keyword1', e.target.value)}
-                          placeholder="Ví dụ: Em yêu anh / Yêu em nhiều"
-                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
-                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                          }`}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 2:</span>
-                        <input
-                          type="text"
-                          value={customData.keyword2 || ''}
-                          onChange={(e) => updateField('keyword2', e.target.value)}
-                          placeholder="Ví dụ: Thành công / Luôn hạnh phúc"
-                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
-                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                          }`}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 3:</span>
-                        <input
-                          type="text"
-                          value={customData.keyword3 || ''}
-                          onChange={(e) => updateField('keyword3', e.target.value)}
-                          placeholder="Ví dụ: Vững vàng / Bình yên"
-                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
-                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                          }`}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 4:</span>
-                        <input
-                          type="text"
-                          value={customData.keyword4 || ''}
-                          onChange={(e) => updateField('keyword4', e.target.value)}
-                          placeholder="Ví dụ: Chúc anh luôn vui vẻ / Nụ cười rạng rỡ"
-                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
-                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                          }`}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-400 w-16 shrink-0">Từ khóa 5:</span>
-                        <input
-                          type="text"
-                          value={customData.keyword5 || ''}
-                          onChange={(e) => updateField('keyword5', e.target.value)}
-                          placeholder="Ví dụ: Happy Anniversary / Mãi bên nhau"
-                          className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
-                            isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {customData.eventDate !== undefined && (
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${
-                    isDark ? 'text-slate-300' : 'text-stone-700'
-                  }`}>
-                    <Calendar className="w-3.5 h-3.5 text-emerald-500" /> Ngày & Giờ sự kiện
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={customData.eventDate ? customData.eventDate.substring(0, 16) : ''}
-                    onChange={(e) => updateField('eventDate', e.target.value)}
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-              )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Section 2.5: Love Map Coordinates & Reunion Photo Settings */}
-            {(selectedTemplate.slug.includes('map') || customData.distanceKm !== undefined || customData.senderAvatar !== undefined) && (
-              <div className={`rounded-2xl border transition-all ${
-                isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-              }`}>
-                <button
-                  type="button"
-                  onClick={() => toggleSection('map')}
-                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
-                    <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
-                        Cấu Hình Bản Đồ Tọa Độ & Khoảng Cách
-                      </h3>
-                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                        {customData.distanceKm ? `Khoảng cách: ${customData.distanceKm} km` : 'Tọa độ 2 vị trí & ảnh đoàn tụ'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
-                    <span className="text-[11px] hidden sm:inline font-medium">
-                      {collapsedSections.map ? 'Mở rộng' : 'Thu gọn'}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.map ? '-rotate-90' : ''}`} />
-                  </div>
-                </button>
-
-                {!collapsedSections.map && (
-                  <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
-                    <div className="pt-4 space-y-4">
-
-                {/* Avatar 1 & Location 1 */}
-                <div className={`p-3.5 rounded-xl border space-y-3 ${
-                  isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-stone-50 border-stone-200'
-                }`}>
-                  <span className="text-xs font-bold text-orange-500 flex items-center gap-1.5">
-                    📍 Vị Trí 1 (Người Gửi / Bạn Trai)
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className={`block text-[11px] font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-stone-600'}`}>
-                        Link Avatar 1 (URL)
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={customData.senderAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}
-                          alt="Avatar 1"
-                          className="w-8 h-8 rounded-full object-cover border border-orange-500/50 shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={customData.senderAvatar || ''}
-                          onChange={(e) => updateField('senderAvatar', e.target.value)}
-                          placeholder="https://..."
-                          className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] focus:outline-none ${
-                            isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-stone-200'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className={`block text-[11px] font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-stone-600'}`}>
-                        Tên Vị Trí / Tọa Độ 1
-                      </label>
-                      <input
-                        type="text"
-                        value={customData.senderLocation || ''}
-                        onChange={(e) => updateField('senderLocation', e.target.value)}
-                        placeholder="Hà Nội (21.0285° N)"
-                        className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] focus:outline-none ${
-                          isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-stone-200'
-                        }`}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Avatar 2 & Location 2 */}
-                <div className={`p-3.5 rounded-xl border space-y-3 ${
-                  isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-stone-50 border-stone-200'
-                }`}>
-                  <span className="text-xs font-bold text-amber-500 flex items-center gap-1.5">
-                    📍 Vị Trí 2 (Người Nhận / Bạn Gái)
-                  </span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className={`block text-[11px] font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-stone-600'}`}>
-                        Link Avatar 2 (URL)
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={customData.recipientAvatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100'}
-                          alt="Avatar 2"
-                          className="w-8 h-8 rounded-full object-cover border border-amber-500/50 shrink-0"
-                        />
-                        <input
-                          type="text"
-                          value={customData.recipientAvatar || ''}
-                          onChange={(e) => updateField('recipientAvatar', e.target.value)}
-                          placeholder="https://..."
-                          className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] focus:outline-none ${
-                            isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-stone-200'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className={`block text-[11px] font-semibold mb-1 ${isDark ? 'text-slate-400' : 'text-stone-600'}`}>
-                        Tên Vị Trí / Tọa Độ 2
-                      </label>
-                      <input
-                        type="text"
-                        value={customData.recipientLocation || ''}
-                        onChange={(e) => updateField('recipientLocation', e.target.value)}
-                        placeholder="TP. Hồ Chí Minh (10.8231° N)"
-                        className={`w-full px-2.5 py-1.5 rounded-xl border text-[11px] focus:outline-none ${
-                          isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-stone-200'
-                        }`}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Initial Distance KM */}
-                <div>
-                  <label className={`block text-xs font-semibold mb-1 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                    Khoảng Cách Địa Lý Ban Đầu (km)
-                  </label>
-                  <input
-                    type="number"
-                    value={customData.distanceKm || '1720'}
-                    onChange={(e) => updateField('distanceKm', e.target.value)}
-                    placeholder="1720"
-                    className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                    }`}
-                  />
-                </div>
-
-                {/* Reunion Photo */}
-                <div className="space-y-2">
-                  <label className={`block text-xs font-semibold ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                    Ảnh Kỷ Niệm / Ôm Nhau (Xuất hiện sau khi 2 avatar lại gần nhau 0km)
-                  </label>
-                  <div className="flex gap-3 items-center">
-                    <img
-                      src={customData.reunionPhotoUrl || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300'}
-                      alt="Ảnh đoàn tụ"
-                      className="w-16 h-16 rounded-xl object-cover border border-orange-500/40 bg-slate-950 shrink-0"
-                    />
-                    <input
-                      type="text"
-                      value={customData.reunionPhotoUrl || ''}
-                      onChange={(e) => updateField('reunionPhotoUrl', e.target.value)}
-                      placeholder="Nhập link ảnh kỷ niệm (https://...)"
-                      className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none ${
-                        isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-stone-50 border-stone-200'
-                      }`}
-                    />
-                  </div>
-                </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Section 3: Music & Sound (Story Style Picker) */}
-            <div className={`rounded-2xl border transition-all ${
-              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-            }`}>
-              <button
-                type="button"
-                onClick={() => toggleSection('music')}
-                className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
-              >
-                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
-                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                    <Music className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
-                        Nhạc Nền Thiệp Mời
-                      </h3>
-                      {customData.musicTitle && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-500 font-medium truncate max-w-[160px]">
-                          {customData.musicTitle}
-                        </span>
-                      )}
-                    </div>
-                    <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                      {customData.musicTitle || (customData.musicUrl ? 'Nhạc Tùy Chỉnh (Custom URL)' : 'Kho 20+ giai điệu không bản quyền')}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
-                  <span className="text-[11px] hidden sm:inline font-medium">
-                    {collapsedSections.music ? 'Mở rộng' : 'Thu gọn'}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.music ? '-rotate-90' : ''}`} />
-                </div>
-              </button>
-
-              {!collapsedSections.music && (
-                <div className={`p-5 pt-0 border-t ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
-                  <div className="pt-4">
-                    <MusicStoryPicker
-                      selectedMusicUrl={customData.musicUrl || ''}
-                      selectedMusicTitle={customData.musicTitle || ''}
-                      onSelectMusic={(url, trackTitle) => {
-                        updateField('musicUrl', url);
-                        updateField('musicTitle', trackTitle);
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Section 4: Photos Gallery - ONLY rendered when template supports photos */}
-            {supportsPhotos && (
-              <div className={`rounded-2xl border transition-all ${
-                isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-              }`}>
-                <div className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition">
                   <button
                     type="button"
-                    onClick={() => toggleSection('photos')}
-                    className="flex items-center gap-2.5 min-w-0 flex-1 pr-2 text-left"
+                    onClick={() => toggleSection(section.id)}
+                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
-                      <ImageIcon className="w-4 h-4" />
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                      <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                        {getSectionIcon(section.title)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                          {section.title}
+                        </h3>
+                        <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                          {getSectionSummary(section)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
-                        Album Kỷ Niệm ({(customData.photos || []).length})
-                      </h3>
-                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                        {(customData.photos || []).length > 0
-                          ? `${(customData.photos || []).length} hình ảnh kỷ niệm đã thêm`
-                          : 'Chưa có ảnh nào'}
-                      </p>
+                    <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
+                      <span className="text-[11px] hidden sm:inline font-medium">
+                        {isSecCollapsed ? 'Mở rộng' : 'Thu gọn'}
+                      </span>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isSecCollapsed ? '-rotate-90' : ''
+                        }`}
+                      />
                     </div>
                   </button>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={addPhoto}
-                      className="px-2.5 py-1.5 rounded-lg bg-orange-500/15 text-orange-500 hover:bg-orange-500/25 text-xs font-bold flex items-center gap-1 transition"
-                    >
-                      <Plus className="w-3.5 h-3.5" /> Thêm Ảnh
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => toggleSection('photos')}
-                      className="text-stone-400 hover:text-orange-500 transition p-1"
-                    >
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.photos ? '-rotate-90' : ''}`} />
-                    </button>
-                  </div>
-                </div>
-
-                {!collapsedSections.photos && (
-                  <div className={`p-5 pt-0 border-t space-y-3 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
-                    <div className="pt-4 space-y-3">
-                      {(customData.photos || []).length === 0 ? (
-                        <p className={`text-xs text-center py-4 italic ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                          Chưa có ảnh kỷ niệm nào. Nhấn "+ Thêm Ảnh" ở trên để thêm hình ảnh vào thiệp.
-                        </p>
-                      ) : (
-                        (customData.photos || []).map((photo: any, idx: number) => (
-                          <div
-                            key={idx}
-                            className={`p-3 rounded-xl border flex gap-3 items-center ${
-                              isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-                            }`}
-                          >
-                            <img
-                              src={photo.url}
-                              alt="preview"
-                              className="w-16 h-16 rounded-lg object-cover bg-slate-950 shrink-0"
-                            />
-
-                            <div className="flex-1 space-y-2">
-                              <input
-                                type="text"
-                                value={photo.url}
-                                onChange={(e) => updatePhoto(idx, 'url', e.target.value)}
-                                placeholder="Link ảnh (URL)"
-                                className={`w-full px-2.5 py-1 rounded-lg border text-[11px] font-mono ${
-                                  isDark
-                                    ? 'bg-slate-950 border-slate-700 text-white'
-                                    : 'bg-white border-stone-200 text-stone-900'
-                                }`}
-                              />
-                              <input
-                                type="text"
-                                value={photo.caption || ''}
-                                onChange={(e) => updatePhoto(idx, 'caption', e.target.value)}
-                                placeholder="Chú thích ảnh..."
-                                className={`w-full px-2.5 py-1 rounded-lg border text-[11px] ${
-                                  isDark
-                                    ? 'bg-slate-950 border-slate-700 text-white'
-                                    : 'bg-white border-stone-200 text-stone-900'
-                                }`}
-                              />
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => removePhoto(idx)}
-                              className={`p-1.5 transition ${
-                                isDark ? 'text-slate-400 hover:text-orange-400' : 'text-stone-400 hover:text-orange-600'
-                              }`}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))
-                      )}
+                  {!isSecCollapsed && (
+                    <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                      <div className="pt-4 space-y-4">
+                        {section.fields.map((field) => (
+                          <DynamicFieldRenderer
+                            key={field.key}
+                            field={field}
+                            value={customData[field.key]}
+                            onChange={(val) => updateField(field.key, val)}
+                            onUpdateMusicTitle={(mTitle) => updateField('musicTitle', mTitle)}
+                            isDark={isDark}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              );
+            })}
           </form>
         </div>
 
