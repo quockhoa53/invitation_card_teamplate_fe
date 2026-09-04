@@ -21,6 +21,7 @@ import {
   CreditCard,
   X,
   Gift,
+  ArrowRight,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useToast } from '../context/ToastContext';
@@ -52,6 +53,7 @@ export const PaymentPage: React.FC = () => {
 
   const [searchParams] = useSearchParams();
   const urlOrderCode = searchParams.get('orderCode');
+  const urlTemplateId = searchParams.get('templateId');
 
   const [selectedAmount, setSelectedAmount] = useState<number>(50000);
   const [paymentOrder, setPaymentOrder] = useState<PaymentOrder | null>(null);
@@ -155,15 +157,24 @@ export const PaymentPage: React.FC = () => {
     }
   };
 
-  const triggerSuccessCelebration = () => {
+  const triggerSuccessCelebration = async () => {
     setIsSuccess(true);
-    refreshUser();
+    await refreshUser();
     confetti({
       particleCount: 120,
       spread: 90,
       origin: { y: 0.6 },
     });
-    toast.success('Nạp tiền thành công!', 'Số dư tài khoản của bạn đã được cập nhật.');
+    if (urlTemplateId) {
+      try {
+        await api.purchaseTemplate(urlTemplateId);
+        toast.success('Thanh toán & Mở khóa thành công!', 'Bạn đã sở hữu mẫu thiệp này.');
+      } catch (e) {
+        toast.success('Thanh toán thành công!', 'Số dư tài khoản của bạn đã được cập nhật.');
+      }
+    } else {
+      toast.success('Nạp tiền thành công!', 'Số dư tài khoản của bạn đã được cập nhật.');
+    }
   };
 
   // Real-time polling to check if payment is confirmed or underpaid
@@ -504,10 +515,11 @@ export const PaymentPage: React.FC = () => {
                     Nạp Tiếp
                   </button>
                   <a
-                    href="/dashboard"
-                    className="px-6 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition"
+                    href={urlTemplateId ? `/editor?templateId=${urlTemplateId}` : "/dashboard"}
+                    className="px-6 py-2.5 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition shadow-md shadow-orange-500/20 flex items-center gap-1.5"
                   >
-                    Về Trang Cá Nhân
+                    <span>{urlTemplateId ? 'Bắt Đầu Tạo Thiệp Ngay' : 'Về Trang Cá Nhân'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </div>
