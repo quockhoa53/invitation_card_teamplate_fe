@@ -326,6 +326,17 @@ export const Home: React.FC = () => {
           </span>
         </Link>
       </div>
+
+      {/* Modal Purchase & Unlock Template */}
+      <PurchaseTemplateModal
+        template={purchasingTemplate}
+        isOpen={!!purchasingTemplate}
+        onClose={() => setPurchasingTemplate(null)}
+        onSuccess={(tpl) => {
+          setPurchasingTemplate(null);
+          navigate(`/editor?templateId=${tpl.id}`);
+        }}
+      />
     </div>
   );
 };
