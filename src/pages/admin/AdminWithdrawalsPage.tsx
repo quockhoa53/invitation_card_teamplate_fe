@@ -86,12 +86,12 @@ export const AdminWithdrawalsPage: React.FC = () => {
   };
 
   const handleReject = (item: WithdrawalItem) => {
-    const reason = window.prompt('Nhập lý do từ chối (Tiền sẽ được hoàn trả lại vào ví người dùng):', 'Thông tin số tài khoản hoặc ngân hàng không chính xác');
+    const reason = window.prompt('Nhập lý do từ chối (Tiền sẽ được hoàn trả lại vào Ví KD người dùng):', 'Thông tin số tài khoản hoặc ngân hàng không chính xác');
     if (!reason) return;
 
     confirmModal({
       title: 'Từ Chối Yêu Cầu Rút Tiền',
-      message: `Bạn có chắc chắn từ chối yêu cầu rút ${item.amount.toLocaleString('vi-VN')} đ của "${item.accountHolder}"?\n\nSố tiền này sẽ được HOÀN TRẢ lại vào Ví Tiền Nạp của người dùng.`,
+      message: `Bạn có chắc chắn từ chối yêu cầu rút ${item.amount.toLocaleString('vi-VN')} đ của "${item.accountHolder}"?\n\nSố tiền này sẽ được HOÀN TRẢ lại vào Ví KD của người dùng.`,
       confirmText: '❌ Từ Chối & Hoàn Tiền',
       type: 'danger',
       onConfirm: async () => {

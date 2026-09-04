@@ -200,7 +200,7 @@ export const Navbar: React.FC = () => {
                     <div className={`px-4 py-2.5 border-b ${isDark ? 'border-slate-800' : 'border-stone-100'}`}>
                       <p className="text-[11px] font-medium opacity-70 truncate">{user?.email}</p>
                       <p className="text-xs font-bold text-orange-500 mt-0.5">
-                        Số dư: {user?.creditsBalance?.toLocaleString('vi-VN')} đ
+                        Số dư Ví KD: {user?.creditsBalance?.toLocaleString('vi-VN')} đ
                       </p>
                     </div>
 

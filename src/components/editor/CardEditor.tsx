@@ -141,7 +141,7 @@ export const CardEditor: React.FC<CardEditorProps> = ({
       const msg = err.response?.data?.message || err.message || 'Lưu thiệp thất bại';
       if (msg.includes('INSUFFICIENT_CREDITS')) {
         confirmModal({
-          title: 'Số Dư Ví Không Đủ',
+          title: 'Số Dư Ví KD Không Đủ',
           message: `${msg.replace('INSUFFICIENT_CREDITS: ', '')}\n\nBạn có muốn chuyển sang trang Nạp Tiền ngay bây giờ không?`,
           confirmText: '💳 Đi Đến Nạp Tiền',
           type: 'warning',

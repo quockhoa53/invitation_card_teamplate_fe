@@ -324,7 +324,7 @@ export const AdminTransactionsPage: React.FC = () => {
                         )}
                         {t.status === 'SETTLED_TO_WALLET' && (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
-                            💼 Đã Nạp Vào Ví
+                            💼 Đã Nạp Vào Ví KD
                           </span>
                         )}
                         {t.status === 'CANCELLED' && (

@@ -220,14 +220,14 @@ export const PaymentPage: React.FC = () => {
       const res = await api.settleUnderpaidToWallet(paymentOrder.orderCode);
       if (res.success) {
         toast.success(
-          'Đã nạp số tiền chuyển thiếu vào ví!',
-          `Đã cộng ${paymentOrder.actualAmount?.toLocaleString('vi-VN')} đ vào ví khả dụng.`
+          'Đã nạp số tiền chuyển thiếu vào Ví KD!',
+          `Đã cộng ${paymentOrder.actualAmount?.toLocaleString('vi-VN')} đ vào Ví KD khả dụng.`
         );
         refreshUser();
         setPaymentOrder(null);
       }
     } catch (err: any) {
-      toast.error('Không thể nạp vào ví', err.response?.data?.message);
+      toast.error('Không thể nạp vào Ví KD', err.response?.data?.message);
     } finally {
       setUnderpaidActionLoading(false);
     }
@@ -320,6 +320,7 @@ export const PaymentPage: React.FC = () => {
 
   const realBalance = user?.realBalance ?? (user?.creditsBalance ?? 0);
   const bonusBalance = user?.bonusBalance ?? 0;
+  const isTransactionOrSuccess = Boolean(paymentOrder || isSuccess || searchParams.get('orderCode'));
 
   return (
     <div className={`min-h-screen py-10 transition-colors ${
@@ -327,56 +328,58 @@ export const PaymentPage: React.FC = () => {
     }`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
 
-        {/* User Balance Overview Cards */}
-        <div className={`p-6 sm:p-8 rounded-3xl border ${
-          isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-        }`}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
-                  <Wallet className="w-5 h-5" />
-                </span>
-                <h2 className="font-editorial text-xl sm:text-2xl font-bold">Ví Cá Nhân Của Bạn</h2>
-              </div>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                Tổng số dư ví: <strong className="text-lg text-emerald-400 font-mono font-bold">{(realBalance + bonusBalance).toLocaleString('vi-VN')} đ</strong>
-              </p>
-            </div>
-
-            {/* Balances Breakdown */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
-                isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-              }`}>
-                <span className="text-[11px] text-slate-400 block font-medium">Tiền Nạp Thật (Khả Dụng Rút)</span>
-                <span className="font-mono font-bold text-sm text-emerald-400">
-                  {realBalance.toLocaleString('vi-VN')} đ
-                </span>
+        {/* User Balance Overview Cards - Only displayed when not in transaction or success */}
+        {!isTransactionOrSuccess && (
+          <div className={`p-6 sm:p-8 rounded-3xl border ${
+            isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+          }`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
+                    <Wallet className="w-5 h-5" />
+                  </span>
+                  <h2 className="font-editorial text-xl sm:text-2xl font-bold">Ví KD</h2>
+                </div>
+                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Tổng số dư Ví KD: <strong className="text-lg text-emerald-400 font-mono font-bold">{(realBalance + bonusBalance).toLocaleString('vi-VN')} đ</strong>
+                </p>
               </div>
 
-              <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
-                isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-              }`}>
-                <span className="text-[11px] text-slate-400 block font-medium">Tiền Thưởng (Chỉ Mua Thiệp)</span>
-                <span className="font-mono font-bold text-sm text-amber-400">
-                  +{bonusBalance.toLocaleString('vi-VN')} đ
-                </span>
-              </div>
+              {/* Balances Breakdown */}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
+                  isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
+                }`}>
+                  <span className="text-[11px] text-slate-400 block font-medium">Tiền Nạp Thật (Khả Dụng Rút)</span>
+                  <span className="font-mono font-bold text-sm text-emerald-400">
+                    {realBalance.toLocaleString('vi-VN')} đ
+                  </span>
+                </div>
 
-              <button
-                onClick={() => {
-                  setWithdrawAmount(Math.min(realBalance, 50000));
-                  setShowWithdrawModal(true);
-                }}
-                disabled={realBalance < 10000}
-                className="px-4 py-3 rounded-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center gap-1.5"
-              >
-                <ArrowDownToLine className="w-4 h-4" /> Rút Tiền Về Ngân Hàng
-              </button>
+                <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
+                  isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
+                }`}>
+                  <span className="text-[11px] text-slate-400 block font-medium">Tiền Thưởng (Chỉ Mua Thiệp)</span>
+                  <span className="font-mono font-bold text-sm text-amber-400">
+                    +{bonusBalance.toLocaleString('vi-VN')} đ
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setWithdrawAmount(Math.min(realBalance, 50000));
+                    setShowWithdrawModal(true);
+                  }}
+                  disabled={realBalance < 10000}
+                  className="px-4 py-3 rounded-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center gap-1.5"
+                >
+                  <ArrowDownToLine className="w-4 h-4" /> Rút Tiền Về Ngân Hàng
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Main Section: Create Order or View QR */}
         {!paymentOrder ? (
@@ -500,7 +503,7 @@ export const PaymentPage: React.FC = () => {
                 </div>
                 <h3 className="font-editorial text-2xl font-bold">Thanh Toán Thành Công!</h3>
                 <p className={`text-xs ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
-                  Số dư của bạn đã được cộng thêm <strong>{paymentOrder.amount.toLocaleString('vi-VN')} đ</strong>.
+                  Số dư Ví KD của bạn đã được cộng thêm <strong>{paymentOrder.amount.toLocaleString('vi-VN')} đ</strong>.
                 </p>
                 <div className="pt-4 flex justify-center gap-3">
                   <button
@@ -551,7 +554,7 @@ export const PaymentPage: React.FC = () => {
                         className="flex-1 py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20"
                       >
                         <Wallet className="w-3.5 h-3.5" />
-                        OP1: Nạp {paymentOrder.actualAmount?.toLocaleString('vi-VN')} đ vào Ví
+                        OP1: Nạp {paymentOrder.actualAmount?.toLocaleString('vi-VN')} đ vào Ví KD
                       </button>
 
                       {/* OP2 */}

@@ -751,12 +751,12 @@ export const Dashboard: React.FC = () => {
                   <CreditCard className="w-5 h-5 text-emerald-500" /> Lịch Sử Giao Dịch & Biến Động Số Dư
                 </h3>
                 <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Theo dõi chi tiết các giao dịch nạp tiền, mua thiệp và biến động số dư ví
+                  Theo dõi chi tiết các giao dịch nạp tiền, mua thiệp và biến động số dư Ví KD
                 </p>
               </div>
 
               <div className="text-right">
-                <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số dư hiện tại:</span>
+                <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số dư Ví KD:</span>
                 <strong className="text-base sm:text-lg font-bold text-orange-500 font-mono">
                   {user?.creditsBalance?.toLocaleString('vi-VN')} đ
                 </strong>
@@ -856,7 +856,7 @@ export const Dashboard: React.FC = () => {
                                   ? isDark ? 'bg-blue-500/15 text-blue-300 border border-blue-500/30' : 'bg-blue-50 text-blue-700 border border-blue-200'
                                   : isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
                               }`}>
-                                {isPurchase ? 'VÍ KD CARD' : isWithdrawal ? 'NGÂN HÀNG' : (tx.paymentMethod || 'VIETQR')}
+                                {isPurchase ? 'VÍ KD' : isWithdrawal ? 'NGÂN HÀNG' : (tx.paymentMethod || 'VIETQR')}
                               </span>
                             </td>
 
@@ -879,7 +879,7 @@ export const Dashboard: React.FC = () => {
                                 </span>
                               ) : tx.status === 'SETTLED_TO_WALLET' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
-                                  💼 Đã Nạp Vào Ví
+                                  💼 Đã Nạp Vào Ví KD
                                 </span>
                               ) : tx.status === 'PENDING' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">

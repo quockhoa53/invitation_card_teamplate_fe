@@ -114,7 +114,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
     }
 
     if (!hasEnoughBalance) {
-      toast.error('Số dư ví không đủ', `Bạn còn thiếu ${missingAmount.toLocaleString('vi-VN')} đ`);
+      toast.error('Số dư Ví KD không đủ', `Bạn còn thiếu ${missingAmount.toLocaleString('vi-VN')} đ`);
       return;
     }
 
@@ -326,7 +326,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
             }`}>
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-2 text-slate-400 font-semibold">
-                  <Wallet className="w-4 h-4 text-orange-500" /> Số Dư Ví Của Bạn:
+                  <Wallet className="w-4 h-4 text-orange-500" /> Số Dư Ví KD:
                 </span>
                 <strong className={`font-mono text-sm ${hasEnoughBalance ? 'text-emerald-500' : 'text-orange-500'}`}>
                   {totalBalance.toLocaleString('vi-VN')} đ
@@ -335,7 +335,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
 
               {!hasEnoughBalance && (
                 <p className="text-[11px] text-orange-500 flex items-center gap-1 pt-1">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Số dư ví không đủ (còn thiếu {missingAmount.toLocaleString('vi-VN')} đ)
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Số dư Ví KD không đủ (còn thiếu {missingAmount.toLocaleString('vi-VN')} đ)
                 </p>
               )}
             </div>
@@ -353,12 +353,12 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                   {purchasing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Đang trừ ví và kích hoạt...</span>
+                      <span>Đang thanh toán bằng Ví KD và kích hoạt...</span>
                     </>
                   ) : (
                     <>
                       <Wallet className="w-4 h-4" />
-                      <span>Xác Nhận Thanh Toán Bằng Ví ({finalPrice.toLocaleString('vi-VN')} đ)</span>
+                      <span>Xác Nhận Thanh Toán Bằng Ví KD ({finalPrice.toLocaleString('vi-VN')} đ)</span>
                     </>
                   )}
                 </button>
