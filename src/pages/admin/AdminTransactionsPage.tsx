@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { api } from '../../services/api';
 import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
@@ -19,6 +19,7 @@ import {
   Filter,
   ShieldCheck,
   User as UserIcon,
+  RefreshCw,
 } from 'lucide-react';
 
 export const AdminTransactionsPage: React.FC = () => {
@@ -26,42 +27,84 @@ export const AdminTransactionsPage: React.FC = () => {
   const { toast, confirmModal } = useToast();
   const isDark = theme === 'dark';
 
-  const [transactions, setTransactions] = useState<TransactionItem[]>([]);
+  const [allTransactions, setAllTransactions] = useState<TransactionItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalElements, setTotalElements] = useState(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  const fetchTransactions = async () => {
-    setLoading(true);
+  // Fetch all transactions once
+  const fetchTransactions = async (isManualRefresh = false) => {
+    if (isManualRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
       const res = await api.getAdminTransactions({
-        status: statusFilter,
-        search,
-        page: page - 1,
-        size: pageSize,
+        status: 'ALL',
+        page: 0,
+        size: 2000,
       });
 
       if (res.success && res.data) {
-        setTransactions(res.data.content);
-        setTotalPages(res.data.totalPages || 1);
-        setTotalElements(res.data.totalElements || 0);
+        setAllTransactions(res.data.content || []);
       }
     } catch (err: any) {
       console.error(err);
       toast.error('Lỗi khi tải danh sách giao dịch', err.response?.data?.message);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchTransactions();
-  }, [statusFilter, search, page, pageSize]);
+  }, []);
+
+  // Compute exact counts for each status tab
+  const counts = useMemo(() => {
+    return {
+      ALL: allTransactions.length,
+      PENDING: allTransactions.filter((t) => t.status === 'PENDING').length,
+      SUCCESS: allTransactions.filter((t) => t.status === 'SUCCESS').length,
+      CANCELLED: allTransactions.filter((t) => ['CANCELLED', 'FAILED', 'EXPIRED'].includes(t.status)).length,
+    };
+  }, [allTransactions]);
+
+  // Fast client-side filtering (0ms latency, zero API calls on tab change)
+  const filteredTransactions = useMemo(() => {
+    return allTransactions.filter((item) => {
+      // Status filter
+      if (statusFilter === 'PENDING' && item.status !== 'PENDING') return false;
+      if (statusFilter === 'SUCCESS' && item.status !== 'SUCCESS') return false;
+      if (statusFilter === 'CANCELLED' && !['CANCELLED', 'FAILED', 'EXPIRED'].includes(item.status)) return false;
+
+      // Search keyword filter
+      if (search.trim()) {
+        const q = search.trim().toLowerCase();
+        const matchOrder = item.orderCode?.toLowerCase().includes(q);
+        const matchEmail = item.userEmail?.toLowerCase().includes(q);
+        const matchName = item.userFullName?.toLowerCase().includes(q);
+        const matchMethod = item.paymentMethod?.toLowerCase().includes(q);
+        const matchType = item.type?.toLowerCase().includes(q);
+        if (!matchOrder && !matchEmail && !matchName && !matchMethod && !matchType) return false;
+      }
+
+      return true;
+    });
+  }, [allTransactions, statusFilter, search]);
+
+  const totalPages = Math.ceil(filteredTransactions.length / pageSize) || 1;
+  const totalElements = filteredTransactions.length;
+  const pagedTransactions = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredTransactions.slice(start, start + pageSize);
+  }, [filteredTransactions, page, pageSize]);
 
   const handleApprove = (item: TransactionItem) => {
     confirmModal({
@@ -74,7 +117,7 @@ export const AdminTransactionsPage: React.FC = () => {
           const res = await api.approveAdminTransaction(item.orderCode);
           if (res.success) {
             toast.success(`Đã duyệt đơn ${item.orderCode} thành công!`, `Đã nạp +${item.amount.toLocaleString('vi-VN')} đ cho ${item.userEmail}`);
-            fetchTransactions();
+            fetchTransactions(true);
           }
         } catch (err: any) {
           toast.error('Không thể duyệt đơn', err.response?.data?.message);
@@ -94,7 +137,7 @@ export const AdminTransactionsPage: React.FC = () => {
           const res = await api.cancelAdminTransaction(item.orderCode);
           if (res.success) {
             toast.success(`Đã hủy đơn ${item.orderCode}!`);
-            fetchTransactions();
+            fetchTransactions(true);
           }
         } catch (err: any) {
           toast.error('Không thể hủy đơn', err.response?.data?.message);
@@ -111,7 +154,7 @@ export const AdminTransactionsPage: React.FC = () => {
   };
 
   // Metrics summary
-  const totalAmount = transactions
+  const totalAmount = allTransactions
     .filter((t) => t.status === 'SUCCESS')
     .reduce((acc, t) => acc + t.amount, 0);
 
@@ -128,33 +171,49 @@ export const AdminTransactionsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Quick Search */}
-        <div className="relative w-full sm:w-72">
-          <Search className={`w-4 h-4 absolute left-3 top-2.5 ${isDark ? 'text-slate-400' : 'text-stone-400'}`} />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Tìm theo mã đơn INV..., email, tên..."
-            className={`w-full pl-9 pr-4 py-2 rounded-xl border text-xs focus:outline-none ${
+        {/* Quick Search & Refresh */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-72">
+            <Search className={`w-4 h-4 absolute left-3 top-2.5 ${isDark ? 'text-slate-400' : 'text-stone-400'}`} />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Tìm theo mã đơn INV..., email, tên..."
+              className={`w-full pl-9 pr-4 py-2 rounded-xl border text-xs focus:outline-none ${
+                isDark
+                  ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                  : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
+              }`}
+            />
+          </div>
+
+          <button
+            onClick={() => fetchTransactions(true)}
+            disabled={loading || isRefreshing}
+            className={`p-2.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 shrink-0 ${
               isDark
-                ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                : 'bg-white border-stone-200 text-stone-900 focus:border-orange-500 shadow-sm'
+                ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+                : 'bg-white border-stone-200 text-stone-600 hover:text-stone-900 shadow-sm hover:border-stone-300'
             }`}
-          />
+            title="Tải lại dữ liệu mới nhất từ server"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-orange-500' : ''}`} />
+            <span className="hidden md:inline">Làm mới</span>
+          </button>
         </div>
       </div>
 
-      {/* Status Filter Tabs */}
+      {/* Status Filter Tabs (Instant in-memory switching) */}
       <div className="flex flex-wrap items-center gap-2">
         {[
-          { id: 'ALL', label: 'Tất Cả', icon: Filter },
-          { id: 'PENDING', label: 'Đang Chờ Quét', icon: Clock },
-          { id: 'SUCCESS', label: 'Đã Hoàn Tất', icon: CheckCircle2 },
-          { id: 'CANCELLED', label: 'Đã Hủy', icon: XCircle },
+          { id: 'ALL', label: 'Tất Cả', icon: Filter, count: counts.ALL },
+          { id: 'PENDING', label: 'Đang Chờ Quét', icon: Clock, count: counts.PENDING },
+          { id: 'SUCCESS', label: 'Đã Hoàn Tất', icon: CheckCircle2, count: counts.SUCCESS },
+          { id: 'CANCELLED', label: 'Đã Hủy', icon: XCircle, count: counts.CANCELLED },
         ].map((tab) => {
           const isActive = statusFilter === tab.id;
           const Icon = tab.icon;
@@ -165,7 +224,7 @@ export const AdminTransactionsPage: React.FC = () => {
                 setStatusFilter(tab.id);
                 setPage(1);
               }}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
                 isActive
                   ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
                   : isDark
@@ -175,6 +234,15 @@ export const AdminTransactionsPage: React.FC = () => {
             >
               <Icon className="w-3.5 h-3.5" />
               <span>{tab.label}</span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold leading-none ${
+                isActive
+                  ? 'bg-white/20 text-white'
+                  : isDark
+                  ? 'bg-slate-800 text-slate-400'
+                  : 'bg-stone-100 text-stone-600'
+              }`}>
+                {tab.count}
+              </span>
             </button>
           );
         })}
@@ -204,7 +272,7 @@ export const AdminTransactionsPage: React.FC = () => {
               <TableRowSkeleton rows={6} cols={8} />
             </table>
           </div>
-        ) : transactions.length === 0 ? (
+        ) : filteredTransactions.length === 0 ? (
           <div className="text-center py-12 space-y-3">
             <CreditCard className="w-10 h-10 mx-auto opacity-30 text-orange-500" />
             <h4 className="font-editorial text-base font-bold">Không tìm thấy giao dịch nào</h4>
@@ -231,7 +299,7 @@ export const AdminTransactionsPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-stone-100'}`}>
-                  {transactions.map((t) => (
+                  {pagedTransactions.map((t) => (
                     <tr
                       key={t.id}
                       className={`transition ${isDark ? 'hover:bg-slate-800/40' : 'hover:bg-stone-50'}`}

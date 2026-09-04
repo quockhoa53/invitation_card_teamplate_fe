@@ -32,6 +32,8 @@ import {
   ShoppingBag,
   ChevronRight,
   X,
+  Filter,
+  RefreshCw,
 } from 'lucide-react';
 import { AdminTwoFactorModal } from './admin/AdminTwoFactorPage';
 import { SetPasswordModal } from '../components/auth/SetPasswordModal';
@@ -58,13 +60,40 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // User transactions state
-  const [userTransactions, setUserTransactions] = useState<TransactionItem[]>([]);
+  const [allUserTransactions, setAllUserTransactions] = useState<TransactionItem[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
+  const [isRefreshingTransactions, setIsRefreshingTransactions] = useState(false);
+  const [txStatusFilter, setTxStatusFilter] = useState<string>('ALL');
   const [txPage, setTxPage] = useState(1);
   const [txPageSize, setTxPageSize] = useState(8);
-  const [txTotalPages, setTxTotalPages] = useState(1);
-  const [txTotalElements, setTxTotalElements] = useState(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  // User transaction counts for each status tab
+  const txCounts = useMemo(() => {
+    return {
+      ALL: allUserTransactions.length,
+      PENDING: allUserTransactions.filter((t) => t.status === 'PENDING').length,
+      SUCCESS: allUserTransactions.filter((t) => t.status === 'SUCCESS').length,
+      CANCELLED: allUserTransactions.filter((t) => ['CANCELLED', 'FAILED', 'EXPIRED'].includes(t.status)).length,
+    };
+  }, [allUserTransactions]);
+
+  // Fast client-side filtering for user transactions
+  const filteredUserTransactions = useMemo(() => {
+    return allUserTransactions.filter((item) => {
+      if (txStatusFilter === 'PENDING' && item.status !== 'PENDING') return false;
+      if (txStatusFilter === 'SUCCESS' && item.status !== 'SUCCESS') return false;
+      if (txStatusFilter === 'CANCELLED' && !['CANCELLED', 'FAILED', 'EXPIRED'].includes(item.status)) return false;
+      return true;
+    });
+  }, [allUserTransactions, txStatusFilter]);
+
+  const txTotalPages = Math.ceil(filteredUserTransactions.length / txPageSize) || 1;
+  const txTotalElements = filteredUserTransactions.length;
+  const pagedUserTransactions = useMemo(() => {
+    const start = (txPage - 1) * txPageSize;
+    return filteredUserTransactions.slice(start, start + txPageSize);
+  }, [filteredUserTransactions, txPage, txPageSize]);
 
   // Pagination for user cards
   const [page, setPage] = useState(1);
@@ -122,22 +151,25 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const fetchUserTransactions = async () => {
-    setLoadingTransactions(true);
+  const fetchUserTransactions = async (isManualRefresh = false) => {
+    if (isManualRefresh) {
+      setIsRefreshingTransactions(true);
+    } else {
+      setLoadingTransactions(true);
+    }
     try {
       const res = await api.getMyTransactions({
-        page: txPage - 1,
-        size: txPageSize,
+        page: 0,
+        size: 500,
       });
       if (res.success && res.data) {
-        setUserTransactions(res.data.content || []);
-        setTxTotalPages(res.data.totalPages || 1);
-        setTxTotalElements(res.data.totalElements || 0);
+        setAllUserTransactions(res.data.content || []);
       }
     } catch (err) {
       console.error('Failed to load transactions', err);
     } finally {
       setLoadingTransactions(false);
+      setIsRefreshingTransactions(false);
     }
   };
 
@@ -157,12 +189,6 @@ export const Dashboard: React.FC = () => {
     fetchTemplates();
     fetchUserTransactions();
   }, []);
-
-  useEffect(() => {
-    if (activeTab === 'transactions') {
-      fetchUserTransactions();
-    }
-  }, [activeTab, txPage, txPageSize]);
 
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -741,7 +767,7 @@ export const Dashboard: React.FC = () => {
           <div className={`p-6 sm:p-8 rounded-3xl border ${
             isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
           }`}>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
                 <h3 className="font-editorial text-xl font-bold flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-emerald-500" /> Lịch Sử Giao Dịch & Biến Động Số Dư
@@ -751,12 +777,69 @@ export const Dashboard: React.FC = () => {
                 </p>
               </div>
 
-              <div className="text-right">
-                <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số dư Ví KD:</span>
-                <strong className="text-base sm:text-lg font-bold text-orange-500 font-mono">
-                  {user?.creditsBalance?.toLocaleString('vi-VN')} đ
-                </strong>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số dư Ví KD:</span>
+                  <strong className="text-base sm:text-lg font-bold text-orange-500 font-mono">
+                    {user?.creditsBalance?.toLocaleString('vi-VN')} đ
+                  </strong>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => fetchUserTransactions(true)}
+                  disabled={loadingTransactions || isRefreshingTransactions}
+                  className={`p-2 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+                      : 'bg-white border-stone-200 text-stone-600 hover:text-stone-900 shadow-sm hover:border-stone-300'
+                  }`}
+                  title="Tải lại giao dịch từ server"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingTransactions ? 'animate-spin text-emerald-500' : ''}`} />
+                </button>
               </div>
+            </div>
+
+            {/* Status Filter Tabs (Instant client-side filter) */}
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              {[
+                { id: 'ALL', label: 'Tất Cả', icon: Filter, count: txCounts.ALL },
+                { id: 'PENDING', label: 'Đang Chờ Quét', icon: Clock, count: txCounts.PENDING },
+                { id: 'SUCCESS', label: 'Đã Hoàn Tất', icon: CheckCircle2, count: txCounts.SUCCESS },
+                { id: 'CANCELLED', label: 'Đã Hủy', icon: XCircle, count: txCounts.CANCELLED },
+              ].map((tab) => {
+                const isActive = txStatusFilter === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setTxStatusFilter(tab.id);
+                      setTxPage(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+                      isActive
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                        : isDark
+                        ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-white border border-stone-200 text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{tab.label}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold leading-none ${
+                      isActive
+                        ? 'bg-white/20 text-white'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-400'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}>
+                      {tab.count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {loadingTransactions ? (
@@ -777,21 +860,27 @@ export const Dashboard: React.FC = () => {
                   <TableRowSkeleton rows={5} cols={6} />
                 </table>
               </div>
-            ) : userTransactions.length === 0 ? (
+            ) : filteredUserTransactions.length === 0 ? (
               <div className="text-center py-12 space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto">
                   <CreditCard className="w-7 h-7" />
                 </div>
-                <h4 className="font-editorial text-base font-bold">Chưa có giao dịch nào</h4>
+                <h4 className="font-editorial text-base font-bold">
+                  {allUserTransactions.length === 0 ? 'Chưa có giao dịch nào' : 'Không có giao dịch nào trong mục này'}
+                </h4>
                 <p className={`text-xs max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Nạp tiền ngay để mở khóa không giới hạn các mẫu thiệp Pro và tính năng cao cấp!
+                  {allUserTransactions.length === 0
+                    ? 'Nạp tiền ngay để mở khóa không giới hạn các mẫu thiệp Pro và tính năng cao cấp!'
+                    : 'Hãy chọn tab khác để xem các giao dịch liên quan.'}
                 </p>
-                <Link
-                  to="/payment"
-                  className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition"
-                >
-                  Nạp Tiền Ngay <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                {allUserTransactions.length === 0 && (
+                  <Link
+                    to="/payment"
+                    className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-500/20 transition"
+                  >
+                    Nạp Tiền Ngay <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -810,7 +899,7 @@ export const Dashboard: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className={`divide-y ${isDark ? 'divide-slate-800' : 'divide-stone-100'}`}>
-                      {userTransactions.map((tx) => {
+                      {pagedUserTransactions.map((tx) => {
                         const isPurchase = tx.type === 'CARD_PURCHASE' || tx.type === 'TEMPLATE_PURCHASE' || tx.orderCode?.startsWith('BUY');
                         const isWithdrawal = tx.type === 'WITHDRAWAL' || tx.orderCode?.startsWith('WDR');
                         const isExpense = isPurchase || isWithdrawal;
