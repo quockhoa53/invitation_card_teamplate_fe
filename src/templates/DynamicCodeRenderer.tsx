@@ -47,21 +47,7 @@ export const DynamicCodeRenderer: React.FC<DynamicCodeRendererProps> = ({
     parsedData = { ...data };
   }
 
-  // Common default mock placeholders for flawless previewing
-  const mockFallbackData: Record<string, string> = {
-    greetingTitle: 'Chúc Mừng Sinh Nhật 💖',
-    recipientName: 'Em Yêu',
-    senderName: 'Anh Khoa',
-    greetingMessage: 'Chúc em một ngày sinh nhật thật ngọt ngào, ngập tràn nụ cười và hạnh phúc bên những người thân yêu nhất!',
-    eventDate: '20/10/2026',
-    eventTime: '18:30',
-    eventLocation: 'Trung Tâm Tiệc Cưới White Palace, TP.HCM',
-    loveStartDate: '2022-02-14',
-    coordinates: '10.7769° N, 106.7009° E',
-    musicUrl: '',
-  };
-
-  const mergedData = { ...mockFallbackData, ...parsedData };
+  const mergedData = { ...parsedData };
 
   // Interpolate placeholders in HTML
   let processedHtml =
@@ -75,11 +61,6 @@ export const DynamicCodeRenderer: React.FC<DynamicCodeRendererProps> = ({
       const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'gi');
       processedHtml = processedHtml.replace(regex, String(val));
     }
-  });
-
-  // Clean up any remaining unreplaced {{...}} tags with fallback
-  processedHtml = processedHtml.replace(/{{\s*([a-zA-Z0-9_]+)\s*}}/g, (_match, p1) => {
-    return mockFallbackData[p1] || p1;
   });
 
   // Bundle entire document with styles and scripts

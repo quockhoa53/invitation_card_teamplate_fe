@@ -1059,18 +1059,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                         customHtml={customHtml}
                         customCss={customCss}
                         customJs={customJs}
-                        data={defaultConfig || {
-                          greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
-                          recipientName: 'Bạn Thân',
-                          senderName: 'Anh Khoa',
-                          greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
-                          musicUrl: '',
-                          eventDate: '20/10/2026',
-                          eventTime: '18:30',
-                          eventLocation: 'Trung Tâm Sự Kiện White Palace',
-                          loveStartDate: '2022-02-14',
-                          coordinates: '10.7769° N, 106.7009° E',
-                        }}
+                        data={defaultConfig || '{}'}
                         title="Live Preview"
                         isPreview={true}
                       />
@@ -1354,18 +1343,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                   customHtml={customHtml}
                   customCss={customCss}
                   customJs={customJs}
-                  data={defaultConfig || {
-                    greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
-                    recipientName: 'Bạn Thân',
-                    senderName: 'Anh Khoa',
-                    greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
-                    musicUrl: '',
-                    eventDate: '20/10/2026',
-                    eventTime: '18:30',
-                    eventLocation: 'Trung Tâm Sự Kiện White Palace',
-                    loveStartDate: '2022-02-14',
-                    coordinates: '10.7769° N, 106.7009° E',
-                  }}
+                  data={defaultConfig || '{}'}
                   title={title || 'Template Demo'}
                   isPreview={true}
                 />
@@ -1745,18 +1723,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 customHtml={customHtml}
                 customCss={customCss}
                 customJs={customJs}
-                data={defaultConfig || {
-                  greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
-                  recipientName: 'Bạn Thân',
-                  senderName: 'Anh Khoa',
-                  greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
-                  musicUrl: '',
-                  eventDate: '20/10/2026',
-                  eventTime: '18:30',
-                  eventLocation: 'Trung Tâm Sự Kiện White Palace',
-                  loveStartDate: '2022-02-14',
-                  coordinates: '10.7769° N, 106.7009° E',
-                }}
+                data={defaultConfig || '{}'}
                 title={title || 'Template Demo'}
                 isPreview={true}
               />
