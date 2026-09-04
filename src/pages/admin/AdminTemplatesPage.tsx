@@ -238,7 +238,19 @@ export const AdminTemplatesPage: React.FC = () => {
       } else if (ext === 'js') {
         newJs = text;
       } else if (ext === 'json') {
-        newConfig = text;
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            toast.info(
+              `File "${file.name}" là danh sách Schema Keys (mảng [])`,
+              'File này dùng cho trang "Quản Lý Schema Keys". Hệ thống đã tự động bỏ qua, không ghi đè vào Config của template.'
+            );
+          } else if (typeof parsed === 'object' && parsed !== null) {
+            newConfig = text;
+          }
+        } catch {
+          newConfig = text;
+        }
       }
     }
 
