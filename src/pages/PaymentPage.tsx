@@ -22,6 +22,8 @@ import {
   X,
   Gift,
   ArrowRight,
+  Info,
+  HelpCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useToast } from '../context/ToastContext';
@@ -61,6 +63,9 @@ export const PaymentPage: React.FC = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [pollingCount, setPollingCount] = useState(0);
+
+  // Balance Info Modal State (Exclamation mark click)
+  const [balanceInfoModal, setBalanceInfoModal] = useState<'real' | 'bonus' | null>(null);
 
   // Promo Code State
   const [promoCodeInput, setPromoCodeInput] = useState('');
@@ -328,42 +333,34 @@ export const PaymentPage: React.FC = () => {
     }`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
 
-        {/* User Balance Overview Cards - Only displayed when not in transaction or success */}
-        {!isTransactionOrSuccess && (
-          <div className={`p-6 sm:p-8 rounded-3xl border ${
-            isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+        {/* Main Section: Unified Wallet & Deposit OR View QR */}
+        {!paymentOrder ? (
+          <div className={`p-6 sm:p-8 rounded-3xl border space-y-7 max-w-2xl mx-auto shadow-xl transition-all ${
+            isDark ? 'bg-[#121824] border-slate-800 shadow-slate-950/40' : 'bg-white border-stone-200/80 shadow-stone-200/60'
           }`}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
-                    <Wallet className="w-5 h-5" />
-                  </span>
-                  <h2 className="font-editorial text-xl sm:text-2xl font-bold">Ví KD</h2>
-                </div>
-                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                  Tổng số dư Ví KD: <strong className="text-lg text-emerald-400 font-mono font-bold">{(realBalance + bonusBalance).toLocaleString('vi-VN')} đ</strong>
-                </p>
-              </div>
-
-              {/* Balances Breakdown */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
-                  isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-                }`}>
-                  <span className="text-[11px] text-slate-400 block font-medium">Tiền Nạp Thật (Khả Dụng Rút)</span>
-                  <span className="font-mono font-bold text-sm text-emerald-400">
-                    {realBalance.toLocaleString('vi-VN')} đ
-                  </span>
-                </div>
-
-                <div className={`p-3 rounded-2xl border text-xs min-w-[150px] ${
-                  isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-                }`}>
-                  <span className="text-[11px] text-slate-400 block font-medium">Tiền Thưởng (Chỉ Mua Thiệp)</span>
-                  <span className="font-mono font-bold text-sm text-amber-400">
-                    +{bonusBalance.toLocaleString('vi-VN')} đ
-                  </span>
+            {/* 1. Header: Ví KD Card - Embedded into unified background */}
+            <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${
+              isDark 
+                ? 'bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-slate-950/80 border-slate-800/90' 
+                : 'bg-gradient-to-br from-stone-50 via-amber-50/20 to-orange-50/20 border-stone-200/80 shadow-xs'
+            }`}>
+              {/* Wallet Title & Total Balance */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="p-2 rounded-xl bg-orange-500/10 text-orange-500">
+                      <Wallet className="w-5 h-5" />
+                    </span>
+                    <h2 className="font-editorial text-xl sm:text-2xl font-bold">Ví KD</h2>
+                  </div>
+                  <div className="flex items-baseline gap-2 pt-0.5">
+                    <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                      Tổng số dư Ví KD:
+                    </span>
+                    <span className="text-xl sm:text-2xl text-emerald-400 font-mono font-bold">
+                      {(realBalance + bonusBalance).toLocaleString('vi-VN')} đ
+                    </span>
+                  </div>
                 </div>
 
                 <button
@@ -372,125 +369,204 @@ export const PaymentPage: React.FC = () => {
                     setShowWithdrawModal(true);
                   }}
                   disabled={realBalance < 10000}
-                  className="px-4 py-3 rounded-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center gap-1.5"
+                  className="px-4 py-2.5 rounded-xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs shadow-md shadow-orange-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-40 flex items-center justify-center gap-1.5 self-start sm:self-auto shrink-0"
                 >
                   <ArrowDownToLine className="w-4 h-4" /> Rút Tiền Về Ngân Hàng
                 </button>
               </div>
-            </div>
-          </div>
-        )}
 
-        {/* Main Section: Create Order or View QR */}
-        {!paymentOrder ? (
-          <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 max-w-xl mx-auto ${
-            isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-          }`}>
-            <div className="text-center space-y-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
-                <ShieldCheck className="w-3.5 h-3.5" /> Nạp Tiền VietQR Tự Động
-              </span>
-              <h3 className="font-editorial text-2xl font-bold">Chọn Gói Nạp Tiền</h3>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                Nạp gói 50k hoặc 100k để nhận thêm quà tặng tiền thưởng khuyến mãi!
-              </p>
-            </div>
-
-            {/* Pack Selection */}
-            <div className="space-y-3">
-              {predefinedPacks.map((pack) => (
-                <div
-                  key={pack.amount}
-                  onClick={() => {
-                    setSelectedAmount(pack.amount);
-                    if (appliedPromo) setAppliedPromo(null); // Reset promo when pack changes
-                  }}
-                  className={`cursor-pointer p-4 rounded-2xl border transition-all flex items-center justify-between ${
-                    selectedAmount === pack.amount
-                      ? 'border-emerald-500 bg-emerald-500/10 shadow-sm'
-                      : isDark
-                      ? 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
-                      : 'border-stone-200 bg-stone-50/70 hover:border-stone-300'
+              {/* Balances Breakdown Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                {/* Tiền Nạp Thật */}
+                <div 
+                  onClick={() => setBalanceInfoModal('real')}
+                  className={`cursor-pointer p-3.5 rounded-xl border transition-all group ${
+                    isDark 
+                      ? 'bg-slate-900/90 border-slate-800 hover:border-emerald-500/40 hover:bg-slate-850' 
+                      : 'bg-white border-stone-200 hover:border-emerald-300 hover:bg-stone-50/50 shadow-xs'
                   }`}
                 >
-                  <div className="space-y-0.5">
-                    <h4 className="text-sm font-bold flex items-center gap-2">
-                      {pack.label}
-                      {pack.bonus > 0 && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
-                          <Gift className="w-3 h-3" /> +{pack.bonus.toLocaleString('vi-VN')} đ
-                        </span>
-                      )}
-                    </h4>
-                    <p className="text-xs text-emerald-500 font-semibold">{pack.credits}</p>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-xs font-medium flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      Tiền Nạp Thật
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBalanceInfoModal('real');
+                      }}
+                      className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold font-mono transition-all ${
+                        isDark 
+                          ? 'bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white border border-emerald-500/40' 
+                          : 'bg-emerald-100 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white border border-emerald-300'
+                      }`}
+                      title="Bấm để xem chi tiết tiền nạp thật"
+                    >
+                      !
+                    </button>
                   </div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-mono font-bold text-base sm:text-lg text-emerald-400">
+                      {realBalance.toLocaleString('vi-VN')} đ
+                    </span>
+                    <span className={`text-[11px] group-hover:underline ${isDark ? 'text-slate-400' : 'text-stone-400'}`}>
+                      Chi tiết &rarr;
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tiền Thưởng */}
+                <div 
+                  onClick={() => setBalanceInfoModal('bonus')}
+                  className={`cursor-pointer p-3.5 rounded-xl border transition-all group ${
+                    isDark 
+                      ? 'bg-slate-900/90 border-slate-800 hover:border-amber-500/40 hover:bg-slate-850' 
+                      : 'bg-white border-stone-200 hover:border-amber-300 hover:bg-stone-50/50 shadow-xs'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-xs font-medium flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-stone-600'}`}>
+                      <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                      Tiền Thưởng
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBalanceInfoModal('bonus');
+                      }}
+                      className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold font-mono transition-all ${
+                        isDark 
+                          ? 'bg-amber-500/20 text-amber-400 group-hover:bg-amber-500 group-hover:text-white border border-amber-500/40' 
+                          : 'bg-amber-100 text-amber-700 group-hover:bg-amber-600 group-hover:text-white border border-amber-300'
+                      }`}
+                      title="Bấm để xem chi tiết tiền thưởng"
+                    >
+                      !
+                    </button>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="font-mono font-bold text-base sm:text-lg text-amber-400">
+                      +{bonusBalance.toLocaleString('vi-VN')} đ
+                    </span>
+                    <span className={`text-[11px] group-hover:underline ${isDark ? 'text-slate-400' : 'text-stone-400'}`}>
+                      Chi tiết &rarr;
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Recharge Packs Section */}
+            <div className="space-y-6">
+              <div className="text-center space-y-1">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Nạp Tiền VietQR Tự Động
+                </span>
+                <h3 className="font-editorial text-2xl font-bold">Chọn Gói Nạp Tiền</h3>
+                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Nạp gói 50k hoặc 100k để nhận thêm quà tặng tiền thưởng khuyến mãi!
+                </p>
+              </div>
+
+              {/* Pack Selection */}
+              <div className="space-y-3">
+                {predefinedPacks.map((pack) => (
                   <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      selectedAmount === pack.amount ? 'border-emerald-500 bg-emerald-500' : 'border-slate-400'
+                    key={pack.amount}
+                    onClick={() => {
+                      setSelectedAmount(pack.amount);
+                      if (appliedPromo) setAppliedPromo(null); // Reset promo when pack changes
+                    }}
+                    className={`cursor-pointer p-4 rounded-2xl border transition-all flex items-center justify-between ${
+                      selectedAmount === pack.amount
+                        ? 'border-emerald-500 bg-emerald-500/10 shadow-sm'
+                        : isDark
+                        ? 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        : 'border-stone-200 bg-stone-50/70 hover:border-stone-300'
                     }`}
                   >
-                    {selectedAmount === pack.amount && <div className="w-2 h-2 rounded-full bg-white" />}
+                    <div className="space-y-0.5">
+                      <h4 className="text-sm font-bold flex items-center gap-2">
+                        {pack.label}
+                        {pack.bonus > 0 && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
+                            <Gift className="w-3 h-3" /> +{pack.bonus.toLocaleString('vi-VN')} đ
+                          </span>
+                        )}
+                      </h4>
+                      <p className="text-xs text-emerald-500 font-semibold">{pack.credits}</p>
+                    </div>
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedAmount === pack.amount ? 'border-emerald-500 bg-emerald-500' : 'border-slate-400'
+                      }`}
+                    >
+                      {selectedAmount === pack.amount && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Promo Code Input Box */}
+              <div className={`p-4 rounded-2xl border space-y-3 ${
+                isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-stone-50 border-stone-200'
+              }`}>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
+                  <Tag className="w-4 h-4" /> Mã Giảm Giá / Khuyến Mãi
                 </div>
-              ))}
-            </div>
-
-            {/* Promo Code Input Box */}
-            <div className={`p-4 rounded-2xl border space-y-3 ${
-              isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-stone-50 border-stone-200'
-            }`}>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400">
-                <Tag className="w-4 h-4" /> Mã Giảm Giá / Khuyến Mãi
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={promoCodeInput}
-                  onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
-                  placeholder="Nhập mã (Ví dụ: CHAOMUNG)"
-                  className={`flex-1 px-3.5 py-2 rounded-xl text-xs uppercase font-mono font-bold border focus:outline-none ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500' : 'bg-white border-stone-200 focus:border-amber-500'
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyPromo}
-                  disabled={promoLoading || !promoCodeInput.trim()}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition disabled:opacity-50"
-                >
-                  {promoLoading ? 'Đang kiểm tra...' : 'Áp Dụng'}
-                </button>
-              </div>
-
-              {appliedPromo && (
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs flex justify-between items-center text-emerald-400">
-                  <div>
-                    <p className="font-bold">Mã {appliedPromo.code}: Giảm {appliedPromo.discountAmount?.toLocaleString('vi-VN')} đ</p>
-                    <p className="text-[11px] text-slate-400">Cần thanh toán: {appliedPromo.finalAmount?.toLocaleString('vi-VN')} đ</p>
-                  </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoCodeInput}
+                    onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                    placeholder="Nhập mã (Ví dụ: CHAOMUNG)"
+                    className={`flex-1 px-3.5 py-2 rounded-xl text-xs uppercase font-mono font-bold border focus:outline-none ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white focus:border-amber-500' : 'bg-white border-stone-200 focus:border-amber-500'
+                    }`}
+                  />
                   <button
                     type="button"
-                    onClick={() => {
-                      setAppliedPromo(null);
-                      setPromoCodeInput('');
-                    }}
-                    className="p-1 hover:text-white"
+                    onClick={handleApplyPromo}
+                    disabled={promoLoading || !promoCodeInput.trim()}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition disabled:opacity-50"
                   >
-                    <X className="w-4 h-4" />
+                    {promoLoading ? 'Đang kiểm tra...' : 'Áp Dụng'}
                   </button>
                 </div>
-              )}
-            </div>
 
-            {/* Create Order Button */}
-            <button
-              onClick={handleCreateOrder}
-              disabled={loading}
-              className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm shadow-lg shadow-emerald-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              <QrCode className="w-4 h-4" />
-              {loading ? 'Đang tạo mã...' : `Tạo Mã VietQR (${finalAmountToPay.toLocaleString('vi-VN')} đ)`}
-            </button>
+                {appliedPromo && (
+                  <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs flex justify-between items-center text-emerald-400">
+                    <div>
+                      <p className="font-bold">Mã {appliedPromo.code}: Giảm {appliedPromo.discountAmount?.toLocaleString('vi-VN')} đ</p>
+                      <p className="text-[11px] text-slate-400">Cần thanh toán: {appliedPromo.finalAmount?.toLocaleString('vi-VN')} đ</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAppliedPromo(null);
+                        setPromoCodeInput('');
+                      }}
+                      className="p-1 hover:text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Create Order Button */}
+              <button
+                onClick={handleCreateOrder}
+                disabled={loading}
+                className="w-full py-3.5 rounded-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm shadow-lg shadow-emerald-500/20 hover:brightness-105 active:scale-95 transition disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <QrCode className="w-4 h-4" />
+                {loading ? 'Đang tạo mã...' : `Tạo Mã VietQR (${finalAmountToPay.toLocaleString('vi-VN')} đ)`}
+              </button>
+            </div>
           </div>
         ) : (
           <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 max-w-2xl mx-auto ${
@@ -799,6 +875,144 @@ export const PaymentPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Chi Tiết Số Dư (Tiền Nạp Thật / Tiền Thưởng) */}
+      {balanceInfoModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setBalanceInfoModal(null)}
+        >
+          <div 
+            className={`w-full max-w-md rounded-3xl border p-6 space-y-5 shadow-2xl relative animate-scaleUp ${
+              isDark ? 'bg-[#121824] border-slate-800 text-slate-100' : 'bg-white border-stone-200 text-stone-800'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800/20 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <span className={`p-2.5 rounded-2xl text-white ${
+                  balanceInfoModal === 'real' ? 'bg-emerald-500 shadow-md shadow-emerald-500/20' : 'bg-amber-500 shadow-md shadow-amber-500/20'
+                }`}>
+                  {balanceInfoModal === 'real' ? <Wallet className="w-5 h-5" /> : <Gift className="w-5 h-5" />}
+                </span>
+                <div>
+                  <h3 className="font-bold text-base sm:text-lg">
+                    {balanceInfoModal === 'real' ? 'Thông Tin Tiền Nạp Thật' : 'Thông Tin Tiền Thưởng'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {balanceInfoModal === 'real' ? 'Số dư thanh toán chính trong Ví KD' : 'Tiền ưu đãi khuyến mãi tặng kèm'}
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setBalanceInfoModal(null)} 
+                className="p-1.5 rounded-full hover:bg-slate-500/10 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body */}
+            {balanceInfoModal === 'real' ? (
+              <div className="space-y-3.5 text-xs leading-relaxed">
+                <div className={`p-3.5 rounded-2xl border ${
+                  isDark ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                }`}>
+                  <p className="font-bold text-sm mb-1 flex items-center gap-1.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" /> 
+                    Số dư hiện có: {realBalance.toLocaleString('vi-VN')} đ
+                  </p>
+                  <p className="text-[11px] opacity-90">
+                    Tiền nạp thật là số tiền bạn đã nạp vào Ví KD thông qua chuyển khoản ngân hàng hoặc quét mã VietQR tự động 24/7.
+                  </p>
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold shrink-0 text-[11px]">✓</span>
+                    <div>
+                      <strong className={`block font-semibold ${isDark ? 'text-slate-200' : 'text-stone-800'}`}>Dùng để mua bất kỳ mẫu thiệp nào:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Bạn có thể dùng để mở khóa bất kỳ mẫu thiệp cưới, sinh nhật, sự kiện nào trên hệ thống KD Card.</span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold shrink-0 text-[11px]">✓</span>
+                    <div>
+                      <strong className={`block font-semibold ${isDark ? 'text-slate-200' : 'text-stone-800'}`}>Có thể rút về tài khoản ngân hàng:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Bạn hoàn toàn có thể rút số tiền này về ngân hàng bất kỳ lúc nào (hỗ trợ rút tối thiểu từ <strong>10.000 đ</strong>).</span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold shrink-0 text-[11px]">✓</span>
+                    <div>
+                      <strong className={`block font-semibold ${isDark ? 'text-slate-200' : 'text-stone-800'}`}>Không có hạn sử dụng:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Số dư nạp thật được bảo toàn vĩnh viễn trong Ví KD của bạn cho đến khi bạn sử dụng hoặc rút về.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3.5 text-xs leading-relaxed">
+                <div className={`p-3.5 rounded-2xl border ${
+                  isDark ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-800'
+                }`}>
+                  <p className="font-bold text-sm mb-1 flex items-center gap-1.5">
+                    <Gift className="w-4 h-4 text-amber-500 shrink-0" /> 
+                    Tiền thưởng hiện có: +{bonusBalance.toLocaleString('vi-VN')} đ
+                  </p>
+                  <p className="text-[11px] opacity-90">
+                    Tiền thưởng là phần quà tặng tri ân khi bạn nạp các gói nạp ưu đãi (50k tặng 10k, 100k tặng 30k) hoặc khi áp dụng mã giảm giá.
+                  </p>
+                </div>
+
+                <div className="space-y-3 pt-1">
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold shrink-0 text-[11px]">★</span>
+                    <div>
+                      <strong className={`block font-semibold ${isDark ? 'text-slate-200' : 'text-stone-800'}`}>Tự động ưu tiên trừ trước:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Khi bạn mua bất kỳ mẫu thiệp nào, hệ thống sẽ <strong>tự động ưu tiên trừ vào Tiền Thưởng trước</strong>, giúp bạn tiết kiệm tối đa Tiền Nạp Thật!</span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold shrink-0 text-[11px]">★</span>
+                    <div>
+                      <strong className={`block font-semibold ${isDark ? 'text-slate-200' : 'text-stone-800'}`}>Giá trị quy đổi nguyên giá:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>1 đ Tiền Thưởng có giá trị tương đương 1 đ tiền nạp thật khi thanh toán mua thiệp.</span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5 items-start">
+                    <span className="w-5 h-5 rounded-full bg-red-500/15 text-red-400 flex items-center justify-center font-bold shrink-0 text-[11px]">!</span>
+                    <div>
+                      <strong className="block font-semibold text-red-400">Không thể rút về ngân hàng:</strong>
+                      <span className={isDark ? 'text-slate-400' : 'text-stone-500'}>Tiền thưởng chỉ dùng để mua thiệp trên hệ thống. Nếu bạn thực hiện yêu cầu rút Tiền Nạp Thật, tiền thưởng còn lại sẽ được hệ thống thu hồi tự động theo chính sách.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Footer button */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setBalanceInfoModal(null)}
+                className={`w-full py-2.5 rounded-xl font-bold text-white text-xs transition shadow-md ${
+                  balanceInfoModal === 'real'
+                    ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/20'
+                    : 'bg-amber-600 hover:bg-amber-500 shadow-amber-500/20'
+                }`}
+              >
+                Đã hiểu
+              </button>
+            </div>
           </div>
         </div>
       )}
