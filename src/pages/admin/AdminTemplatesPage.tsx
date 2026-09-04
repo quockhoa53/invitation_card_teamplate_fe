@@ -24,6 +24,8 @@ import {
   FileText,
   AlertTriangle,
   CheckCircle2,
+  ArrowLeft,
+  Save,
 } from 'lucide-react';
 
 export const AdminTemplatesPage: React.FC = () => {
@@ -45,7 +47,7 @@ export const AdminTemplatesPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(6);
 
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'editor'>('list');
   const [showFullscreenPreview, setShowFullscreenPreview] = useState(false);
 
   // Form state
@@ -384,7 +386,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
     setUploadedFilesInfo([]);
     setUploadStatus(null);
     setActiveCodeTab('preview');
-    setShowModal(true);
+    setViewMode('editor');
   };
 
   const openEditModal = (tpl: Template) => {
@@ -404,12 +406,24 @@ document.getElementById('btn-music').addEventListener('click', () => {
     setUploadedFilesInfo([]);
     setUploadStatus(null);
     setActiveCodeTab('preview');
-    setShowModal(true);
+    setViewMode('editor');
+  };
+
+  const handleBackToList = () => {
+    setViewMode('list');
   };
 
   // Save template form handler - Always saves as Draft when creating new
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!title.trim()) {
+      toast.error('Vui lòng nhập tên template');
+      return;
+    }
+    if (!slug.trim()) {
+      toast.error('Vui lòng nhập slug (URL) cho template');
+      return;
+    }
     try {
       const publishStatus = editingTemplate ? (editingTemplate.isPublished ?? false) : false;
 
@@ -437,7 +451,7 @@ document.getElementById('btn-music').addEventListener('click', () => {
         await api.createAdminTemplate(payload);
       }
 
-      setShowModal(false);
+      setViewMode('list');
       fetchTemplates();
       if (editingTemplate) {
         toast.success('Đã cập nhật template thành công!', `Mẫu "${title}" đã được cập nhật.`);
@@ -510,6 +524,645 @@ document.getElementById('btn-music').addEventListener('click', () => {
   const totalPages = Math.ceil(currentList.length / pageSize) || 1;
   const pagedList = currentList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
+  // FULL PAGE TEMPLATE STUDIO / EDITOR VIEW
+  if (viewMode === 'editor') {
+    return (
+      <div className="space-y-6 animate-fadeIn pb-24">
+        {/* Full-Page Top Bar / Navigation */}
+        <div className={`p-4 sm:p-5 rounded-3xl border flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition-colors ${
+          isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+        }`}>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleBackToList}
+              className={`p-2.5 rounded-2xl border transition flex items-center gap-2 text-xs font-bold ${
+                isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
+                  : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
+              }`}
+            >
+              <ArrowLeft className="w-4 h-4" /> Quay Lại
+            </button>
+
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="font-editorial text-2xl font-bold">
+                  {!editingTemplate
+                    ? 'Nạp Mẫu Template Mới (Bản Nháp)'
+                    : `Chỉnh Sửa: ${title || 'Template'}`}
+                </h2>
+                {editingTemplate?.isPublished ? (
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 flex items-center gap-1">
+                    <Globe className="w-3 h-3" /> Đang Công Khai
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30 flex items-center gap-1">
+                    <FileText className="w-3 h-3" /> Bản Nháp (Draft)
+                  </span>
+                )}
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">
+                  {templateType === 'CUSTOM_CODE' ? '⚡ Custom Code' : '🎨 Built-In'}
+                </span>
+              </div>
+              <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                Không gian thiết kế template chuyên nghiệp — Tùy chỉnh thông tin, kéo thả mã nguồn và cấu hình Form Builder trực quan.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={loadPresetSample}
+              className="px-3.5 py-2 rounded-xl bg-amber-500/15 text-amber-500 dark:text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-500/25 transition active:scale-95"
+              title="Nạp nhanh code mẫu thiệp 3D Neon"
+            >
+              <Sparkles className="w-4 h-4" /> Mẫu Demo 3D
+            </button>
+
+            {customHtml && (
+              <button
+                type="button"
+                onClick={() => setShowFullscreenPreview(true)}
+                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+              >
+                <Eye className="w-4 h-4" /> Xem Thiết Bị Mobile
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleBackToList}
+              className={`px-4 py-2 rounded-xl border text-xs font-semibold transition ${
+                isDark ? 'border-slate-700 text-slate-400 hover:bg-slate-800' : 'border-stone-300 text-stone-600 hover:bg-stone-100'
+              }`}
+            >
+              Hủy
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSave()}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
+            >
+              <Save className="w-4 h-4" />
+              <span>
+                {!editingTemplate
+                  ? '💾 Lưu Bản Nháp'
+                  : editingTemplate.isPublished
+                  ? '💾 Lưu Cập Nhật'
+                  : '💾 Lưu Bản Nháp'}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2-Column Responsive Workspace */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Source Upload & Template Metadata (4 of 12 cols on XL screens) */}
+          <div className="xl:col-span-4 space-y-5">
+            {/* Status notice */}
+            {editingTemplate?.isPublished ? (
+              <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs flex items-center gap-2.5">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>Template này <strong>Đang Công Khai</strong>. Mọi chỉnh sửa được cập nhật ngay cho người dùng.</span>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-amber-500" />
+                <span>Mọi thay đổi sẽ được lưu vào <strong>Bản Nháp</strong>. Bạn có thể ra trang Bản Nháp bấm <strong>[Xuất Bản]</strong> khi sẵn sàng.</span>
+              </div>
+            )}
+
+            {/* Source Code Drag & Drop Card */}
+            <div className={`p-4 rounded-3xl border space-y-3 ${
+              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'
+            }`}>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-stone-400 flex items-center gap-2">
+                <UploadCloud className="w-4 h-4 text-orange-500" /> Tải Lên Mã Nguồn Template
+              </h4>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                multiple
+                accept=".html,.htm,.css,.js,.json"
+                onChange={(e) => handleFilesSelected(e.target.files)}
+                className="hidden"
+              />
+
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  handleFilesSelected(e.dataTransfer.files);
+                }}
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 text-center space-y-2 ${
+                  isDragging
+                    ? 'border-orange-500 bg-orange-500/10'
+                    : isDark
+                    ? 'border-slate-700/80 bg-slate-900/60 hover:border-orange-500/60 hover:bg-slate-900'
+                    : 'border-stone-300 bg-stone-50 hover:border-orange-400 hover:bg-orange-50/30'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-2xl bg-orange-500/15 text-orange-500 flex items-center justify-center mx-auto">
+                  <UploadCloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="font-bold text-xs">
+                    Kéo thả file vào đây hoặc <span className="text-orange-500 underline">Bấm để chọn file</span>
+                  </p>
+                  <p className={`text-[11px] mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                    Hỗ trợ file <strong>.html</strong> (tự tách CSS, JS) hoặc các file rời <strong>.html, .css, .js, .json</strong>
+                  </p>
+                </div>
+                {uploadedFilesInfo.length > 0 && (
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+                    {uploadedFilesInfo.map((f, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-[10px]"
+                      >
+                        <FileCheck className="w-3 h-3" /> {f}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Template Information Card */}
+            <div className={`p-4 sm:p-5 rounded-3xl border space-y-4 ${
+              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'
+            }`}>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-stone-400 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-orange-500" /> Thông Tin Cơ Bản
+              </h4>
+
+              {/* Title */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">Tên Template *</label>
+                <input
+                  type="text"
+                  required
+                  value={title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  placeholder="Ví dụ: Thiệp Sinh Nhật 3D Neon"
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              </div>
+
+              {/* Slug */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">Slug (URL Định Danh) *</label>
+                <input
+                  type="text"
+                  required
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="slug-duy-nhat"
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">Danh Mục Template</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none cursor-pointer transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                >
+                  {categories.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.emoji || '✨'} {c.name}
+                    </option>
+                  ))}
+                  {categories.length === 0 && (
+                    <>
+                      <option value="BIRTHDAY_LOVER">✨ Sinh nhật người yêu</option>
+                      <option value="BIRTHDAY_FRIENDS">🎉 Sinh nhật bạn bè</option>
+                      <option value="LOVE_ANNIVERSARY">💍 Kỷ niệm tình yêu</option>
+                      <option value="EVENT_INVITATION">💌 Thư mời sự kiện</option>
+                    </>
+                  )}
+                </select>
+              </div>
+
+              {/* Thumbnail URL with Live Preview */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">Ảnh Đại Diện (Thumbnail URL)</label>
+                <input
+                  type="url"
+                  value={thumbnailUrl}
+                  onChange={(e) => setThumbnailUrl(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+                {thumbnailUrl && (
+                  <div className="mt-2 relative aspect-[16/9] rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                      }}
+                    />
+                    <span className="absolute bottom-1.5 right-1.5 text-[9px] px-2 py-0.5 rounded bg-black/70 text-white font-bold backdrop-blur-xs">
+                      Xem trước ảnh bìa
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Pricing */}
+              <div className={`p-3 rounded-2xl border space-y-2 ${
+                isDark ? 'border-slate-800 bg-slate-900/40' : 'border-stone-200 bg-stone-50'
+              }`}>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isFree}
+                    onChange={(e) => setIsFree(e.target.checked)}
+                    className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 cursor-pointer"
+                  />
+                  <span className="text-xs font-bold text-emerald-500">Template Miễn Phí (Free)</span>
+                </label>
+
+                {!isFree && (
+                  <div className="pt-2 border-t border-slate-800/40">
+                    <label className="block font-semibold mb-1 text-[11px]">Giá Bán (VNĐ)</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step={1000}
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      placeholder="20000"
+                      className={`w-full px-3 py-1.5 rounded-xl border text-xs focus:outline-none ${
+                        isDark
+                          ? 'bg-slate-950 border-slate-800 text-white focus:border-orange-500'
+                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                      }`}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">Mô Tả Ngắn Gọn</label>
+                <textarea
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Mô tả hiệu ứng, phong cách và điểm nổi bật của mẫu thiệp này..."
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Spacious Workspace (Tabs + Live Preview / Form Builder / Editors) */}
+          <div className="xl:col-span-8 space-y-4">
+            <div className={`p-4 sm:p-6 rounded-3xl border space-y-4 ${
+              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+            }`}>
+              {/* Studio Workspace Tabs */}
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/60 pb-3">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('preview')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
+                      activeCodeTab === 'preview'
+                        ? 'bg-emerald-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Xem Thử Live
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('builder')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition flex items-center gap-1.5 ${
+                      activeCodeTab === 'builder'
+                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    Trường Nhập (Form Builder)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('html')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
+                      activeCodeTab === 'html'
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    HTML {customHtml ? `(${customHtml.length} ký tự)` : ''}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('css')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
+                      activeCodeTab === 'css'
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    CSS {customCss ? `(${customCss.length} ký tự)` : ''}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('js')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
+                      activeCodeTab === 'js'
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    JS {customJs ? `(${customJs.length} ký tự)` : ''}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveCodeTab('config')}
+                    className={`px-3 py-2 rounded-xl font-bold text-xs transition ${
+                      activeCodeTab === 'config'
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : isDark
+                        ? 'bg-slate-800/60 text-slate-400 hover:text-white'
+                        : 'bg-stone-100 text-stone-600'
+                    }`}
+                  >
+                    Config (JSON) {defaultConfig && defaultConfig !== '{}' ? `(${defaultConfig.length} ký tự)` : ''}
+                  </button>
+                </div>
+
+                {customHtml && (
+                  <button
+                    type="button"
+                    onClick={() => setShowFullscreenPreview(true)}
+                    className="px-3 py-1.5 rounded-xl bg-indigo-600/90 hover:bg-indigo-600 text-white text-xs font-bold flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" /> Mở Popup Trải Nghiệm Full
+                  </button>
+                )}
+              </div>
+
+              {/* Tab: Live Preview */}
+              {activeCodeTab === 'preview' && (
+                <div className="h-[620px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner flex flex-col">
+                  {customHtml ? (
+                    <div className="flex-1 w-full h-full overflow-y-auto">
+                      <DynamicCodeRenderer
+                        customHtml={customHtml}
+                        customCss={customCss}
+                        customJs={customJs}
+                        data={defaultConfig || {
+                          greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
+                          recipientName: 'Bạn Thân',
+                          senderName: 'Anh Khoa',
+                          greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
+                          musicUrl: '',
+                          eventDate: '20/10/2026',
+                          eventTime: '18:30',
+                          eventLocation: 'Trung Tâm Sự Kiện White Palace',
+                          loveStartDate: '2022-02-14',
+                          coordinates: '10.7769° N, 106.7009° E',
+                        }}
+                        title="Live Preview"
+                        isPreview={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-2">
+                      <Code className="w-8 h-8 opacity-30" />
+                      <p className="text-xs">Chưa có code template. Hãy kéo thả file HTML/CSS/JS ở bên trái hoặc chọn nút "Mẫu Demo 3D".</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Tab: Form Builder */}
+              {activeCodeTab === 'builder' && (
+                <div className="p-1">
+                  <TemplateFormBuilder
+                    configString={defaultConfig}
+                    onChangeConfig={setDefaultConfig}
+                    isDark={isDark}
+                  />
+                </div>
+              )}
+
+              {/* Tab: HTML Editor */}
+              {activeCodeTab === 'html' && (
+                <textarea
+                  rows={26}
+                  value={customHtml}
+                  onChange={(e) => setCustomHtml(e.target.value)}
+                  placeholder="<div><h1>{{greetingTitle}}</h1><p>{{greetingMessage}}</p></div>"
+                  className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
+                    isDark
+                      ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              )}
+
+              {/* Tab: CSS Editor */}
+              {activeCodeTab === 'css' && (
+                <textarea
+                  rows={26}
+                  value={customCss}
+                  onChange={(e) => setCustomCss(e.target.value)}
+                  placeholder=".card-box { background: #111; color: #fff; padding: 20px; border-radius: 16px; }"
+                  className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
+                    isDark
+                      ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              )}
+
+              {/* Tab: JS Editor */}
+              {activeCodeTab === 'js' && (
+                <textarea
+                  rows={26}
+                  value={customJs}
+                  onChange={(e) => setCustomJs(e.target.value)}
+                  placeholder="// window.CARD_DATA chứa dữ liệu người dùng nhập&#10;console.log(window.CARD_DATA);"
+                  className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
+                    isDark
+                      ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              )}
+
+              {/* Tab: Config JSON Editor */}
+              {activeCodeTab === 'config' && (
+                <textarea
+                  rows={26}
+                  value={defaultConfig}
+                  onChange={(e) => setDefaultConfig(e.target.value)}
+                  placeholder='{\n  "greetingTitle": "Chúc Mừng Sinh Nhật",\n  "recipientName": "Em Yêu"\n}'
+                  className={`w-full p-4 rounded-2xl border text-xs font-mono leading-relaxed focus:outline-none ${
+                    isDark
+                      ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Bottom Sticky Bar */}
+        <div className={`fixed bottom-4 left-4 md:left-72 right-4 p-3.5 rounded-2xl border shadow-2xl backdrop-blur-lg flex items-center justify-between z-40 transition-all ${
+          isDark ? 'bg-slate-950/90 border-slate-800 text-white' : 'bg-white/95 border-stone-200 text-stone-900'
+        }`}>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-stone-400">Đang thao tác:</span>
+            <span className="text-xs font-bold text-orange-400 truncate max-w-[200px] md:max-w-md">
+              {title || 'Chưa đặt tên template'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={handleBackToList}
+              className={`px-4 py-2 rounded-xl border text-xs font-semibold transition ${
+                isDark ? 'border-slate-800 text-slate-400 hover:bg-slate-900' : 'border-stone-200 text-stone-600 hover:bg-stone-100'
+              }`}
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSave()}
+              className="px-6 py-2 rounded-xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
+            >
+              <Save className="w-4 h-4" />
+              <span>
+                {!editingTemplate
+                  ? '💾 Lưu Bản Nháp'
+                  : editingTemplate.isPublished
+                  ? '💾 Lưu Cập Nhật'
+                  : '💾 Lưu Bản Nháp'}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Fullscreen Mobile Device Preview Modal */}
+        {showFullscreenPreview && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+            <div className="relative max-w-md w-full h-[90vh] bg-slate-950 border border-slate-800 rounded-[38px] shadow-2xl overflow-hidden flex flex-col">
+              <div className="h-10 bg-slate-900 border-b border-slate-800 px-5 flex items-center justify-between text-white shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                </div>
+                <span className="text-xs font-semibold text-slate-300 truncate max-w-[200px]">
+                  {title || 'Xem Thử Template'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowFullscreenPreview(false)}
+                  className="text-slate-400 hover:text-white font-bold text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto bg-slate-950">
+                <DynamicCodeRenderer
+                  customHtml={customHtml}
+                  customCss={customCss}
+                  customJs={customJs}
+                  data={defaultConfig || {
+                    greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
+                    recipientName: 'Bạn Thân',
+                    senderName: 'Anh Khoa',
+                    greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
+                    musicUrl: '',
+                    eventDate: '20/10/2026',
+                    eventTime: '18:30',
+                    eventLocation: 'Trung Tâm Sự Kiện White Palace',
+                    loveStartDate: '2022-02-14',
+                    coordinates: '10.7769° N, 106.7009° E',
+                  }}
+                  title={title || 'Template Demo'}
+                  isPreview={true}
+                />
+              </div>
+
+              <div className="p-3.5 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between">
+                <span className="text-[11px] text-slate-400">⚡ Chế độ thử nghiệm tương tác thật</span>
+                <button
+                  type="button"
+                  onClick={() => setShowFullscreenPreview(false)}
+                  className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header with Title and Action Button */}
@@ -523,14 +1176,12 @@ document.getElementById('btn-music').addEventListener('click', () => {
           </p>
         </div>
 
-        {activeTab === 'drafts' && (
-          <button
-            onClick={openCreateModal}
-            className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-orange-500/20 active:scale-95 transition shrink-0"
-          >
-            <Plus className="w-4 h-4" /> Nạp Mẫu Bản Nháp Mới
-          </button>
-        )}
+        <button
+          onClick={openCreateModal}
+          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-orange-500/20 active:scale-95 transition shrink-0"
+        >
+          <Plus className="w-4 h-4" /> Nạp Mẫu Bản Nháp Mới
+        </button>
       </div>
 
       {/* 2-PAGE TAB NAVIGATION SWITCHER */}
@@ -836,489 +1487,6 @@ document.getElementById('btn-music').addEventListener('click', () => {
           }}
           labelItem={activeTab === 'drafts' ? 'bản nháp' : 'template công khai'}
         />
-      )}
-
-      {/* ULTRA-COMPACT TEMPLATE UPLOAD/EDIT MODAL */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
-          <div className={`max-w-3xl w-full border rounded-[28px] p-5 sm:p-6 shadow-2xl space-y-4 max-h-[94vh] overflow-y-auto transition-colors ${
-            isDark ? 'bg-[#10141e] border-slate-800 text-slate-100' : 'bg-white border-stone-200 text-stone-900'
-          }`}>
-            {/* Modal Header */}
-            <div className={`flex items-center justify-between border-b pb-3 ${
-              isDark ? 'border-slate-800' : 'border-stone-200'
-            }`}>
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center">
-                  <Code className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="font-editorial text-lg font-bold flex items-center gap-2">
-                    <span>
-                      {!editingTemplate
-                        ? 'Nạp Mẫu Bản Nháp Mới'
-                        : editingTemplate.isPublished
-                        ? 'Cập Nhật Template Công Khai'
-                        : 'Chỉnh Sửa Bản Nháp'}
-                    </span>
-                    {editingTemplate?.isPublished ? (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center gap-1">
-                        <Lock className="w-2.5 h-2.5" /> Đang Công Khai
-                      </span>
-                    ) : (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold">
-                        Bản Nháp (Draft)
-                      </span>
-                    )}
-                  </h4>
-                  <span className={`text-[11px] block ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                    {!editingTemplate
-                      ? 'Template sẽ được lưu vào danh mục Bản Nháp. Bạn có thể ra trang Bản Nháp để Xuất Bản sau.'
-                      : 'Cập nhật thông tin hoặc mã nguồn render động'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={loadPresetSample}
-                  className="px-3 py-1.5 rounded-xl bg-amber-500/15 text-amber-500 dark:text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-1 hover:bg-amber-500/25 transition active:scale-95"
-                  title="Nạp nhanh code mẫu thiệp 3D"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> Mẫu Demo 3D
-                </button>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="w-8 h-8 rounded-xl bg-slate-800/40 hover:bg-orange-500/20 text-slate-400 hover:text-orange-500 flex items-center justify-center transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={handleSave} className="space-y-4 text-xs">
-              {/* Alert Notice */}
-              {editingTemplate?.isPublished ? (
-                <div className="p-2.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
-                  <span>
-                    Template này <strong>Đang Công Khai</strong>. Bạn có thể cập nhật thông tin và mã nguồn HTML/CSS/JS bất cứ lúc nào mà không làm gián đoạn người dùng.
-                  </span>
-                </div>
-              ) : (
-                <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0 text-amber-500" />
-                  <span>
-                    Mọi thay đổi sẽ được lưu vào <strong>Bản Nháp</strong>. Sau khi kiểm tra ưng ý, hãy ra ngoài trang <strong>Quản Lý Bản Nháp</strong> và bấm <strong>[Xuất Bản]</strong>.
-                  </span>
-                </div>
-              )}
-
-              {/* COMPACT HORIZONTAL UPLOAD DROPZONE */}
-              <div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  multiple
-                  accept=".html,.htm,.css,.js,.json"
-                  onChange={(e) => handleFilesSelected(e.target.files)}
-                  className="hidden"
-                />
-
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragging(true);
-                  }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setIsDragging(false);
-                    handleFilesSelected(e.dataTransfer.files);
-                  }}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`p-3 sm:p-3.5 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 flex flex-col sm:flex-row items-center justify-between gap-2.5 ${
-                    isDragging
-                      ? 'border-orange-500 bg-orange-500/10'
-                      : isDark
-                      ? 'border-slate-700/80 bg-slate-900/60 hover:border-orange-500/60 hover:bg-slate-900'
-                      : 'border-stone-300 bg-stone-50 hover:border-orange-400 hover:bg-orange-50/30'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center shrink-0">
-                      <UploadCloud className="w-5 h-5" />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-bold text-xs">
-                        Kéo thả file vào đây hoặc <span className="text-orange-500 underline">Bấm để chọn file</span>
-                      </p>
-                      <p className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                        Hỗ trợ file <strong>.html</strong> (tự bóc tách CSS, JS) hoặc các file rời <strong>.html, .css, .js, .json</strong>
-                      </p>
-                    </div>
-                  </div>
-
-                  {uploadedFilesInfo.length > 0 ? (
-                    <div className="flex flex-wrap items-center gap-1.5 shrink-0">
-                      {uploadedFilesInfo.map((f, i) => (
-                        <span
-                          key={i}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 font-bold text-[10px]"
-                        >
-                          <FileCheck className="w-3 h-3" /> {f}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="text-[10px] font-semibold text-orange-400 px-2 py-1 rounded-lg bg-orange-500/10 shrink-0">
-                      Auto-DOM Parser
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* COMPACT METADATA FORM GRID */}
-              <div className="space-y-2.5">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-                  {/* Title */}
-                  <div className="sm:col-span-5">
-                    <label className="block font-semibold mb-1 text-[11px]">Tên Template</label>
-                    <input
-                      type="text"
-                      required
-                      value={title}
-                      onChange={(e) => handleTitleChange(e.target.value)}
-                      placeholder="Ví dụ: Thiệp Sinh Nhật 3D Neon"
-                      className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none transition ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Slug */}
-                  <div className="sm:col-span-4">
-                    <label className="block font-semibold mb-1 text-[11px]">Slug (URL)</label>
-                    <input
-                      type="text"
-                      required
-                      value={slug}
-                      onChange={(e) => setSlug(e.target.value)}
-                      placeholder="slug-duy-nhat"
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none transition ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Category */}
-                  <div className="sm:col-span-3">
-                    <label className="block font-semibold mb-1 text-[11px]">Danh Mục</label>
-                    <select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      className={`w-full px-3 py-2 rounded-xl border text-xs focus:outline-none cursor-pointer transition ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                      }`}
-                    >
-                      {categories.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.emoji || '✨'} {c.name}
-                        </option>
-                      ))}
-                      {categories.length === 0 && (
-                        <>
-                          <option value="BIRTHDAY_LOVER">✨ Sinh nhật người yêu</option>
-                          <option value="BIRTHDAY_FRIENDS">🎉 Sinh nhật bạn bè</option>
-                          <option value="LOVE_ANNIVERSARY">💍 Kỷ niệm tình yêu</option>
-                          <option value="EVENT_INVITATION">💌 Thư mời sự kiện</option>
-                        </>
-                      )}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
-                  {/* Thumbnail URL */}
-                  <div className="sm:col-span-7">
-                    <label className="block font-semibold mb-1 text-[11px]">Thumbnail Image URL</label>
-                    <input
-                      type="text"
-                      value={thumbnailUrl}
-                      onChange={(e) => setThumbnailUrl(e.target.value)}
-                      placeholder="https://images.unsplash.com/..."
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none transition ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                          : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* Pricing Toggle */}
-                  <div className="sm:col-span-5 flex items-center gap-2 pt-4">
-                    <label className="flex items-center gap-1.5 cursor-pointer font-bold select-none text-xs">
-                      <input
-                        type="checkbox"
-                        checked={isFree}
-                        onChange={(e) => setIsFree(e.target.checked)}
-                        className="rounded text-orange-500 focus:ring-0"
-                      />
-                      <span>Miễn Phí</span>
-                    </label>
-
-                    {!isFree && (
-                      <input
-                        type="number"
-                        value={price}
-                        onChange={(e) => setPrice(Number(e.target.value))}
-                        placeholder="Giá VNĐ"
-                        className={`flex-1 px-3 py-2 rounded-xl border text-xs font-bold ${
-                          isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-stone-50 border-stone-200'
-                        }`}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* TABBED CODE & LIVE PREVIEW PANEL */}
-              <div className="space-y-2 pt-2 border-t border-slate-800">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('preview')}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition flex items-center gap-1 ${
-                        activeCodeTab === 'preview'
-                          ? 'bg-emerald-600 text-white shadow-sm'
-                          : isDark
-                          ? 'bg-slate-800 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600 hover:text-stone-900'
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5" /> Xem Thử Live
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('html')}
-                      className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
-                        activeCodeTab === 'html'
-                          ? 'bg-orange-500 text-white'
-                          : isDark
-                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      HTML {customHtml ? `(${customHtml.length} ký tự)` : ''}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('css')}
-                      className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
-                        activeCodeTab === 'css'
-                          ? 'bg-orange-500 text-white'
-                          : isDark
-                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      CSS {customCss ? `(${customCss.length} ký tự)` : ''}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('js')}
-                      className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
-                        activeCodeTab === 'js'
-                          ? 'bg-orange-500 text-white'
-                          : isDark
-                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      JS {customJs ? `(${customJs.length} ký tự)` : ''}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('config')}
-                      className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] transition ${
-                        activeCodeTab === 'config'
-                          ? 'bg-orange-500 text-white'
-                          : isDark
-                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      Config (JSON) {defaultConfig && defaultConfig !== '{}' ? `(${defaultConfig.length} ký tự)` : ''}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveCodeTab('builder')}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-[11px] transition flex items-center gap-1.5 ${
-                        activeCodeTab === 'builder'
-                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
-                          : isDark
-                          ? 'bg-slate-800/60 text-slate-400 hover:text-white'
-                          : 'bg-stone-100 text-stone-600'
-                      }`}
-                    >
-                      <Layers className="w-3.5 h-3.5" />
-                      Trường Nhập (Form Builder)
-                    </button>
-                  </div>
-
-                  {customHtml && (
-                    <button
-                      type="button"
-                      onClick={() => setShowFullscreenPreview(true)}
-                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold flex items-center gap-1.5 transition active:scale-95 shadow-sm"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" /> Mở Popup Trải Nghiệm Full
-                    </button>
-                  )}
-                </div>
-
-                {/* Preview Box */}
-                {activeCodeTab === 'preview' && (
-                  <div className="h-[440px] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner flex flex-col">
-                    {customHtml ? (
-                      <div className="flex-1 w-full h-full overflow-y-auto">
-                        <DynamicCodeRenderer
-                          customHtml={customHtml}
-                          customCss={customCss}
-                          customJs={customJs}
-                          data={defaultConfig || {
-                            greetingTitle: 'Chúc Mừng Sinh Nhật ✨',
-                            recipientName: 'Bạn Thân',
-                            senderName: 'Anh Khoa',
-                            greetingMessage: 'Chúc bạn tuổi mới luôn ngập tràn niềm vui, hạnh phúc và thành công rực rỡ!',
-                            musicUrl: '',
-                            eventDate: '20/10/2026',
-                            eventTime: '18:30',
-                            eventLocation: 'Trung Tâm Sự Kiện White Palace',
-                            loveStartDate: '2022-02-14',
-                            coordinates: '10.7769° N, 106.7009° E',
-                          }}
-                          title="Live Preview"
-                          isPreview={true}
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-1.5">
-                        <Code className="w-6 h-6 opacity-30" />
-                        <p className="text-[11px]">Chưa có code template. Hãy kéo thả file HTML/CSS/JS lên ở trên hoặc chọn mẫu có sẵn.</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* HTML Editor */}
-                {activeCodeTab === 'html' && (
-                  <textarea
-                    rows={8}
-                    value={customHtml}
-                    onChange={(e) => setCustomHtml(e.target.value)}
-                    placeholder="<div><h1>{{greetingTitle}}</h1><p>{{greetingMessage}}</p></div>"
-                    className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                )}
-
-                {/* CSS Editor */}
-                {activeCodeTab === 'css' && (
-                  <textarea
-                    rows={8}
-                    value={customCss}
-                    onChange={(e) => setCustomCss(e.target.value)}
-                    placeholder=".card-box { background: #111; color: #fff; padding: 20px; border-radius: 16px; }"
-                    className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                )}
-
-                {/* JS Editor */}
-                {activeCodeTab === 'js' && (
-                  <textarea
-                    rows={8}
-                    value={customJs}
-                    onChange={(e) => setCustomJs(e.target.value)}
-                    placeholder="// window.CARD_DATA chứa dữ liệu người dùng nhập&#10;console.log(window.CARD_DATA);"
-                    className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                )}
-
-                {/* Config JSON Editor */}
-                {activeCodeTab === 'config' && (
-                  <textarea
-                    rows={8}
-                    value={defaultConfig}
-                    onChange={(e) => setDefaultConfig(e.target.value)}
-                    placeholder='{\n  "greetingTitle": "Chúc Mừng Sinh Nhật",\n  "recipientName": "Em Yêu"\n}'
-                    className={`w-full p-3 rounded-2xl border text-xs font-mono focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-950 border-slate-800 text-amber-300 focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                )}
-
-                {/* Form Builder Tab */}
-                {activeCodeTab === 'builder' && (
-                  <div className="p-1">
-                    <TemplateFormBuilder
-                      configString={defaultConfig}
-                      onChangeConfig={setDefaultConfig}
-                      isDark={isDark}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Action Buttons: Chỉ có nút Lưu Bản Nháp (khi tạo mới) / Lưu Cập Nhật (khi sửa) */}
-              <div className="flex gap-2.5 pt-2 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className={`px-5 py-2.5 rounded-xl border font-semibold text-xs transition ${
-                    isDark ? 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-800' : 'bg-stone-100 border-stone-200 text-stone-700 hover:bg-stone-200'
-                  }`}
-                >
-                  Hủy Bỏ
-                </button>
-
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white font-bold text-xs shadow-lg shadow-orange-500/25 hover:brightness-105 active:scale-95 transition flex items-center justify-center gap-1.5"
-                >
-                  <span>
-                    {!editingTemplate
-                      ? '💾 Lưu Bản Nháp'
-                      : editingTemplate.isPublished
-                      ? '💾 Lưu Cập Nhật'
-                      : '💾 Lưu Bản Nháp'}
-                  </span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
       )}
 
       {/* FULLSCREEN / PHONE DEVICE PREVIEW MODAL */}
