@@ -20,6 +20,8 @@ import {
   AlertCircle,
   Eye,
   ShieldAlert,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { QrCodeModal } from '../common/QrCodeModal';
 import { MusicStoryPicker } from '../common/MusicStoryPicker';
@@ -62,6 +64,51 @@ export const CardEditor: React.FC<CardEditorProps> = ({
       return {};
     }
   });
+
+  // Collapsible sections state
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    basic: false,
+    content: false,
+    map: false,
+    music: false,
+    photos: false,
+  });
+
+  const toggleSection = (sectionKey: string) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey],
+    }));
+  };
+
+  const areAllCollapsed = Object.values(collapsedSections).every(Boolean);
+
+  const toggleAllSections = () => {
+    const nextState = !areAllCollapsed;
+    setCollapsedSections({
+      basic: nextState,
+      content: nextState,
+      map: nextState,
+      music: nextState,
+      photos: nextState,
+    });
+  };
+
+  // Check if template actually supports photo albums
+  const supportsPhotos = Boolean(
+    // 1. If defaultConfig explicitly contains a photos array definition
+    (selectedTemplate?.defaultConfig && /"photos"\s*:\s*\[/i.test(selectedTemplate.defaultConfig)) ||
+    // 2. If existing card or data already has photos configured
+    (Array.isArray(customData?.photos) && customData.photos.length > 0) ||
+    // 3. If dynamic custom HTML/JS explicitly references data.photos or photos
+    (selectedTemplate?.customHtml && /photos/i.test(selectedTemplate.customHtml)) ||
+    // 4. If standard template slug explicitly includes photos (nguoi-yeu, ban-be, vinyl)
+    (selectedTemplate?.slug && (
+      selectedTemplate.slug.includes('nguoi-yeu') ||
+      selectedTemplate.slug.includes('ban-be') ||
+      selectedTemplate.slug.includes('vinyl')
+    ))
+  );
 
   const [devicePreview, setDevicePreview] = useState<'mobile' | 'desktop'>('mobile');
   const [loading, setLoading] = useState(false);
@@ -258,98 +305,187 @@ export const CardEditor: React.FC<CardEditorProps> = ({
             </div>
           )}
 
-          <form onSubmit={handleSave} className="space-y-6">
+          <form onSubmit={handleSave} className="space-y-5">
+            {/* Quick Accordion Toolbar */}
+            <div className="flex items-center justify-between px-1">
+              <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                Nội Dung & Tùy Biến Thiệp
+              </span>
+              <button
+                type="button"
+                onClick={toggleAllSections}
+                className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+                    : 'bg-white border-stone-200 text-stone-600 hover:text-stone-900 hover:border-stone-300 shadow-xs'
+                }`}
+              >
+                {areAllCollapsed ? 'Mở Rộng Tất Cả ▾' : 'Thu Gọn Tất Cả ▴'}
+              </button>
+            </div>
+
             {/* Section 1: Basic Info */}
-            <div className={`p-5 rounded-2xl border space-y-4 ${
+            <div className={`rounded-2xl border transition-all ${
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
-              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
-                <Sparkles className="w-4 h-4" /> Thông Tin Cơ Bản
-              </h3>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                  Tiêu đề thiệp mời
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ví dụ: Sinh Nhật Em Yêu Tròn 22 Tuổi"
-                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none ${
-                    isDark
-                      ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-                  Đường dẫn tùy biến (Slug)
-                </label>
-                <div className="flex items-center gap-1 text-xs">
-                  <span className={`font-mono text-[11px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>/c/</span>
-                  <input
-                    type="text"
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                    placeholder="tu-dong-tao-neu-de-trong"
-                    className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none ${
-                      isDark
-                        ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                        : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              {/* Passcode Protection */}
-              <div className={`pt-3 border-t space-y-2.5 ${isDark ? 'border-slate-800' : 'border-stone-100'}`}>
-                <label className={`flex items-center gap-2 cursor-pointer text-xs font-semibold select-none ${
-                  isDark ? 'text-slate-300' : 'text-stone-700'
-                }`}>
-                  <input
-                    type="checkbox"
-                    checked={enablePasscode}
-                    onChange={(e) => setEnablePasscode(e.target.checked)}
-                    className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 cursor-pointer"
-                  />
-                  <span className="flex items-center gap-1.5 text-amber-500 font-bold">
-                    <Lock className="w-4 h-4" /> Đặt mật khẩu khóa thiệp (Chỉ người có mật khẩu mới xem được)
-                  </span>
-                </label>
-
-                {enablePasscode && (
-                  <div className="mt-2 space-y-2">
-                    <input
-                      type="password"
-                      value={passcode}
-                      onChange={(e) => setPasscode(e.target.value)}
-                      placeholder={initialCard?.hasPasscode ? "Nhập mật khẩu mới nếu muốn đổi (hoặc để trống giữ nguyên)..." : "Nhập mật khẩu mở thiệp (ví dụ: 123456)..."}
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none transition ${
-                        isDark
-                          ? 'bg-slate-900 border-amber-500/50 text-amber-300 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50'
-                          : 'bg-amber-50/60 border-amber-400 text-stone-900 focus:border-amber-500'
-                      }`}
-                    />
-                    <p className={`text-[11px] flex items-center gap-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                      <ShieldAlert className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                      Người nhận khi mở link thiệp sẽ phải nhập đúng mật khẩu này mới xem được toàn bộ nội dung & ảnh.
-                    </p>
+              <button
+                type="button"
+                onClick={() => toggleSection('basic')}
+                className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
+              >
+                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                    <Sparkles className="w-4 h-4" />
                   </div>
-                )}
-              </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                        Thông Tin Cơ Bản
+                      </h3>
+                      {enablePasscode && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-500 font-bold flex items-center gap-0.5 shrink-0">
+                          <Lock className="w-2.5 h-2.5" /> Khóa MK
+                        </span>
+                      )}
+                    </div>
+                    {title && (
+                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                        {title}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
+                  <span className="text-[11px] hidden sm:inline font-medium">
+                    {collapsedSections.basic ? 'Mở rộng' : 'Thu gọn'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.basic ? '-rotate-90' : ''}`} />
+                </div>
+              </button>
+
+              {!collapsedSections.basic && (
+                <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                  <div className="pt-4 space-y-4">
+                    <div>
+                      <label className={`block text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
+                        Tiêu đề thiệp mời
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Ví dụ: Sinh Nhật Em Yêu Tròn 22 Tuổi"
+                        className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none ${
+                          isDark
+                            ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                            : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={`block text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
+                        Đường dẫn tùy biến (Slug)
+                      </label>
+                      <div className="flex items-center gap-1 text-xs">
+                        <span className={`font-mono text-[11px] ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>/c/</span>
+                        <input
+                          type="text"
+                          value={slug}
+                          onChange={(e) => setSlug(e.target.value)}
+                          placeholder="tu-dong-tao-neu-de-trong"
+                          className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none ${
+                            isDark
+                              ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
+                              : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                          }`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Passcode Protection */}
+                    <div className={`pt-3 border-t space-y-2.5 ${isDark ? 'border-slate-800' : 'border-stone-100'}`}>
+                      <label className={`flex items-center gap-2 cursor-pointer text-xs font-semibold select-none ${
+                        isDark ? 'text-slate-300' : 'text-stone-700'
+                      }`}>
+                        <input
+                          type="checkbox"
+                          checked={enablePasscode}
+                          onChange={(e) => setEnablePasscode(e.target.checked)}
+                          className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+                        />
+                        <span className="flex items-center gap-1.5 text-amber-500 font-bold">
+                          <Lock className="w-4 h-4" /> Đặt mật khẩu khóa thiệp (Chỉ người có mật khẩu mới xem được)
+                        </span>
+                      </label>
+
+                      {enablePasscode && (
+                        <div className="mt-2 space-y-2">
+                          <input
+                            type="password"
+                            value={passcode}
+                            onChange={(e) => setPasscode(e.target.value)}
+                            placeholder={initialCard?.hasPasscode ? "Nhập mật khẩu mới nếu muốn đổi (hoặc để trống giữ nguyên)..." : "Nhập mật khẩu mở thiệp (ví dụ: 123456)..."}
+                            className={`w-full px-3.5 py-2.5 rounded-xl border text-xs focus:outline-none transition ${
+                              isDark
+                                ? 'bg-slate-900 border-amber-500/50 text-amber-300 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50'
+                                : 'bg-amber-50/60 border-amber-400 text-stone-900 focus:border-amber-500'
+                            }`}
+                          />
+                          <p className={`text-[11px] flex items-center gap-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                            <ShieldAlert className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            Người nhận khi mở link thiệp sẽ phải nhập đúng mật khẩu này mới xem được toàn bộ nội dung & ảnh.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Section 2: Template Content Customization */}
-            <div className={`p-5 rounded-2xl border space-y-4 ${
+            <div className={`rounded-2xl border transition-all ${
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
-              <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
-                <Sparkles className="w-4 h-4" /> Nội Dung Lời Chúc
-              </h3>
+              <button
+                type="button"
+                onClick={() => toggleSection('content')}
+                className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
+              >
+                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                      Nội Dung Lời Chúc & Tùy Chỉnh
+                    </h3>
+                    {(customData.recipientName || customData.senderName) ? (
+                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                        {customData.recipientName ? `Người nhận: ${customData.recipientName}` : ''}
+                        {customData.recipientName && customData.senderName ? ' • ' : ''}
+                        {customData.senderName ? `Người gửi: ${customData.senderName}` : ''}
+                      </p>
+                    ) : (
+                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                        Tùy biến lời chúc, ngày kỷ niệm & thông điệp
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
+                  <span className="text-[11px] hidden sm:inline font-medium">
+                    {collapsedSections.content ? 'Mở rộng' : 'Thu gọn'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.content ? '-rotate-90' : ''}`} />
+                </div>
+              </button>
+
+              {!collapsedSections.content && (
+                <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                  <div className="pt-4 space-y-4">
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -656,16 +792,45 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                   />
                 </div>
               )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Section 2.5: Love Map Coordinates & Reunion Photo Settings */}
             {(selectedTemplate.slug.includes('map') || customData.distanceKm !== undefined || customData.senderAvatar !== undefined) && (
-              <div className={`p-5 rounded-2xl border space-y-4 ${
+              <div className={`rounded-2xl border transition-all ${
                 isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
               }`}>
-                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
-                  <Sparkles className="w-4 h-4" /> Cấu Hình Bản Đồ Tọa Độ & Khoảng Cách
-                </h3>
+                <button
+                  type="button"
+                  onClick={() => toggleSection('map')}
+                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                    <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                        Cấu Hình Bản Đồ Tọa Độ & Khoảng Cách
+                      </h3>
+                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                        {customData.distanceKm ? `Khoảng cách: ${customData.distanceKm} km` : 'Tọa độ 2 vị trí & ảnh đoàn tụ'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
+                    <span className="text-[11px] hidden sm:inline font-medium">
+                      {collapsedSections.map ? 'Mở rộng' : 'Thu gọn'}
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.map ? '-rotate-90' : ''}`} />
+                  </div>
+                </button>
+
+                {!collapsedSections.map && (
+                  <div className={`p-5 pt-0 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                    <div className="pt-4 space-y-4">
 
                 {/* Avatar 1 & Location 1 */}
                 <div className={`p-3.5 rounded-xl border space-y-3 ${
@@ -797,92 +962,172 @@ export const CardEditor: React.FC<CardEditorProps> = ({
                     />
                   </div>
                 </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Section 3: Music & Sound (Story Style Picker) */}
-            <div className={`p-5 rounded-2xl border space-y-4 ${
+            <div className={`rounded-2xl border transition-all ${
               isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
             }`}>
-              <MusicStoryPicker
-                selectedMusicUrl={customData.musicUrl || ''}
-                selectedMusicTitle={customData.musicTitle || ''}
-                onSelectMusic={(url, trackTitle) => {
-                  updateField('musicUrl', url);
-                  updateField('musicTitle', trackTitle);
-                }}
-              />
+              <button
+                type="button"
+                onClick={() => toggleSection('music')}
+                className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition"
+              >
+                <div className="flex items-center gap-2.5 min-w-0 flex-1 pr-2">
+                  <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                    <Music className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                        Nhạc Nền Thiệp Mời
+                      </h3>
+                      {customData.musicTitle && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-500 font-medium truncate max-w-[160px]">
+                          {customData.musicTitle}
+                        </span>
+                      )}
+                    </div>
+                    <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                      {customData.musicTitle || (customData.musicUrl ? 'Nhạc Tùy Chỉnh (Custom URL)' : 'Kho 20+ giai điệu không bản quyền')}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-stone-400 group-hover:text-orange-500 transition shrink-0">
+                  <span className="text-[11px] hidden sm:inline font-medium">
+                    {collapsedSections.music ? 'Mở rộng' : 'Thu gọn'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.music ? '-rotate-90' : ''}`} />
+                </div>
+              </button>
+
+              {!collapsedSections.music && (
+                <div className={`p-5 pt-0 border-t ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                  <div className="pt-4">
+                    <MusicStoryPicker
+                      selectedMusicUrl={customData.musicUrl || ''}
+                      selectedMusicTitle={customData.musicTitle || ''}
+                      onSelectMusic={(url, trackTitle) => {
+                        updateField('musicUrl', url);
+                        updateField('musicTitle', trackTitle);
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Section 4: Photos Gallery */}
-            <div className={`p-5 rounded-2xl border space-y-4 ${
-              isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between">
-                <h3 className="font-editorial text-base font-bold flex items-center gap-2 text-orange-500">
-                  <ImageIcon className="w-4 h-4" /> Album Ảnh Kỷ Niệm ({(customData.photos || []).length})
-                </h3>
-                <button
-                  type="button"
-                  onClick={addPhoto}
-                  className="px-2.5 py-1 rounded-lg bg-orange-500/15 text-orange-500 hover:bg-orange-500/25 text-xs font-bold flex items-center gap-1 transition"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Thêm Ảnh
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {(customData.photos || []).map((photo: any, idx: number) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-xl border flex gap-3 items-center ${
-                      isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
-                    }`}
+            {/* Section 4: Photos Gallery - ONLY rendered when template supports photos */}
+            {supportsPhotos && (
+              <div className={`rounded-2xl border transition-all ${
+                isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'
+              }`}>
+                <div className="w-full p-4 sm:p-5 flex items-center justify-between text-left group transition">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection('photos')}
+                    className="flex items-center gap-2.5 min-w-0 flex-1 pr-2 text-left"
                   >
-                    <img
-                      src={photo.url}
-                      alt="preview"
-                      className="w-16 h-16 rounded-lg object-cover bg-slate-950 shrink-0"
-                    />
-
-                    <div className="flex-1 space-y-2">
-                      <input
-                        type="text"
-                        value={photo.url}
-                        onChange={(e) => updatePhoto(idx, 'url', e.target.value)}
-                        placeholder="Link ảnh (URL)"
-                        className={`w-full px-2.5 py-1 rounded-lg border text-[11px] font-mono ${
-                          isDark
-                            ? 'bg-slate-950 border-slate-700 text-white'
-                            : 'bg-white border-stone-200 text-stone-900'
-                        }`}
-                      />
-                      <input
-                        type="text"
-                        value={photo.caption || ''}
-                        onChange={(e) => updatePhoto(idx, 'caption', e.target.value)}
-                        placeholder="Chú thích ảnh..."
-                        className={`w-full px-2.5 py-1 rounded-lg border text-[11px] ${
-                          isDark
-                            ? 'bg-slate-950 border-slate-700 text-white'
-                            : 'bg-white border-stone-200 text-stone-900'
-                        }`}
-                      />
+                    <div className="w-8 h-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shrink-0">
+                      <ImageIcon className="w-4 h-4" />
                     </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-editorial text-sm sm:text-base font-bold text-orange-500">
+                        Album Kỷ Niệm ({(customData.photos || []).length})
+                      </h3>
+                      <p className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                        {(customData.photos || []).length > 0
+                          ? `${(customData.photos || []).length} hình ảnh kỷ niệm đã thêm`
+                          : 'Chưa có ảnh nào'}
+                      </p>
+                    </div>
+                  </button>
 
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
                       type="button"
-                      onClick={() => removePhoto(idx)}
-                      className={`p-1.5 transition ${
-                        isDark ? 'text-slate-400 hover:text-orange-400' : 'text-stone-400 hover:text-orange-600'
-                      }`}
+                      onClick={addPhoto}
+                      className="px-2.5 py-1.5 rounded-lg bg-orange-500/15 text-orange-500 hover:bg-orange-500/25 text-xs font-bold flex items-center gap-1 transition"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Plus className="w-3.5 h-3.5" /> Thêm Ảnh
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleSection('photos')}
+                      className="text-stone-400 hover:text-orange-500 transition p-1"
+                    >
+                      <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${collapsedSections.photos ? '-rotate-90' : ''}`} />
                     </button>
                   </div>
-                ))}
+                </div>
+
+                {!collapsedSections.photos && (
+                  <div className={`p-5 pt-0 border-t space-y-3 ${isDark ? 'border-slate-800/80' : 'border-stone-100'}`}>
+                    <div className="pt-4 space-y-3">
+                      {(customData.photos || []).length === 0 ? (
+                        <p className={`text-xs text-center py-4 italic ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                          Chưa có ảnh kỷ niệm nào. Nhấn "+ Thêm Ảnh" ở trên để thêm hình ảnh vào thiệp.
+                        </p>
+                      ) : (
+                        (customData.photos || []).map((photo: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className={`p-3 rounded-xl border flex gap-3 items-center ${
+                              isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-stone-50 border-stone-200'
+                            }`}
+                          >
+                            <img
+                              src={photo.url}
+                              alt="preview"
+                              className="w-16 h-16 rounded-lg object-cover bg-slate-950 shrink-0"
+                            />
+
+                            <div className="flex-1 space-y-2">
+                              <input
+                                type="text"
+                                value={photo.url}
+                                onChange={(e) => updatePhoto(idx, 'url', e.target.value)}
+                                placeholder="Link ảnh (URL)"
+                                className={`w-full px-2.5 py-1 rounded-lg border text-[11px] font-mono ${
+                                  isDark
+                                    ? 'bg-slate-950 border-slate-700 text-white'
+                                    : 'bg-white border-stone-200 text-stone-900'
+                                }`}
+                              />
+                              <input
+                                type="text"
+                                value={photo.caption || ''}
+                                onChange={(e) => updatePhoto(idx, 'caption', e.target.value)}
+                                placeholder="Chú thích ảnh..."
+                                className={`w-full px-2.5 py-1 rounded-lg border text-[11px] ${
+                                  isDark
+                                    ? 'bg-slate-950 border-slate-700 text-white'
+                                    : 'bg-white border-stone-200 text-stone-900'
+                                }`}
+                              />
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(idx)}
+                              className={`p-1.5 transition ${
+                                isDark ? 'text-slate-400 hover:text-orange-400' : 'text-stone-400 hover:text-orange-600'
+                              }`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </form>
         </div>
 

@@ -91,9 +91,10 @@ export const MusicStoryPicker: React.FC<MusicStoryPickerProps> = ({
     { id: 'ALL', label: 'Tất Cả', icon: '✨' },
     { id: 'POPULAR', label: 'Thịnh Hành', icon: '🔥' },
     { id: 'BIRTHDAY', label: 'Sinh Nhật', icon: '🎂' },
-    { id: 'LOVE', label: 'Tình Yêu', icon: '✨' },
+    { id: 'LOVE', label: 'Tình Yêu', icon: '💖' },
     { id: 'WEDDING', label: 'Tiệc Cưới', icon: '💍' },
     { id: 'CHILL', label: 'Chill / Lofi', icon: '☕' },
+    { id: 'CELEBRATION', label: 'Sự Kiện', icon: '🎉' },
   ];
 
   const filteredTracks = SYSTEM_MUSIC_TRACKS.filter((track) => {
