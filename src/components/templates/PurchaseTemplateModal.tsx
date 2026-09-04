@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Template } from '../../types';
+import { Template, ValidatePromotionResult } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
@@ -11,11 +11,10 @@ import {
   AlertCircle,
   ArrowRight,
   QrCode,
-  Sparkles,
+  Tag,
   X,
   Loader2,
   FileText,
-  CreditCard,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
@@ -39,21 +38,27 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
   const navigate = useNavigate();
   const isDark = theme === 'dark';
 
-  // Step: 'CHOOSE_METHOD' | 'WALLET_CONFIRM'
-  const [step, setStep] = useState<'CHOOSE_METHOD' | 'WALLET_CONFIRM'>('WALLET_CONFIRM');
   const [purchasing, setPurchasing] = useState(false);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [redirectingToPayment, setRedirectingToPayment] = useState(false);
+
+  // Promo Code State
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<ValidatePromotionResult | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
 
   if (!isOpen || !template) return null;
 
   const realBal = user?.realBalance ?? (user?.creditsBalance ?? 0);
   const bonusBal = user?.bonusBalance ?? 0;
   const totalBalance = realBal + bonusBal;
-  const price = template.price || 0;
-  const hasEnoughBalance = totalBalance >= price;
-  const missingAmount = Math.max(0, price - totalBalance);
-  const remainingBalanceAfter = Math.max(0, totalBalance - price);
+
+  const rawPrice = template.price || 0;
+  const discountAmount = appliedPromo?.discountAmount ?? 0;
+  const finalPrice = appliedPromo?.finalAmount !== undefined ? appliedPromo.finalAmount : rawPrice;
+
+  const hasEnoughBalance = totalBalance >= finalPrice;
+  const missingAmount = Math.max(0, finalPrice - totalBalance);
 
   const getCategoryLabel = (cat: string) => {
     switch (cat) {
@@ -68,6 +73,37 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
       default:
         return 'Mẫu Thiệp Mời';
     }
+  };
+
+  // Validate Promo Code
+  const handleApplyPromo = async () => {
+    if (!promoCodeInput.trim()) {
+      toast.error('Vui lòng nhập mã giảm giá');
+      return;
+    }
+    setPromoLoading(true);
+    try {
+      const res = await api.validatePromotion(promoCodeInput.trim(), rawPrice);
+      if (res.success && res.data) {
+        if (res.data.valid) {
+          setAppliedPromo(res.data);
+          toast.success('Áp dụng mã giảm giá thành công!', res.data.message || `Giảm ${res.data.discountAmount?.toLocaleString('vi-VN')} đ`);
+        } else {
+          setAppliedPromo(null);
+          toast.error('Mã không hợp lệ', res.data.message || 'Mã giảm giá không áp dụng được cho đơn này');
+        }
+      }
+    } catch (err: any) {
+      setAppliedPromo(null);
+      toast.error('Không thể kiểm tra mã', err.response?.data?.message || 'Lỗi khi kiểm tra mã');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoCodeInput('');
   };
 
   // Option 1: Confirm purchase using Wallet
@@ -107,9 +143,8 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
   const handleRedirectToQrPayment = async () => {
     setRedirectingToPayment(true);
     try {
-      // Create payment order for exact template price
       const res = await api.createPaymentOrder({
-        amount: template.price,
+        amount: finalPrice,
         paymentMethod: 'VIETQR',
       });
       if (res.success && res.data) {
@@ -117,11 +152,11 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
         navigate(`/payment?orderCode=${res.data.orderCode}&templateId=${template.id}`);
       } else {
         onClose();
-        navigate(`/payment?amount=${template.price}&templateId=${template.id}`);
+        navigate(`/payment?amount=${finalPrice}&templateId=${template.id}`);
       }
     } catch (e) {
       onClose();
-      navigate(`/payment?amount=${template.price}&templateId=${template.id}`);
+      navigate(`/payment?amount=${finalPrice}&templateId=${template.id}`);
     } finally {
       setRedirectingToPayment(false);
     }
@@ -203,9 +238,55 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                   {template.title}
                 </h4>
                 <div className="font-mono font-bold text-sm text-orange-500">
-                  {price.toLocaleString('vi-VN')} đ
+                  {rawPrice.toLocaleString('vi-VN')} đ
                 </div>
               </div>
+            </div>
+
+            {/* Promo Code Input Section */}
+            <div className={`p-3.5 rounded-2xl border space-y-2 ${
+              isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-orange-500" /> Mã Giảm Giá (Nếu có)
+              </label>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Nhập mã ưu đãi..."
+                  value={promoCodeInput}
+                  onChange={(e) => setPromoCodeInput(e.target.value.toUpperCase())}
+                  disabled={!!appliedPromo || promoLoading}
+                  className={`flex-1 px-3 py-2 rounded-xl border font-mono text-xs uppercase tracking-wider focus:outline-none focus:border-orange-500 transition ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-slate-300 text-slate-900'
+                  }`}
+                />
+                {appliedPromo ? (
+                  <button
+                    type="button"
+                    onClick={handleRemovePromo}
+                    className="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
+                  >
+                    Gỡ mã
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleApplyPromo}
+                    disabled={promoLoading || !promoCodeInput.trim()}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white transition shadow-sm active:scale-95"
+                  >
+                    {promoLoading ? 'Kiểm tra...' : 'Áp Dụng'}
+                  </button>
+                )}
+              </div>
+
+              {appliedPromo && (
+                <p className="text-[11px] text-emerald-500 flex items-center gap-1 font-medium">
+                  <CheckCircle className="w-3 h-3" /> Đã áp dụng mã {appliedPromo.code}: Giảm {discountAmount.toLocaleString('vi-VN')} đ
+                </p>
+              )}
             </div>
 
             {/* Detailed Order Breakdown */}
@@ -220,67 +301,42 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
               <div className="space-y-1.5 pt-1 text-[11px]">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Đơn giá mẫu thiệp:</span>
-                  <span className="font-mono font-semibold">{price.toLocaleString('vi-VN')} đ</span>
+                  <span className="font-mono font-semibold">{rawPrice.toLocaleString('vi-VN')} đ</span>
                 </div>
+                {appliedPromo && discountAmount > 0 && (
+                  <div className="flex justify-between text-emerald-500">
+                    <span>Giảm giá ({appliedPromo.code}):</span>
+                    <span className="font-mono font-semibold">-{discountAmount.toLocaleString('vi-VN')} đ</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-slate-400">Phí hệ thống:</span>
                   <span className="text-emerald-500 font-medium">0 đ (Miễn phí)</span>
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-800 font-bold text-xs">
                   <span>Tổng tiền thanh toán:</span>
-                  <span className="font-mono text-base text-orange-500">{price.toLocaleString('vi-VN')} đ</span>
+                  <span className="font-mono text-base text-orange-500">{finalPrice.toLocaleString('vi-VN')} đ</span>
                 </div>
               </div>
             </div>
 
-            {/* Wallet Status Information */}
-            <div className={`p-4 rounded-2xl border space-y-2.5 ${
+            {/* Wallet Status Information (Clean & Minimal: Only Current Balance) */}
+            <div className={`p-3.5 rounded-2xl border space-y-1.5 ${
               isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50 border-slate-200'
             }`}>
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-slate-400 font-semibold">
+                <span className="flex items-center gap-2 text-slate-400 font-semibold">
                   <Wallet className="w-4 h-4 text-orange-500" /> Số Dư Ví Của Bạn:
                 </span>
-                <strong className={`font-mono text-sm ${hasEnoughBalance ? 'text-emerald-400' : 'text-orange-400'}`}>
+                <strong className={`font-mono text-sm ${hasEnoughBalance ? 'text-emerald-500' : 'text-orange-500'}`}>
                   {totalBalance.toLocaleString('vi-VN')} đ
                 </strong>
               </div>
 
-              <div className="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-slate-200 dark:border-slate-800">
-                <div className="flex justify-between">
-                  <span>• Tiền thưởng khuyến mãi:</span>
-                  <span className="font-mono text-amber-400">+{bonusBal.toLocaleString('vi-VN')} đ</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>• Tiền nạp thực tế:</span>
-                  <span className="font-mono text-slate-300">{realBal.toLocaleString('vi-VN')} đ</span>
-                </div>
-                {hasEnoughBalance && (
-                  <div className="flex justify-between pt-1 font-medium text-emerald-400">
-                    <span>• Số dư sau khi mua:</span>
-                    <span className="font-mono">{remainingBalanceAfter.toLocaleString('vi-VN')} đ</span>
-                  </div>
-                )}
-              </div>
-
-              {hasEnoughBalance ? (
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] space-y-0.5">
-                  <p className="font-bold flex items-center gap-1">
-                    <CheckCircle className="w-3.5 h-3.5" /> Số dư ví đủ điều kiện thanh toán!
-                  </p>
-                  <p className="text-slate-400">
-                    Bấm xác nhận bên dưới để trừ {price.toLocaleString('vi-VN')} đ từ ví và mở khóa mẫu thiệp ngay lập tức.
-                  </p>
-                </div>
-              ) : (
-                <div className="p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] space-y-0.5">
-                  <p className="font-bold flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Số dư ví không đủ (còn thiếu {missingAmount.toLocaleString('vi-VN')} đ)
-                  </p>
-                  <p className="text-slate-400">
-                    Vui lòng chọn thanh toán trực tiếp qua mã QR ngân hàng bên dưới để mở khóa thiệp.
-                  </p>
-                </div>
+              {!hasEnoughBalance && (
+                <p className="text-[11px] text-orange-500 flex items-center gap-1 pt-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Số dư ví không đủ (còn thiếu {missingAmount.toLocaleString('vi-VN')} đ)
+                </p>
               )}
             </div>
 
@@ -302,7 +358,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                   ) : (
                     <>
                       <Wallet className="w-4 h-4" />
-                      <span>Xác Nhận Thanh Toán Bằng Ví ({price.toLocaleString('vi-VN')} đ)</span>
+                      <span>Xác Nhận Thanh Toán Bằng Ví ({finalPrice.toLocaleString('vi-VN')} đ)</span>
                     </>
                   )}
                 </button>
@@ -331,7 +387,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
                     <QrCode className="w-4 h-4 text-orange-500" />
                     <span>
                       {!hasEnoughBalance
-                        ? `Quét Mã QR Ngân Hàng Để Thanh Toán (${price.toLocaleString('vi-VN')} đ)`
+                        ? `Quét Mã QR Ngân Hàng Để Thanh Toán (${finalPrice.toLocaleString('vi-VN')} đ)`
                         : 'Hoặc Thanh Toán Bằng Quét Mã QR Ngân Hàng →'}
                     </span>
                   </>
