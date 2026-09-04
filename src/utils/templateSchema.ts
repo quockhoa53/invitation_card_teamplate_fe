@@ -132,6 +132,30 @@ const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
     type: 'music',
     section: 'Nhạc Nền Thiệp Mời',
   },
+  // 5 Khoảnh Khắc Kỷ Niệm (Scrapbook KK1 -> KK5)
+  moment1Photo: { label: 'Ảnh Khoảnh Khắc 1', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'https://...' },
+  moment1Text: { label: 'Nội Dung Khoảnh Khắc 1', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Ví dụ: Ngày đầu tiên gặp nhau...' },
+  moment1Date: { label: 'Ngày Khoảnh Khắc 1', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: '14.02.2023' },
+
+  moment2Photo: { label: 'Ảnh Khoảnh Khắc 2', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'https://...' },
+  moment2Text: { label: 'Nội Dung Khoảnh Khắc 2', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Ví dụ: Chuyến đi Đà Lạt đầu tiên...' },
+  moment2Date: { label: 'Ngày Khoảnh Khắc 2', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: '08.05.2023' },
+
+  moment3Photo: { label: 'Ảnh Khoảnh Khắc 3', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'https://...' },
+  moment3Text: { label: 'Nội Dung Khoảnh Khắc 3', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Ví dụ: Sinh nhật năm ngoái...' },
+  moment3Date: { label: 'Ngày Khoảnh Khắc 3', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: '20.10.2023' },
+
+  moment4Photo: { label: 'Ảnh Khoảnh Khắc 4', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'https://...' },
+  moment4Text: { label: 'Nội Dung Khoảnh Khắc 4', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Ví dụ: Đón giao thừa cùng nhau...' },
+  moment4Date: { label: 'Ngày Khoảnh Khắc 4', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: '01.01.2026' },
+
+  moment5Photo: { label: 'Ảnh Khoảnh Khắc 5', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'https://...' },
+  moment5Text: { label: 'Nội Dung Khoảnh Khắc 5', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Ví dụ: Lời hẹn ước tương lai...' },
+  moment5Date: { label: 'Ngày Khoảnh Khắc 5', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm', placeholder: 'Mãi Mãi Về Sau' },
+
+  // Thư Tay Khi Mở Thư
+  letterMessage: { label: 'Nội Dung Thư Tay Khi Mở', type: 'textarea', section: 'Thư Chúc Mừng', rows: 5, placeholder: 'Gửi người thương, chúc em sinh nhật...' },
+  footerNote: { label: 'Dòng Chữ Dưới Chân Trang', type: 'text', section: 'Thông Tin Khác', placeholder: 'made with love, mỗi ngày bên em' },
 };
 
 // Keys that are metadata or shouldn't be rendered as direct inputs
@@ -325,8 +349,11 @@ export function groupFieldsBySection(fields: TemplateFieldSchema[]): TemplateSec
 
   // Defined display order for common sections
   const preferredOrder = [
+    'Thông Tin Cơ Bản',
     'Nội Dung Lời Chúc',
     'Thời Gian & Địa Điểm',
+    '5 Khoảnh Khắc Kỷ Niệm',
+    'Thư Chúc Mừng',
     'Bản Đồ Tọa Độ & Khoảng Cách',
     'Hiệu Ứng Từ Khóa Rơi',
     'Hình Ảnh & Bản Đồ',
