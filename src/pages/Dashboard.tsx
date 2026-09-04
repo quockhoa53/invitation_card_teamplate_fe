@@ -902,7 +902,8 @@ export const Dashboard: React.FC = () => {
                       {pagedUserTransactions.map((tx) => {
                         const isPurchase = tx.type === 'CARD_PURCHASE' || tx.type === 'TEMPLATE_PURCHASE' || tx.orderCode?.startsWith('BUY');
                         const isWithdrawal = tx.type === 'WITHDRAWAL' || tx.orderCode?.startsWith('WDR');
-                        const isExpense = isPurchase || isWithdrawal;
+                        const isRefund = tx.type === 'REFUND' || tx.orderCode?.startsWith('REF');
+                        const isExpense = (isPurchase || isWithdrawal) && !isRefund;
 
                         return (
                           <tr
@@ -934,11 +935,16 @@ export const Dashboard: React.FC = () => {
                                     +{tx.amount.toLocaleString('vi-VN')} đ
                                   </span>
                                 )}
-                                {!isExpense && tx.bonusAmount && tx.bonusAmount > 0 ? (
+                                {!isExpense && !isRefund && tx.bonusAmount && tx.bonusAmount > 0 ? (
                                   <div className="text-[10px] font-semibold text-amber-400">
                                     🎁 Tặng +{tx.bonusAmount.toLocaleString('vi-VN')} đ
                                   </div>
                                 ) : null}
+                                {isRefund && (
+                                  <div className="text-[10px] font-semibold text-purple-400">
+                                    Hoàn lại tiền (Rút bị từ chối)
+                                  </div>
+                                )}
                                 {tx.status === 'UNDERPAID' && (
                                   <div className="text-[10px] text-amber-400 font-medium">
                                     Thực nhận: {tx.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {tx.missingAmount?.toLocaleString('vi-VN')} đ)
@@ -953,9 +959,11 @@ export const Dashboard: React.FC = () => {
                                   ? isDark ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30' : 'bg-purple-50 text-purple-700 border border-purple-200'
                                   : isWithdrawal
                                   ? isDark ? 'bg-blue-500/15 text-blue-300 border border-blue-500/30' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                  : isRefund
+                                  ? isDark ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30' : 'bg-purple-50 text-purple-700 border border-purple-200'
                                   : isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
                               }`}>
-                                {isPurchase ? 'VÍ KD' : isWithdrawal ? 'NGÂN HÀNG' : (tx.paymentMethod || 'VIETQR')}
+                                {isPurchase ? 'VÍ KD' : isWithdrawal ? 'NGÂN HÀNG' : isRefund ? 'VÍ KD' : (tx.paymentMethod || 'VIETQR')}
                               </span>
                             </td>
 
@@ -965,8 +973,22 @@ export const Dashboard: React.FC = () => {
                                   <ShoppingBag className="w-3 h-3" /> Mua Thiệp
                                 </span>
                               ) : isWithdrawal ? (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/30">
-                                  💸 Rút Tiền
+                                tx.status === 'SUCCESS' ? (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                                    <CheckCircle2 className="w-3 h-3" /> Đã Rút Tiền
+                                  </span>
+                                ) : tx.status === 'CANCELLED' ? (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/30">
+                                    <XCircle className="w-3 h-3" /> Đã Từ Chối
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                                    <Clock className="w-3 h-3" /> Chờ ADMIN Duyệt
+                                  </span>
+                                )
+                              ) : isRefund ? (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                                  <CheckCircle2 className="w-3 h-3" /> Hoàn Tiền Thành Công
                                 </span>
                               ) : tx.status === 'SUCCESS' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
@@ -996,7 +1018,25 @@ export const Dashboard: React.FC = () => {
                             </td>
 
                             <td className="py-3 px-4 text-right">
-                              {tx.status === 'PENDING' ? (
+                              {isWithdrawal ? (
+                                tx.status === 'PENDING' ? (
+                                  <span className="text-[11px] text-amber-400 font-semibold italic">
+                                    Chờ ADMIN xác nhận
+                                  </span>
+                                ) : tx.status === 'CANCELLED' ? (
+                                  <span className="text-[11px] text-red-400 font-semibold">
+                                    Đã hoàn lại tiền
+                                  </span>
+                                ) : (
+                                  <span className="text-[11px] text-emerald-500 font-semibold">
+                                    Đã chuyển tiền
+                                  </span>
+                                )
+                              ) : isRefund ? (
+                                <span className="text-[11px] text-purple-400 font-semibold">
+                                  Đã cộng ví
+                                </span>
+                              ) : tx.status === 'PENDING' ? (
                                 <div className="flex items-center justify-end gap-1.5">
                                   <Link
                                     to={`/payment?orderCode=${tx.orderCode}`}

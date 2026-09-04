@@ -107,16 +107,22 @@ export const AdminTransactionsPage: React.FC = () => {
   }, [filteredTransactions, page, pageSize]);
 
   const handleApprove = (item: TransactionItem) => {
+    const isWdr = item.type === 'WITHDRAWAL' || item.orderCode?.startsWith('WDR');
     confirmModal({
-      title: 'Duyệt Nạp Tiền Thủ Công',
-      message: `Bạn có chắc chắn muốn duyệt nạp tiền cho đơn "${item.orderCode}"?\n\nTài khoản khách hàng ${item.userEmail || 'người dùng'} sẽ được cộng +${item.amount.toLocaleString('vi-VN')} đ ngay lập tức.`,
-      confirmText: '✅ Duyệt Nạp Tiền',
+      title: isWdr ? 'Duyệt Chuyển Tiền Rút' : 'Duyệt Nạp Tiền Thủ Công',
+      message: isWdr
+        ? `Bạn có chắc chắn muốn xác nhận đã chuyển khoản ${item.amount.toLocaleString('vi-VN')} đ cho đơn rút tiền "${item.orderCode}"?\n\nĐơn sẽ được chuyển sang trạng thái ĐÃ HOÀN TẤT.`
+        : `Bạn có chắc chắn muốn duyệt nạp tiền cho đơn "${item.orderCode}"?\n\nTài khoản khách hàng ${item.userEmail || 'người dùng'} sẽ được cộng +${item.amount.toLocaleString('vi-VN')} đ ngay lập tức.`,
+      confirmText: isWdr ? '✅ Xác Nhận Đã Chuyển Tiền' : '✅ Duyệt Nạp Tiền',
       type: 'warning',
       onConfirm: async () => {
         try {
           const res = await api.approveAdminTransaction(item.orderCode);
           if (res.success) {
-            toast.success(`Đã duyệt đơn ${item.orderCode} thành công!`, `Đã nạp +${item.amount.toLocaleString('vi-VN')} đ cho ${item.userEmail}`);
+            toast.success(
+              isWdr ? `Đã xác nhận chuyển tiền đơn ${item.orderCode}!` : `Đã duyệt đơn ${item.orderCode} thành công!`,
+              isWdr ? `Đã cập nhật trạng thái đơn rút tiền của ${item.userEmail}` : `Đã nạp +${item.amount.toLocaleString('vi-VN')} đ cho ${item.userEmail}`
+            );
             fetchTransactions(true);
           }
         } catch (err: any) {
@@ -127,16 +133,22 @@ export const AdminTransactionsPage: React.FC = () => {
   };
 
   const handleCancel = (item: TransactionItem) => {
+    const isWdr = item.type === 'WITHDRAWAL' || item.orderCode?.startsWith('WDR');
     confirmModal({
-      title: 'Hủy Giao Dịch Nạp Tiền',
-      message: `Bạn có chắc chắn muốn hủy đơn giao dịch "${item.orderCode}"?\nĐơn sẽ chuyển sang trạng thái ĐÃ HỦY.`,
-      confirmText: 'Hủy Đơn Này',
+      title: isWdr ? 'Từ Chối Yêu Cầu Rút Tiền' : 'Hủy Giao Dịch Nạp Tiền',
+      message: isWdr
+        ? `Bạn có chắc chắn muốn TỪ CHỐI đơn rút tiền "${item.orderCode}"?\n\nHệ thống sẽ HOÀN LẠI ${item.amount.toLocaleString('vi-VN')} đ vào tài khoản ví của khách hàng ngay lập tức và tạo một giao dịch Hoàn Tiền.`
+        : `Bạn có chắc chắn muốn hủy đơn giao dịch "${item.orderCode}"?\n\nĐơn sẽ chuyển sang trạng thái ĐÃ HỦY.`,
+      confirmText: isWdr ? '❌ Từ Chối & Hoàn Lại Tiền' : 'Hủy Đơn Này',
       type: 'danger',
       onConfirm: async () => {
         try {
           const res = await api.cancelAdminTransaction(item.orderCode);
           if (res.success) {
-            toast.success(`Đã hủy đơn ${item.orderCode}!`);
+            toast.success(
+              isWdr ? `Đã từ chối đơn rút tiền ${item.orderCode}!` : `Đã hủy đơn ${item.orderCode}!`,
+              isWdr ? `Đã hoàn lại +${item.amount.toLocaleString('vi-VN')} đ cho khách hàng` : undefined
+            );
             fetchTransactions(true);
           }
         } catch (err: any) {
@@ -211,9 +223,9 @@ export const AdminTransactionsPage: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2">
         {[
           { id: 'ALL', label: 'Tất Cả', icon: Filter, count: counts.ALL },
-          { id: 'PENDING', label: 'Đang Chờ Quét', icon: Clock, count: counts.PENDING },
+          { id: 'PENDING', label: 'Chờ Duyệt / Quét', icon: Clock, count: counts.PENDING },
           { id: 'SUCCESS', label: 'Đã Hoàn Tất', icon: CheckCircle2, count: counts.SUCCESS },
-          { id: 'CANCELLED', label: 'Đã Hủy', icon: XCircle, count: counts.CANCELLED },
+          { id: 'CANCELLED', label: 'Đã Hủy / Từ Chối', icon: XCircle, count: counts.CANCELLED },
         ].map((tab) => {
           const isActive = statusFilter === tab.id;
           const Icon = tab.icon;
@@ -340,9 +352,13 @@ export const AdminTransactionsPage: React.FC = () => {
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/20">
                             Mua Thiệp
                           </span>
-                        ) : t.type === 'WITHDRAWAL' ? (
+                        ) : t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? (
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
                             Rút Tiền
+                          </span>
+                        ) : t.type === 'REFUND' || t.orderCode?.startsWith('REF') ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/20">
+                            Hoàn Tiền
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
@@ -354,7 +370,8 @@ export const AdminTransactionsPage: React.FC = () => {
                       {/* Amount & Bonus */}
                       <td className="py-3 px-4">
                         {(() => {
-                          const isExpense = t.type === 'CARD_PURCHASE' || t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('BUY') || t.orderCode?.startsWith('WDR');
+                          const isRefund = t.type === 'REFUND' || t.orderCode?.startsWith('REF');
+                          const isExpense = (t.type === 'CARD_PURCHASE' || t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('BUY') || t.orderCode?.startsWith('WDR')) && !isRefund;
                           return (
                             <div className="space-y-0.5">
                               {isExpense ? (
@@ -366,11 +383,16 @@ export const AdminTransactionsPage: React.FC = () => {
                                   +{t.amount.toLocaleString('vi-VN')} đ
                                 </span>
                               )}
-                              {!isExpense && t.bonusAmount && t.bonusAmount > 0 ? (
+                              {!isExpense && !isRefund && t.bonusAmount && t.bonusAmount > 0 ? (
                                 <div className="text-[10px] font-semibold text-amber-400 flex items-center gap-1">
                                   <span>🎁 Tặng +{t.bonusAmount.toLocaleString('vi-VN')} đ</span>
                                 </div>
                               ) : null}
+                              {isRefund && (
+                                <div className="text-[10px] text-purple-400 font-medium">
+                                  Hoàn lại do hủy rút
+                                </div>
+                              )}
                               {t.status === 'UNDERPAID' && (
                                 <div className="text-[10px] text-amber-400 font-medium">
                                   Thực nhận: {t.actualAmount?.toLocaleString('vi-VN')} đ (Thiếu: {t.missingAmount?.toLocaleString('vi-VN')} đ)
@@ -386,36 +408,62 @@ export const AdminTransactionsPage: React.FC = () => {
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                           isDark ? 'bg-slate-800 text-slate-300' : 'bg-stone-100 text-stone-700'
                         }`}>
-                          {t.paymentMethod || 'VIETQR'}
+                          {t.type === 'REFUND' || t.orderCode?.startsWith('REF')
+                            ? 'VÍ KD'
+                            : t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR')
+                            ? 'NGÂN HÀNG'
+                            : (t.paymentMethod || 'VIETQR')}
                         </span>
                       </td>
 
                       {/* Status */}
                       <td className="py-3 px-4">
-                        {t.status === 'SUCCESS' && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
-                            <CheckCircle2 className="w-3 h-3" /> Thành Công
-                          </span>
-                        )}
-                        {t.status === 'PENDING' && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
-                            <Clock className="w-3 h-3" /> Đang Chờ Quét
-                          </span>
-                        )}
-                        {t.status === 'UNDERPAID' && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            ⚠️ Chuyển Thiếu
-                          </span>
-                        )}
-                        {t.status === 'SETTLED_TO_WALLET' && (
+                        {t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? (
+                          t.status === 'SUCCESS' ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                              <CheckCircle2 className="w-3 h-3" /> Đã Chuyển Tiền
+                            </span>
+                          ) : t.status === 'CANCELLED' ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/30">
+                              <XCircle className="w-3 h-3" /> Đã Từ Chối
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                              <Clock className="w-3 h-3" /> Chờ Duyệt Rút
+                            </span>
+                          )
+                        ) : t.type === 'REFUND' || t.orderCode?.startsWith('REF') ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
-                            💼 Đã Nạp Vào Ví KD
+                            <CheckCircle2 className="w-3 h-3" /> Hoàn Tiền Thành Công
                           </span>
-                        )}
-                        {t.status === 'CANCELLED' && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
-                            <XCircle className="w-3 h-3" /> Đã Hủy
-                          </span>
+                        ) : (
+                          <>
+                            {t.status === 'SUCCESS' && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
+                                <CheckCircle2 className="w-3 h-3" /> Thành Công
+                              </span>
+                            )}
+                            {t.status === 'PENDING' && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                                <Clock className="w-3 h-3" /> Đang Chờ Quét
+                              </span>
+                            )}
+                            {t.status === 'UNDERPAID' && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                ⚠️ Chuyển Thiếu
+                              </span>
+                            )}
+                            {t.status === 'SETTLED_TO_WALLET' && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                                💼 Đã Nạp Vào Ví KD
+                              </span>
+                            )}
+                            {t.status === 'CANCELLED' && (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                                <XCircle className="w-3 h-3" /> Đã Hủy
+                              </span>
+                            )}
+                          </>
                         )}
                       </td>
 
@@ -431,9 +479,9 @@ export const AdminTransactionsPage: React.FC = () => {
                             <button
                               onClick={() => handleApprove(t)}
                               className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:brightness-110 text-white font-bold text-[11px] shadow-sm active:scale-95 transition inline-flex items-center gap-1"
-                              title="Duyệt nạp tiền ngay cho khách hàng"
+                              title={t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? "Xác nhận duyệt chuyển tiền" : "Duyệt nạp tiền ngay cho khách hàng"}
                             >
-                              <Check className="w-3 h-3" /> Duyệt
+                              <Check className="w-3 h-3" /> {t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? 'Duyệt Rút' : 'Duyệt'}
                             </button>
                             <button
                               onClick={() => handleCancel(t)}
@@ -442,14 +490,22 @@ export const AdminTransactionsPage: React.FC = () => {
                                   ? 'bg-slate-800 hover:bg-orange-500/20 text-slate-400 hover:text-orange-400'
                                   : 'bg-stone-50 hover:bg-orange-50 text-stone-400 hover:text-orange-600 border border-stone-200'
                               }`}
-                              title="Hủy đơn giao dịch"
+                              title={t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? "Từ chối rút tiền & hoàn lại tiền" : "Hủy đơn giao dịch"}
                             >
                               <X className="w-3.5 h-3.5" />
                             </button>
                           </>
+                        ) : t.type === 'WITHDRAWAL' || t.orderCode?.startsWith('WDR') ? (
+                          <span className={`text-[10px] font-semibold italic ${t.status === 'CANCELLED' ? 'text-red-400' : 'text-emerald-500'}`}>
+                            {t.status === 'CANCELLED' ? 'Đã từ chối' : 'Đã chuyển tiền'}
+                          </span>
+                        ) : t.type === 'REFUND' || t.orderCode?.startsWith('REF') ? (
+                          <span className="text-[10px] font-semibold text-purple-400 italic">
+                            Đã hoàn ví
+                          </span>
                         ) : (
                           <span className="text-[10px] font-semibold opacity-40 italic">
-                            Đã xử lý
+                            {t.status === 'CANCELLED' ? 'Đã hủy' : 'Đã xử lý'}
                           </span>
                         )}
                       </td>
