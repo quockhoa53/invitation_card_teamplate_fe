@@ -259,8 +259,8 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
           )}
         </div>
 
-        {/* Device Switcher (Mobile 📱 vs Desktop 💻) - Only visible on sm and up */}
-        <div className={`hidden sm:flex items-center p-0.5 rounded-xl border shrink-0 ${
+        {/* Device Switcher (Mobile 📱 vs Desktop 💻) */}
+        <div className={`flex items-center p-0.5 rounded-xl border shrink-0 ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-stone-100 border-stone-200'
         }`}>
           <button
