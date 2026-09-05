@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Template, ValidatePromotionResult } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -46,6 +47,22 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
   const [promoCodeInput, setPromoCodeInput] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<ValidatePromotionResult | null>(null);
   const [promoLoading, setPromoLoading] = useState(false);
+
+  // Lock body & documentElement scroll when modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen || !template) return null;
 
@@ -167,8 +184,21 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
     onSuccess(template);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 99999,
+        margin: 0,
+      }}
+    >
       <div className={`max-w-md w-full rounded-[28px] p-5 sm:p-7 border shadow-2xl space-y-5 ${
         isDark ? 'bg-[#0e1422] border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
@@ -397,6 +427,7 @@ export const PurchaseTemplateModal: React.FC<PurchaseTemplateModalProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
