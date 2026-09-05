@@ -93,6 +93,25 @@ export const DynamicCodeRenderer: React.FC<DynamicCodeRendererProps> = ({
           color: #ffffff;
           overflow-x: hidden;
         }
+        /* Sleek transparent scrollbar */
+        ::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(160, 160, 160, 0.25);
+          border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(160, 160, 160, 0.5);
+        }
+        html {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(160, 160, 160, 0.25) transparent;
+        }
         /* Custom User Styles */
         ${customCss}
       </style>

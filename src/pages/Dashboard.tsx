@@ -9,6 +9,7 @@ import { QrCodeModal } from '../components/common/QrCodeModal';
 import { Pagination } from '../components/common/Pagination';
 import { TemplateCardItem } from '../components/home/TemplateCardItem';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
+import { TemplatePreviewModal } from '../components/templates/TemplatePreviewModal';
 import { UserCardSkeleton, TableRowSkeleton } from '../components/common/Skeleton';
 import {
   PlusCircle,
@@ -1169,60 +1170,14 @@ export const Dashboard: React.FC = () => {
         }}
       />
 
-      {/* Live Demo Preview Modal */}
-      {demoTemplate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-sm sm:max-w-md h-[85vh] bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-3.5 bg-slate-900/90 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <h4 className="font-editorial text-sm font-bold text-white truncate max-w-[200px]">
-                  {demoTemplate.title}
-                </h4>
-              </div>
-              <button
-                onClick={() => setDemoTemplate(null)}
-                className="p-1 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto relative">
-              <TemplateRenderer
-                slug={demoTemplate.slug}
-                templateType={demoTemplate.templateType}
-                customHtml={demoTemplate.customHtml}
-                customCss={demoTemplate.customCss}
-                customJs={demoTemplate.customJs}
-                customData={demoTemplate.defaultConfig}
-                title={demoTemplate.title}
-                wishes={[]}
-                isPreview={true}
-              />
-            </div>
-
-            <div className="p-3.5 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between gap-3">
-              <button
-                onClick={() => setDemoTemplate(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 transition"
-              >
-                Đóng
-              </button>
-              <button
-                onClick={() => {
-                  const tpl = demoTemplate;
-                  setDemoTemplate(null);
-                  navigate(`/editor?templateId=${tpl.id}`);
-                }}
-                className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg active:scale-95 transition flex items-center gap-1.5"
-              >
-                Tạo Thiệp Mới <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Live Demo Preview Modal with Device Switcher (Mobile & Desktop) */}
+      <TemplatePreviewModal
+        template={demoTemplate}
+        isOpen={!!demoTemplate}
+        onClose={() => setDemoTemplate(null)}
+        onUseTemplate={(tpl) => navigate(`/editor?templateId=${tpl.id}`)}
+        actionText="Tạo Thiệp Mới"
+      />
     </div>
   );
 };
