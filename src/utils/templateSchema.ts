@@ -1,13 +1,59 @@
 import { TemplateFieldSchema, TemplateSectionGroup, TemplateSchemaKey } from '../types/schema';
 
-// All schema definitions are now loaded dynamically from Database (Quản Lý Schema Keys)
-export const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {};
+// Canonical system schema definitions (serving as immediate built-in keys and fallbacks)
+export const KNOWN_FIELD_META: Record<string, Partial<TemplateFieldSchema>> = {
+  recipientName: { label: 'Tên Người Nhận', type: 'text', section: 'Nội Dung Lời Chúc' },
+  senderName: { label: 'Tên Người Gửi', type: 'text', section: 'Nội Dung Lời Chúc' },
+  greetingTitle: { label: 'Tiêu Đề Lời Chúc', type: 'text', section: 'Nội Dung Lời Chúc' },
+  greetingMessage: { label: 'Nội Dung Lời Chúc', type: 'textarea', section: 'Nội Dung Lời Chúc', rows: 4 },
+  eventDate: { label: 'Ngày Diễn Ra Sự Kiện', type: 'date', section: 'Thời Gian & Địa Điểm' },
+  eventTime: { label: 'Giờ Diễn Ra', type: 'text', section: 'Thời Gian & Địa Điểm' },
+  eventLocation: { label: 'Địa Điểm Tổ Chức', type: 'text', section: 'Thời Gian & Địa Điểm' },
+  eventMapUrl: { label: 'Link Bản Đồ Google Maps', type: 'text', section: 'Thời Gian & Địa Điểm' },
+  loveStartDate: { label: 'Ngày Bắt Đầu Tình Yêu', type: 'date', section: 'Thời Gian & Địa Điểm' },
+  senderAvatar: { label: 'Ảnh Đại Diện Người Gửi', type: 'image', section: 'Hình Ảnh & Bản Đồ' },
+  recipientAvatar: { label: 'Ảnh Đại Diện Người Nhận', type: 'image', section: 'Hình Ảnh & Bản Đồ' },
+  senderNickname: { label: 'Biệt Danh Người Gửi', type: 'text', section: 'Hình Ảnh & Bản Đồ' },
+  senderLocation: { label: 'Vị Trí Người Gửi', type: 'text', section: 'Bản Đồ & Khoảng Cách' },
+  recipientLocation: { label: 'Vị Trí Người Nhận', type: 'text', section: 'Bản Đồ & Khoảng Cách' },
+  distanceKm: { label: 'Khoảng Cách (km)', type: 'number', section: 'Bản Đồ & Khoảng Cách' },
+  coordinates: { label: 'Tọa Độ Địa Lý', type: 'text', section: 'Bản Đồ & Khoảng Cách' },
+  photos: { label: 'Ảnh Kỷ Niệm / Album', type: 'image', section: 'Album Ảnh Kỷ Niệm' },
+  coverImage: { label: 'Ảnh Bìa Thiệp Mời', type: 'image', section: 'Album Ảnh Kỷ Niệm' },
+  musicUrl: { label: 'Nhạc Nền Thiệp Mời', type: 'music', section: 'Nhạc Nền Thiệp Mời' },
+  keyword1: { label: 'Từ Khóa Rơi 1', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  keyword2: { label: 'Từ Khóa Rơi 2', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  keyword3: { label: 'Từ Khóa Rơi 3', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  keyword4: { label: 'Từ Khóa Rơi 4', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  keyword5: { label: 'Từ Khóa Rơi 5', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  fallingKeywords: { label: 'Danh Sách Từ Khóa Rơi', type: 'keywords', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  milestoneUnit: { label: 'Đơn Vị Mốc Thời Gian', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  milestoneText: { label: 'Dòng Chữ Mốc Kỷ Niệm', type: 'text', section: 'Hiệu Ứng Từ Khóa Rơi' },
+  birthdayDate: { label: 'Ngày Sinh Nhật', type: 'date', section: 'Thời Gian & Địa Điểm' },
+  moment1Photo: { label: 'Ảnh Khoảnh Khắc 1', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment1Text: { label: 'Nội Dung Khoảnh Khắc 1', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment1Date: { label: 'Ngày Khoảnh Khắc 1', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment2Photo: { label: 'Ảnh Khoảnh Khắc 2', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment2Text: { label: 'Nội Dung Khoảnh Khắc 2', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment2Date: { label: 'Ngày Khoảnh Khắc 2', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment3Photo: { label: 'Ảnh Khoảnh Khắc 3', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment3Text: { label: 'Nội Dung Khoảnh Khắc 3', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment3Date: { label: 'Ngày Khoảnh Khắc 3', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment4Photo: { label: 'Ảnh Khoảnh Khắc 4', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment4Text: { label: 'Nội Dung Khoảnh Khắc 4', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment4Date: { label: 'Ngày Khoảnh Khắc 4', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment5Photo: { label: 'Ảnh Khoảnh Khắc 5', type: 'image', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment5Text: { label: 'Nội Dung Khoảnh Khắc 5', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  moment5Date: { label: 'Ngày Khoảnh Khắc 5', type: 'text', section: '5 Khoảnh Khắc Kỷ Niệm' },
+  letterMessage: { label: 'Nội Dung Thư Tay Khi Mở', type: 'textarea', section: 'Thư Chúc Mừng', rows: 4 },
+  footerNote: { label: 'Dòng Chữ Dưới Chân Trang', type: 'text', section: 'Thông Tin Khác' },
+};
 
 // Keys that are metadata or shouldn't be rendered as direct inputs
 const IGNORED_KEYS = new Set(['_schema', 'musicTitle', 'isPublished']);
 
 /**
- * Validates keys in a template's defaultConfig JSON against the master schema keys database.
+ * Validates keys in a template's defaultConfig JSON against the master schema keys database and system standards.
  */
 export function validateConfigKeys(
   configJson: string | Record<string, any>,
@@ -24,8 +70,8 @@ export function validateConfigKeys(
     parsed = configJson;
   }
 
-  // Create lookup set from DB master schema keys (1 canonical key per record)
-  const validKeySet = new Set<string>();
+  // Prepopulate lookup set with all canonical system schema keys
+  const validKeySet = new Set<string>(Object.keys(KNOWN_FIELD_META));
   if (Array.isArray(validSchemaKeys)) {
     for (const k of validSchemaKeys) {
       if (k.keyName) {
