@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LoverBirthdayTemplate } from './LoverBirthdayTemplate';
 import { FriendsBirthdayTemplate } from './FriendsBirthdayTemplate';
 import { LoveAnniversaryTemplate } from './LoveAnniversaryTemplate';
@@ -34,17 +34,19 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = React.memo(({
   onSendWish,
   isPreview = false,
 }) => {
-  let parsedData: any = {};
-  if (typeof customData === 'string') {
-    try {
-      parsedData = JSON.parse(customData);
-    } catch (e) {
-      console.error('Failed to parse customData JSON', e);
-      parsedData = {};
+  const parsedData = useMemo(() => {
+    if (typeof customData === 'string') {
+      try {
+        return JSON.parse(customData);
+      } catch (e) {
+        console.error('Failed to parse customData JSON', e);
+        return {};
+      }
+    } else if (typeof customData === 'object' && customData !== null) {
+      return customData;
     }
-  } else if (typeof customData === 'object' && customData !== null) {
-    parsedData = customData;
-  }
+    return {};
+  }, [customData]);
 
   // If this template is a dynamic custom code template injected via Admin
   if (templateType === 'CUSTOM_CODE' || (customHtml && customHtml.trim().length > 0)) {

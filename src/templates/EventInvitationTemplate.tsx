@@ -44,8 +44,19 @@ export const EventInvitationTemplate: React.FC<TemplateProps> = ({
 
   const soundRef = useRef<Howl | null>(null);
 
+  // Audio configuration - Lazy initialized only on demand
   useEffect(() => {
-    if (data.musicUrl && !soundRef.current) {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.stop();
+        soundRef.current.unload();
+        soundRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
+    if (!soundRef.current && data.musicUrl) {
       soundRef.current = new Howl({
         src: [data.musicUrl],
         html5: true,
@@ -53,15 +64,6 @@ export const EventInvitationTemplate: React.FC<TemplateProps> = ({
         volume: 0.6,
       });
     }
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.stop();
-      }
-    };
-  }, [data.musicUrl]);
-
-  const toggleMusic = () => {
     if (!soundRef.current) return;
     if (isPlayingMusic) {
       soundRef.current.pause();

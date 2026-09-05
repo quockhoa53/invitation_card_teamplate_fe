@@ -104,8 +104,18 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
     return () => clearInterval(interval);
   }, [data.anniversaryStartDate]);
 
-  // Audio configuration
+  // Audio configuration - Lazy initialized only on demand
   useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.stop();
+        soundRef.current.unload();
+        soundRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleMusic = () => {
     const musicUrl = data.musicUrl || 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3';
     if (!soundRef.current) {
       soundRef.current = new Howl({
@@ -115,16 +125,6 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
         volume: 0.6,
       });
     }
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.stop();
-      }
-    };
-  }, [data.musicUrl]);
-
-  const toggleMusic = () => {
-    if (!soundRef.current) return;
     if (isPlayingMusic) {
       soundRef.current.pause();
       setIsPlayingMusic(false);
@@ -319,18 +319,12 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
           ctx.textBaseline = 'middle';
 
           if (item.heartType === 'outline') {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = item.layer === 2 ? 6 : 0;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText('♡', 0, 0);
           } else if (item.heartType === 'filled') {
-            ctx.shadowColor = '#f43f5e';
-            ctx.shadowBlur = item.layer === 2 ? 6 : 0;
             ctx.fillStyle = `rgba(244, 63, 94, ${item.opacity})`;
             ctx.fillText('❤️', 0, 0);
           } else {
-            ctx.shadowColor = '#fef08a';
-            ctx.shadowBlur = 4;
             ctx.fillStyle = `rgba(254, 240, 138, ${item.opacity})`;
             ctx.fillText('✨', 0, 0);
           }
@@ -340,23 +334,17 @@ export const LoveRainAnniversaryTemplate: React.FC<TemplateProps> = ({
           ctx.textBaseline = 'middle';
 
           if (item.layer === 2) {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 8;
             ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           } else if (item.layer === 1) {
-            ctx.shadowColor = '#38bdf8';
-            ctx.shadowBlur = 3;
             ctx.fillStyle = `rgba(224, 242, 254, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           } else {
-            ctx.shadowBlur = 0;
             ctx.fillStyle = `rgba(186, 230, 253, ${item.opacity})`;
             ctx.fillText(item.text, 0, 0);
           }
         }
 
-        ctx.shadowBlur = 0;
         ctx.restore();
       }
 

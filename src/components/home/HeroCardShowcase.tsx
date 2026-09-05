@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Template } from '../../types';
 import { TemplateRenderer } from '../../templates/TemplateRenderer';
@@ -232,7 +232,6 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
   const [activeTabId, setActiveTabId] = useState<string>('sinh-nhat-nguoi-yeu-3d-cake');
   const [deviceMode, setDeviceMode] = useState<'mobile' | 'desktop'>('mobile');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const showcaseTabs = [
     {
@@ -269,24 +268,6 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
     },
   ];
 
-  // Efficient outside click & touch listener - only attached when dropdown is actually open
-  useEffect(() => {
-    if (!isDropdownOpen) return;
-
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside, { passive: true });
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-
   const currentTab = showcaseTabs.find((t) => t.id === activeTabId) || showcaseTabs[0];
 
   // Match template from backend first; if loading or not found, fall back instantly to built-in template
@@ -312,7 +293,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
         isDark ? 'bg-[#0f1522]/95 border-slate-800/80 shadow-xl' : 'bg-white/95 border-slate-200/80 shadow-sm'
       }`}>
         {/* Modern Elegant Category Dropdown */}
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative">
           <button
             type="button"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
@@ -322,21 +303,23 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                 : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-orange-400'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/60 shrink-0 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/60 shrink-0" />
             <span className="truncate max-w-[125px] xs:max-w-[155px] sm:max-w-[175px]">{currentTab.fullName}</span>
-            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 text-slate-400 ${
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 text-slate-400 ${
               isDropdownOpen ? 'rotate-180 text-orange-500' : ''
             }`} />
           </button>
 
-          {/* Floating Dropdown Menu - High Performance (No GPU-heavy backdrop-blur lag on mobile) */}
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -4, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                transition={{ duration: 0.12, ease: 'easeOut' }}
+          {/* Floating Dropdown Menu & Instant Transparent Click-Outside Overlay */}
+          {isDropdownOpen && (
+            <>
+              {/* Invisible Click-Outside Backdrop: zero-latency close on mobile & desktop */}
+              <div
+                className="fixed inset-0 z-40 bg-transparent"
+                onClick={() => setIsDropdownOpen(false)}
+              />
+
+              <div
                 className={`absolute top-full left-0 mt-2 w-64 sm:w-72 p-2 rounded-2xl border shadow-2xl z-50 ${
                   isDark
                     ? 'bg-slate-900 border-slate-700 text-white shadow-black/80'
@@ -357,18 +340,18 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                           setActiveTabId(tab.id);
                           setIsDropdownOpen(false);
                         }}
-                        className={`touch-manipulation w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-all ${
+                        className={`touch-manipulation w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-colors ${
                           isSelected
                             ? isDark
                               ? 'bg-orange-500/15 text-orange-400 font-semibold border border-orange-500/30'
                               : 'bg-orange-50 text-orange-600 font-semibold border border-orange-200'
                             : isDark
-                            ? 'hover:bg-slate-800/60 text-slate-300'
+                            ? 'hover:bg-slate-800 text-slate-300'
                             : 'hover:bg-slate-100 text-slate-700'
                         }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0 transition-colors ${
+                          <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${
                             isSelected
                               ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/30'
                               : isDark
@@ -389,9 +372,9 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
                     );
                   })}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Device Switcher (Mobile 📱 vs Desktop 💻) - High Performance & Always Visible */}
