@@ -32,6 +32,7 @@ import {
   FileCode,
 } from 'lucide-react';
 import { KNOWN_FIELD_META } from '../../utils/templateSchema';
+import { SchemaKeyTableSkeleton } from '../../components/common/Skeleton';
 
 const FIELD_TYPE_CONFIG: Record<FieldType, { label: string; icon: any; color: string; lightColor: string }> = {
   text: { label: 'Văn bản ngắn', icon: Type, color: 'bg-blue-500/15 text-blue-400 border-blue-500/30', lightColor: 'bg-blue-50 text-blue-800 border-blue-200 shadow-2xs' },
@@ -585,7 +586,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
 
       {/* Keys Table / List */}
       {loading ? (
-        <div className="p-12 text-center text-slate-500">Đang tải danh sách Schema Keys...</div>
+        <SchemaKeyTableSkeleton rows={8} />
       ) : filteredKeys.length === 0 ? (
         <div className={`p-12 rounded-3xl border text-center space-y-3 ${
           isDark ? 'bg-[#121824] border-slate-800 text-slate-400' : 'bg-white border-stone-200 text-stone-500'

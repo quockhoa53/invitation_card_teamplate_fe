@@ -147,3 +147,94 @@ export const StatsCardSkeleton: React.FC = () => {
     </div>
   );
 };
+
+/**
+ * Schema Key Table Skeleton - matches AdminSchemaKeysPage table layout
+ */
+export const SchemaKeyTableSkeleton: React.FC<{ rows?: number }> = ({ rows = 8 }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  return (
+    <div
+      className={`rounded-3xl border overflow-hidden shadow-sm ${
+        isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'
+      }`}
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead
+            className={`border-b text-[11px] font-bold uppercase tracking-wider ${
+              isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-stone-50 border-stone-200 text-stone-700'
+            }`}
+          >
+            <tr>
+              <th className="py-3.5 px-4 w-12 text-center">#</th>
+              <th className="py-3.5 px-4 min-w-[200px]">Mã Key (Dùng trong JSON)</th>
+              <th className="py-3.5 px-4 min-w-[220px]">Nhãn Hiển Thị</th>
+              <th className="py-3.5 px-4 min-w-[150px]">Kiểu Nhập Liệu</th>
+              <th className="py-3.5 px-4 min-w-[180px]">Nhóm Mục</th>
+              <th className="py-3.5 px-4 min-w-[200px]">Gợi Ý (Placeholder)</th>
+              <th className="py-3.5 px-4 text-center w-28">Trạng Thái</th>
+              <th className="py-3.5 px-4 text-right w-24">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody className={`divide-y ${isDark ? 'divide-slate-800/60' : 'divide-stone-100'}`}>
+            {Array.from({ length: rows }).map((_, idx) => (
+              <tr key={idx} className="animate-pulse">
+                {/* Index */}
+                <td className="py-3.5 px-4 text-center">
+                  <Skeleton className="h-4 w-5 mx-auto rounded" />
+                </td>
+
+                {/* Key Name */}
+                <td className="py-3.5 px-4">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-6 w-32 rounded-lg" />
+                    <Skeleton className="h-5 w-5 rounded" />
+                  </div>
+                </td>
+
+                {/* Labels */}
+                <td className="py-3.5 px-4">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-28 rounded" />
+                    <Skeleton className="h-5 w-16 rounded-lg" />
+                  </div>
+                </td>
+
+                {/* Field Type */}
+                <td className="py-3.5 px-4">
+                  <Skeleton className="h-6 w-24 rounded-lg" />
+                </td>
+
+                {/* Section Name */}
+                <td className="py-3.5 px-4">
+                  <Skeleton className="h-5 w-28 rounded-md" />
+                </td>
+
+                {/* Placeholder */}
+                <td className="py-3.5 px-4">
+                  <Skeleton className="h-4 w-36 rounded" />
+                </td>
+
+                {/* Status Toggle */}
+                <td className="py-3.5 px-4 text-center">
+                  <Skeleton className="h-5 w-12 rounded-full mx-auto" />
+                </td>
+
+                {/* Actions */}
+                <td className="py-3.5 px-4 text-right">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <Skeleton className="h-7 w-7 rounded-lg" />
+                    <Skeleton className="h-7 w-7 rounded-lg" />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};

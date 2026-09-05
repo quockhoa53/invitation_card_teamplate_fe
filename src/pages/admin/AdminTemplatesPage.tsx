@@ -6,7 +6,7 @@ import { Template, TemplateCategory, TemplateSchemaKey } from '../../types';
 import { DynamicCodeRenderer } from '../../templates/DynamicCodeRenderer';
 import { validateConfigKeys } from '../../utils/templateSchema';
 import { Pagination } from '../../components/common/Pagination';
-import { UserCardSkeleton } from '../../components/common/Skeleton';
+import { UserCardSkeleton, Skeleton } from '../../components/common/Skeleton';
 import { ImageUploadInput } from '../../components/common/ImageUploadInput';
 import {
   Layers,
@@ -1213,7 +1213,11 @@ document.getElementById('btn-music').addEventListener('click', () => {
                       </div>
 
                       <div className="max-h-36 overflow-y-auto flex flex-wrap gap-1.5 pr-1">
-                        {schemaKeys
+                        {schemaKeys.length === 0 ? (
+                          Array.from({ length: 12 }).map((_, i) => (
+                            <Skeleton key={i} className="h-6 w-24 rounded-lg" />
+                          ))
+                        ) : schemaKeys
                           .filter((k) =>
                             !schemaSearchQuery ||
                             k.keyName.toLowerCase().includes(schemaSearchQuery.toLowerCase()) ||

@@ -9,6 +9,7 @@ import { HeroCardShowcase } from '../components/home/HeroCardShowcase';
 import { TemplateCardItem } from '../components/home/TemplateCardItem';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
 import { PurchaseTemplateModal } from '../components/templates/PurchaseTemplateModal';
+import { TemplateCardSkeleton } from '../components/common/Skeleton';
 import {
   Sparkles,
   QrCode,
@@ -33,6 +34,7 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(true);
   const [demoTemplate, setDemoTemplate] = useState<Template | null>(null);
   const [purchasingTemplate, setPurchasingTemplate] = useState<Template | null>(null);
   const isDark = theme === 'dark';
@@ -40,12 +42,15 @@ export const Home: React.FC = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
+        setIsLoadingTemplates(true);
         const res = await api.getTemplates();
         if (res.success && res.data) {
           setTemplates(res.data);
         }
       } catch (err) {
         console.error('Failed to fetch templates', err);
+      } finally {
+        setIsLoadingTemplates(false);
       }
     };
     fetchTemplates();
@@ -219,20 +224,27 @@ export const Home: React.FC = () => {
 
           {/* 8 Cards in 2 Rows (Desktop) / 4 Cards (Mobile) - Raised on 3D Stage */}
           <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
-            {displayTemplates.map((tpl, idx) => (
-              <div
-                key={tpl.id}
-                className={`transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] drop-shadow-xl hover:drop-shadow-2xl ${idx >= 4 ? 'hidden sm:block' : ''
-                  }`}
-              >
-                <TemplateCardItem
-                  template={tpl}
-                  isDark={isDark}
-                  onPreview={(t) => setDemoTemplate(t)}
-                  onUse={(t) => handleUseTemplate(t)}
-                />
-              </div>
-            ))}
+            {isLoadingTemplates
+              ? Array.from({ length: 8 }).map((_, idx) => (
+                  <div key={idx} className={idx >= 4 ? 'hidden sm:block' : ''}>
+                    <TemplateCardSkeleton />
+                  </div>
+                ))
+              : displayTemplates.map((tpl, idx) => (
+                  <div
+                    key={tpl.id}
+                    className={`transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] drop-shadow-xl hover:drop-shadow-2xl ${
+                      idx >= 4 ? 'hidden sm:block' : ''
+                    }`}
+                  >
+                    <TemplateCardItem
+                      template={tpl}
+                      isDark={isDark}
+                      onPreview={(t) => setDemoTemplate(t)}
+                      onUse={(t) => handleUseTemplate(t)}
+                    />
+                  </div>
+                ))}
           </div>
 
           {/* View All Button */}
