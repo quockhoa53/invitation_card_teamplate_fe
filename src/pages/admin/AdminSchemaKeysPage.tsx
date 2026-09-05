@@ -84,6 +84,23 @@ export const AdminSchemaKeysPage: React.FC = () => {
   const [formIsRequired, setFormIsRequired] = useState(false);
   const [formDisplayOrder, setFormDisplayOrder] = useState(0);
 
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedDefaults = async () => {
+    try {
+      setIsSeeding(true);
+      const res = await api.seedAdminSchemaKeys();
+      if (res.data) {
+        setKeys(res.data);
+        toast.success('Đồng bộ thành công!', `Đã nạp đầy đủ ${res.data.length} Schema Key chuẩn hệ thống vào cơ sở dữ liệu.`);
+      }
+    } catch (err: any) {
+      toast.error('Đồng bộ thất bại', err.message || 'Không thể đồng bộ key chuẩn');
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
   // JSON Import Modal State
   const [showImportModal, setShowImportModal] = useState(false);
   const [importTab, setImportTab] = useState<'file' | 'text'>('file');
@@ -458,6 +475,21 @@ export const AdminSchemaKeysPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap shrink-0">
+          <button
+            type="button"
+            onClick={handleSeedDefaults}
+            disabled={isSeeding}
+            className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition active:scale-95 ${
+              isDark
+                ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-amber-300'
+                : 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800 shadow-sm'
+            }`}
+            title="Đồng bộ tất cả các Schema Key chuẩn hệ thống vào cơ sở dữ liệu"
+          >
+            <Sparkles className={`w-4 h-4 text-amber-500 ${isSeeding ? 'animate-spin' : ''}`} />
+            {isSeeding ? 'Đang đồng bộ...' : 'Đồng Bộ Key Mặc Định'}
+          </button>
+
           <button
             type="button"
             onClick={openImportModal}
