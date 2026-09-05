@@ -21,7 +21,7 @@ interface TemplateRendererProps {
   isPreview?: boolean;
 }
 
-export const TemplateRenderer: React.FC<TemplateRendererProps> = ({
+export const TemplateRenderer: React.FC<TemplateRendererProps> = React.memo(({
   slug,
   category,
   templateType,
@@ -133,4 +133,4 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       isPreview={isPreview}
     />
   );
-};
+});
