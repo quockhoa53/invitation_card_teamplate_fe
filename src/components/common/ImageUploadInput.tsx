@@ -206,7 +206,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
                   {isCompressing ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Đang nén WebP...</span>
+                      <span>Đang xử lý ảnh...</span>
                     </>
                   ) : (
                     <>
@@ -232,22 +232,42 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
                 )}
               </div>
 
-              {/* Compression stats / Privacy badge */}
+              {/* Privacy badge with information tooltip */}
               <div className="mt-1.5 flex items-center gap-1.5 text-[11px]">
-                {compressStats ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-500 font-semibold font-mono">
-                    <Check className="w-3 h-3" /> Nén WebP ({formatBytes(compressStats.compressedSize)}) • -{compressStats.reductionPercentage}%
+                <span className="inline-flex items-center gap-1 text-emerald-500 font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  100% Riêng tư
+                </span>
+
+                <div className="relative group inline-flex items-center">
+                  <span
+                    className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[10px] font-bold border cursor-help transition ${
+                      isDark
+                        ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500'
+                        : 'bg-stone-200 border-stone-300 text-stone-600 hover:text-stone-900 hover:border-stone-400'
+                    }`}
+                  >
+                    !
                   </span>
-                ) : hasImage && isBase64 ? (
-                  <span className="inline-flex items-center gap-1 text-emerald-500 font-semibold">
-                    <ShieldCheck className="w-3 h-3" /> Đã lưu WebP nội bộ
-                  </span>
-                ) : (
-                  <span className={`inline-flex items-center gap-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-                    <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                    100% Riêng tư (tự động nén WebP trên máy)
-                  </span>
-                )}
+
+                  {/* Popover Card on Hover */}
+                  <div className={`absolute left-0 bottom-full mb-2 hidden group-hover:block z-50 w-64 p-3 rounded-2xl shadow-2xl border text-[11px] leading-relaxed transition-all pointer-events-none ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-700 text-slate-200'
+                      : 'bg-white border-stone-200 text-stone-700 shadow-stone-400/20'
+                  }`}>
+                    <div className="flex items-center gap-1.5 font-bold text-emerald-500 mb-1">
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Bảo Mật Ảnh Cá Nhân Tuyệt Đối</span>
+                    </div>
+                    <p className="text-[11px]">
+                      Ảnh của bạn được xử lý trực tiếp trên thiết bị và chỉ lưu riêng trong tấm thiệp này. Hệ thống cam kết <b>không tải ảnh lên bất kỳ máy chủ công cộng nào</b>, người ngoài không thể xem hoặc lấy được ảnh của bạn.
+                    </p>
+                    <div className={`absolute left-2 top-full w-0 h-0 border-x-4 border-x-transparent border-t-4 ${
+                      isDark ? 'border-t-slate-900' : 'border-t-white'
+                    }`} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
