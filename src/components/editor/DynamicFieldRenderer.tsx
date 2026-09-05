@@ -1,6 +1,7 @@
 import React from 'react';
 import { TemplateFieldSchema } from '../../types/schema';
 import { MusicStoryPicker } from '../common/MusicStoryPicker';
+import { ImageUploadInput } from '../common/ImageUploadInput';
 import {
   Calendar,
   Image as ImageIcon,
@@ -149,38 +150,17 @@ export const DynamicFieldRenderer: React.FC<DynamicFieldRendererProps> = ({
     );
   }
 
-  // 3. IMAGE TYPE (Single image with live preview)
+  // 3. IMAGE TYPE (Single image with live preview & client-side WebP compression)
   if (type === 'image') {
-    const currentUrl = typeof value === 'string' ? value : '';
     return (
-      <div>
-        <label className={`block text-xs font-semibold mb-1.5 ${isDark ? 'text-slate-300' : 'text-stone-700'}`}>
-          {label}
-        </label>
-        <div className="flex gap-2.5 items-center">
-          <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-950 border border-orange-500/30 shrink-0 flex items-center justify-center">
-            {currentUrl ? (
-              <img src={currentUrl} alt="preview" className="w-full h-full object-cover" />
-            ) : (
-              <ImageIcon className="w-5 h-5 text-stone-500" />
-            )}
-          </div>
-          <input
-            type="text"
-            value={currentUrl}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder || 'Nhập link ảnh (https://...)'}
-            className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono focus:outline-none ${
-              isDark
-                ? 'bg-slate-900 border-slate-700 text-white focus:border-orange-500'
-                : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-            }`}
-          />
-        </div>
-        {helperText && (
-          <p className={`text-[11px] mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>{helperText}</p>
-        )}
-      </div>
+      <ImageUploadInput
+        value={typeof value === 'string' ? value : ''}
+        onChange={onChange}
+        label={label}
+        placeholder={placeholder}
+        helperText={helperText}
+        isDark={isDark}
+      />
     );
   }
 

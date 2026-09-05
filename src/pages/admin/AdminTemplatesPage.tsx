@@ -7,6 +7,7 @@ import { DynamicCodeRenderer } from '../../templates/DynamicCodeRenderer';
 import { validateConfigKeys } from '../../utils/templateSchema';
 import { Pagination } from '../../components/common/Pagination';
 import { UserCardSkeleton } from '../../components/common/Skeleton';
+import { ImageUploadInput } from '../../components/common/ImageUploadInput';
 import {
   Layers,
   Plus,
@@ -863,35 +864,17 @@ document.getElementById('btn-music').addEventListener('click', () => {
                 </select>
               </div>
 
-              {/* Thumbnail URL with Live Preview */}
+              {/* Thumbnail with Live Preview & Client-side WebP Compression */}
               <div>
-                <label className="block font-semibold mb-1 text-xs">Ảnh Đại Diện (Thumbnail URL)</label>
-                <input
-                  type="url"
+                <ImageUploadInput
                   value={thumbnailUrl}
-                  onChange={(e) => setThumbnailUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none transition ${
-                    isDark
-                      ? 'bg-slate-900 border-slate-800 text-white focus:border-orange-500'
-                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
-                  }`}
+                  onChange={(val) => setThumbnailUrl(val)}
+                  label="Ảnh Bìa Đại Diện (Thumbnail)"
+                  placeholder="Nhập link ảnh hoặc chọn tệp từ máy..."
+                  isDark={isDark}
+                  maxWidth={800}
+                  maxHeight={500}
                 />
-                {thumbnailUrl && (
-                  <div className="mt-2 relative aspect-[16/9] rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
-                    <img
-                      src={thumbnailUrl}
-                      alt="Thumbnail Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                    <span className="absolute bottom-1.5 right-1.5 text-[9px] px-2 py-0.5 rounded bg-black/70 text-white font-bold backdrop-blur-xs">
-                      Xem trước ảnh bìa
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Pricing */}
