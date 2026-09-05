@@ -73,15 +73,19 @@ export const AdminLayout: React.FC = () => {
           <div className={`px-3 py-2 flex items-center justify-between border-b pb-4 ${
             isDark ? 'border-slate-800' : 'border-stone-100'
           }`}>
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center justify-center">
-                <Shield className="w-4 h-4" />
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="KD Card Logo"
+                  className="w-full h-full object-contain drop-shadow-[0_1px_4px_rgba(249,115,22,0.3)]"
+                />
               </div>
               <div>
                 <h3 className="font-editorial text-sm font-bold tracking-tight">Admin Portal</h3>
-                <span className="text-[10px] text-orange-500 font-bold block -mt-0.5">Bảng Quản Trị</span>
+                <span className="text-[10px] text-orange-500 font-bold block -mt-0.5">KD Card Quản Trị</span>
               </div>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-1">
               <button

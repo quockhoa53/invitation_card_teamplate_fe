@@ -86,11 +86,11 @@ export const Home: React.FC = () => {
           {/* Left Column: Brand Story & CTA */}
           <div className="lg:col-span-7 space-y-2.5 sm:space-y-5 text-center lg:text-left">
             {/* Top Badge */}
-            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[10px] sm:text-[11px] font-semibold tracking-wide ${isDark
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-semibold tracking-wide shadow-sm ${isDark
               ? 'border-slate-800 bg-slate-900/80 text-slate-300'
               : 'border-slate-200 bg-slate-100/80 text-slate-700'
               }`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              <img src="/logo.png" alt="KD" className="w-3.5 h-3.5 object-contain" />
               <span>KD Card Atelier 2026 — Nền Tảng Thiệp Mời Độc Bản</span>
             </div>
 

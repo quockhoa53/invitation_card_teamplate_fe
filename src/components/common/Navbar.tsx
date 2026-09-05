@@ -55,13 +55,13 @@ export const Navbar: React.FC = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* KD Atelier Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 p-[2px] shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full rounded-[14px] bg-[#12080a] flex items-center justify-center">
-                <span className="font-editorial text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-200">
-                  KD
-                </span>
-              </div>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <img
+                src="/logo.png"
+                alt="KD Card Logo"
+                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.3)]"
+              />
             </div>
             <div>
               <span className="font-editorial text-xl font-bold tracking-tight flex items-center gap-1.5">

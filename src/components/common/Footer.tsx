@@ -17,9 +17,13 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="md:col-span-5 space-y-4">
-            <Link to="/" className="inline-flex items-center gap-2 group">
-              <div className="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-base shadow-md shadow-orange-500/20 group-hover:scale-105 transition">
-                KD
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <img
+                  src="/logo.png"
+                  alt="KD Card Logo"
+                  className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(249,115,22,0.3)]"
+                />
               </div>
               <div className="flex flex-col">
                 <span className={`font-editorial text-lg font-bold tracking-tight leading-none ${
