@@ -72,28 +72,25 @@ export const Home: React.FC = () => {
       <section className="relative pt-1 sm:pt-6 pb-2 sm:pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex items-center">
         {/* Subtle Single Accent Ambient Glow */}
         <div
-          className={`absolute top-1/4 left-1/4 w-[400px] sm:w-[500px] h-[260px] sm:h-[300px] rounded-full blur-[140px] pointer-events-none ${
-            isDark ? 'bg-orange-500/10' : 'bg-orange-500/5'
-          }`}
+          className={`absolute top-1/4 left-1/4 w-[400px] sm:w-[500px] h-[260px] sm:h-[300px] rounded-full blur-[140px] pointer-events-none ${isDark ? 'bg-orange-500/10' : 'bg-orange-500/5'
+            }`}
         />
 
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8 items-center w-full my-auto">
           {/* Left Column: Brand Story & CTA */}
           <div className="lg:col-span-7 space-y-2.5 sm:space-y-5 text-center lg:text-left">
             {/* Top Badge */}
-            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[10px] sm:text-[11px] font-semibold tracking-wide ${
-              isDark
-                ? 'border-slate-800 bg-slate-900/80 text-slate-300'
-                : 'border-slate-200 bg-slate-100/80 text-slate-700'
-            }`}>
+            <div className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[10px] sm:text-[11px] font-semibold tracking-wide ${isDark
+              ? 'border-slate-800 bg-slate-900/80 text-slate-300'
+              : 'border-slate-200 bg-slate-100/80 text-slate-700'
+              }`}>
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
               <span>KD Card Atelier 2026 — Nền Tảng Thiệp Mời Độc Bản</span>
             </div>
 
             {/* Emotional Punchy Headline (High Contrast Guaranteed) */}
-            <h1 className={`font-editorial text-2xl xs:text-3xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold tracking-tight leading-[1.18] sm:leading-[1.12] ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}>
+            <h1 className={`font-editorial text-2xl xs:text-3xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-bold tracking-tight leading-[1.18] sm:leading-[1.12] ${isDark ? 'text-white' : 'text-slate-900'
+              }`}>
               Trao gửi yêu thương qua thiệp mời{' '}
               <span className="text-orange-500">
                 tương tác sống động
@@ -101,9 +98,8 @@ export const Home: React.FC = () => {
             </h1>
 
             {/* Modern Value Statement */}
-            <p className={`text-xs sm:text-base max-w-xl font-sans leading-relaxed ${
-              isDark ? 'text-slate-300' : 'text-slate-600'
-            }`}>
+            <p className={`text-xs sm:text-base max-w-xl font-sans leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'
+              }`}>
               <span className="sm:hidden">
                 Tự tay tạo thiệp sinh nhật, kỷ niệm tình yêu & sự kiện tương tác 3D độc bản trong 30 giây với âm nhạc và mã QR tự động.
               </span>
@@ -124,11 +120,10 @@ export const Home: React.FC = () => {
 
               <Link
                 to="/templates"
-                className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-xs sm:text-sm border transition-all active:scale-95 ${
-                  isDark
-                    ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-200'
-                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700 shadow-sm'
-                }`}
+                className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-xs sm:text-sm border transition-all active:scale-95 ${isDark
+                  ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-200'
+                  : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700 shadow-sm'
+                  }`}
               >
                 <Eye className="w-4 h-4 text-orange-500" />
                 <span>Xem Bộ Sưu Tập</span>
@@ -136,13 +131,11 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Minimalist Trust Stats (Bright, readable contrast in dark mode) */}
-            <div className={`hidden sm:grid pt-4 border-t grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0 text-left ${
-              isDark ? 'border-slate-800/80' : 'border-slate-200'
-            }`}>
+            <div className={`hidden sm:grid pt-4 border-t grid-cols-3 gap-3 max-w-md mx-auto lg:mx-0 text-left ${isDark ? 'border-slate-800/80' : 'border-slate-200'
+              }`}>
               <div>
-                <span className={`font-editorial text-base sm:text-lg font-bold block ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}>
+                <span className={`font-editorial text-base sm:text-lg font-bold block ${isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
                   4+ Kịch Bản
                 </span>
                 <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -150,9 +143,8 @@ export const Home: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className={`font-editorial text-base sm:text-lg font-bold block ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}>
+                <span className={`font-editorial text-base sm:text-lg font-bold block ${isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
                   100% Tự Động
                 </span>
                 <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -160,9 +152,8 @@ export const Home: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className={`font-editorial text-base sm:text-lg font-bold block ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}>
+                <span className={`font-editorial text-base sm:text-lg font-bold block ${isDark ? 'text-white' : 'text-slate-900'
+                  }`}>
                   Bảo Mật Cao
                 </span>
                 <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -185,11 +176,10 @@ export const Home: React.FC = () => {
       {/* 3D SHOWCASE STAGE SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 3D Stage Exhibition Container */}
-        <div className={`relative rounded-[32px] sm:rounded-[40px] border p-6 sm:p-10 lg:p-12 overflow-hidden transition-colors ${
-          isDark
-            ? 'bg-gradient-to-b from-[#0e1422] via-[#090d16] to-[#06090e] border-slate-800 shadow-2xl shadow-black/80'
-            : 'bg-gradient-to-b from-slate-100/90 via-slate-50 to-white border-slate-200/90 shadow-2xl shadow-slate-200/60'
-        }`}>
+        <div className={`relative rounded-[32px] sm:rounded-[40px] border p-6 sm:p-10 lg:p-12 overflow-hidden transition-colors ${isDark
+          ? 'bg-gradient-to-b from-[#0e1422] via-[#090d16] to-[#06090e] border-slate-800 shadow-2xl shadow-black/80'
+          : 'bg-gradient-to-b from-slate-100/90 via-slate-50 to-white border-slate-200/90 shadow-2xl shadow-slate-200/60'
+          }`}>
           {/* 3D Stage Top Rim Illumination */}
           <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-80" />
 
@@ -218,9 +208,8 @@ export const Home: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5" />
               <span>Sân Khấu Trưng Bày 3D</span>
             </div>
-            <h2 className={`font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}>
+            <h2 className={`font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-900'
+              }`}>
               Bộ Sưu Tập Thiệp Mời Tiêu Biểu
             </h2>
             <p className={`text-xs sm:text-sm max-w-xl ${isDark ? 'text-slate-300' : 'text-slate-500'}`}>
@@ -233,9 +222,8 @@ export const Home: React.FC = () => {
             {displayTemplates.map((tpl, idx) => (
               <div
                 key={tpl.id}
-                className={`transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] drop-shadow-xl hover:drop-shadow-2xl ${
-                  idx >= 4 ? 'hidden sm:block' : ''
-                }`}
+                className={`transform transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] drop-shadow-xl hover:drop-shadow-2xl ${idx >= 4 ? 'hidden sm:block' : ''
+                  }`}
               >
                 <TemplateCardItem
                   template={tpl}
@@ -251,11 +239,10 @@ export const Home: React.FC = () => {
           <div className="relative z-10 text-center pt-8 sm:pt-10">
             <Link
               to="/templates"
-              className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 shadow-md ${
-                isDark
-                  ? 'bg-slate-900/90 border-slate-700 hover:border-orange-500 hover:bg-slate-800 text-white'
-                  : 'bg-white border-slate-200 hover:border-orange-500 hover:bg-slate-50 text-slate-900'
-              }`}
+              className={`inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-xs sm:text-sm font-semibold border transition active:scale-95 shadow-md ${isDark
+                ? 'bg-slate-900/90 border-slate-700 hover:border-orange-500 hover:bg-slate-800 text-white'
+                : 'bg-white border-slate-200 hover:border-orange-500 hover:bg-slate-50 text-slate-900'
+                }`}
             >
               <span>Khám Phá Toàn Bộ Bộ Sưu Tập</span>
               <ArrowRight className="w-4 h-4 text-orange-500" />
@@ -270,11 +257,10 @@ export const Home: React.FC = () => {
         aria-labelledby="bespoke-section-title"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className={`relative rounded-[32px] sm:rounded-[40px] border p-6 sm:p-10 lg:p-12 overflow-hidden transition-all ${
-          isDark
-            ? 'bg-gradient-to-br from-slate-900/95 via-[#0d131f] to-slate-950 border-slate-800 shadow-2xl shadow-orange-950/20'
-            : 'bg-gradient-to-br from-orange-50/40 via-white to-amber-50/30 border-orange-200/70 shadow-xl shadow-orange-100/50'
-        }`}>
+        <div className={`relative rounded-[32px] sm:rounded-[40px] border p-6 sm:p-10 lg:p-12 overflow-hidden transition-all ${isDark
+          ? 'bg-gradient-to-br from-slate-900/95 via-[#0d131f] to-slate-950 border-slate-800 shadow-2xl shadow-orange-950/20'
+          : 'bg-gradient-to-br from-orange-50/40 via-white to-amber-50/30 border-orange-200/70 shadow-xl shadow-orange-100/50'
+          }`}>
           {/* Ambient Warm Corner Glow */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -289,17 +275,14 @@ export const Home: React.FC = () => {
 
               <h2
                 id="bespoke-section-title"
-                className={`font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-snug ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}
+                className={`font-editorial text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-snug ${isDark ? 'text-white' : 'text-slate-900'
+                  }`}
               >
-                Chưa Tìm Thấy Mẫu Ưng Ý?{' '}
                 <span className="text-orange-500">Đặt Thiết Kế Riêng</span> Theo Ý Tưởng Của Bạn
               </h2>
 
-              <p className={`text-xs sm:text-base leading-relaxed ${
-                isDark ? 'text-slate-300' : 'text-slate-600'
-              }`}>
+              <p className={`text-xs sm:text-base leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'
+                }`}>
                 Mỗi câu chuyện tình yêu, cột mốc sinh nhật hay sự kiện trọng đại đều mang linh hồn độc nhất. Nếu các mẫu có sẵn chưa trọn vẹn mong đợi, hãy liên hệ trực tiếp với tác giả để cùng lên ý tưởng và hiện thực hóa mẫu thiệp tương tác độc bản chỉ dành riêng cho bạn.
               </p>
             </div>
@@ -307,11 +290,10 @@ export const Home: React.FC = () => {
             {/* 3 Core Value Pillars */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-10">
               {/* Pillar 1 */}
-              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${
-                isDark
-                  ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
-                  : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
-              }`}>
+              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${isDark
+                ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
+                : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
+                }`}>
                 <div className="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center mb-4">
                   <Palette className="w-5 h-5" />
                 </div>
@@ -324,11 +306,10 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Pillar 2 */}
-              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${
-                isDark
-                  ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
-                  : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
-              }`}>
+              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${isDark
+                ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
+                : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
+                }`}>
                 <div className="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center mb-4">
                   <Clock className="w-5 h-5" />
                 </div>
@@ -341,19 +322,18 @@ export const Home: React.FC = () => {
               </div>
 
               {/* Pillar 3 */}
-              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${
-                isDark
-                  ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
-                  : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
-              }`}>
+              <div className={`p-5 sm:p-6 rounded-2xl border transition-all ${isDark
+                ? 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
+                : 'bg-white/80 border-slate-200/80 hover:border-orange-300 shadow-sm'
+                }`}>
                 <div className="w-10 h-10 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center mb-4">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <h3 className={`text-sm sm:text-base font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  Tối Ưu Chuẩn SEO & Đa Nền Tảng
+                  Bảo mật & Đa Dạng
                 </h3>
                 <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Hiển thị mượt mà trên iPhone, Android và máy tính. Hỗ trợ mã QR in thiệp cao cấp, tên miền riêng và khóa mật khẩu riêng tư.
+                  Hỗ trợ làm đa dạng mẫu theo yêu cầu riêng, có hỗ trợ nhiều loại QR cho mẫu. Ngoài ra, mỗi mẫu có thể cài mật khẩu riêng tư để bảo mật thông tin của bạn
                 </p>
               </div>
             </div>
@@ -362,14 +342,13 @@ export const Home: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto">
               {/* Zalo Card */}
               <a
-                href="https://zalo.me/0981966144"
+                href="https://zalo.me/0969895549"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group p-5 sm:p-6 rounded-2xl border transition-all duration-200 flex flex-col justify-between active:scale-98 ${
-                  isDark
-                    ? 'bg-gradient-to-b from-blue-950/40 to-slate-900/80 border-blue-900/50 hover:border-blue-500'
-                    : 'bg-gradient-to-b from-blue-50/80 to-white border-blue-200 hover:border-blue-400 shadow-md shadow-blue-500/10'
-                }`}
+                className={`group p-5 sm:p-6 rounded-2xl border transition-all duration-200 flex flex-col justify-between active:scale-98 ${isDark
+                  ? 'bg-gradient-to-b from-blue-950/40 to-slate-900/80 border-blue-900/50 hover:border-blue-500'
+                  : 'bg-gradient-to-b from-blue-50/80 to-white border-blue-200 hover:border-blue-400 shadow-md shadow-blue-500/10'
+                  }`}
               >
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between">
@@ -400,11 +379,10 @@ export const Home: React.FC = () => {
               {/* Email Card */}
               <a
                 href="mailto:nguyenquockhoa5549@gmail.com?subject=Y%C3%AAu%20c%E1%BA%A7u%20thi%E1%BA%BFt%20k%E1%BA%BF%20thi%E1%BB%87p%20m%E1%BB%9Di%20%C4%91%E1%BB%99c%20b%E1%BA%A3n%20KD%20Card&body=Ch%C3%A0o%20b%E1%BA%A1n%2C%20m%C3%ACnh%20mu%E1%BB%91n%20trao%20%C4%91%E1%BB%95i%20%C3%BD%20t%C6%B0%E1%BB%9Fng%20thi%E1%BA%BFt%20k%E1%BA%BF%20thi%E1%BB%87p%20m%E1%BB%9Di%20ri%C3%AAng%3A%0A-%20D%E1%BB%8Bp%20s%E1%BB%B1%20ki%E1%BB%87n%3A%20%0A-%20%C3%9D%20t%C6%B0%E1%BB%9Fng%20mong%20mu%E1%BB%91n%3A%20%0A-%20S%E1%BB%91%20%C4%91i%E1%BB%87n%20tho%E1%BA%A1i%20li%C3%AAn%20h%E1%BB%87%3A%20"
-                className={`group p-5 sm:p-6 rounded-2xl border transition-all duration-200 flex flex-col justify-between active:scale-98 ${
-                  isDark
-                    ? 'bg-gradient-to-b from-orange-950/40 to-slate-900/80 border-orange-900/50 hover:border-orange-500'
-                    : 'bg-gradient-to-b from-orange-50/80 to-white border-orange-200 hover:border-orange-400 shadow-md shadow-orange-500/10'
-                }`}
+                className={`group p-5 sm:p-6 rounded-2xl border transition-all duration-200 flex flex-col justify-between active:scale-98 ${isDark
+                  ? 'bg-gradient-to-b from-orange-950/40 to-slate-900/80 border-orange-900/50 hover:border-orange-500'
+                  : 'bg-gradient-to-b from-orange-50/80 to-white border-orange-200 hover:border-orange-400 shadow-md shadow-orange-500/10'
+                  }`}
               >
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center justify-between">
