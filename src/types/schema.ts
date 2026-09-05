@@ -34,6 +34,7 @@ export interface TemplateSchemaKey {
   id: string;
   keyName: string;
   label: string;
+  labels?: string[];
   fieldType: FieldType;
   sectionName: string;
   placeholder?: string;

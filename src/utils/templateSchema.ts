@@ -24,8 +24,16 @@ export function validateConfigKeys(
     parsed = configJson;
   }
 
-  // Create lookup set from DB master schema keys
-  const validKeySet = new Set(validSchemaKeys.map((k) => k.keyName));
+  // Create lookup set from DB master schema keys (1 canonical key per record)
+  const validKeySet = new Set<string>();
+  if (Array.isArray(validSchemaKeys)) {
+    for (const k of validSchemaKeys) {
+      if (k.keyName) {
+        validKeySet.add(k.keyName.trim());
+      }
+    }
+  }
+
   const allKeys = Object.keys(parsed).filter((k) => !IGNORED_KEYS.has(k));
   const invalidKeys = allKeys.filter((k) => !validKeySet.has(k));
 
@@ -74,7 +82,9 @@ export function parseTemplateSchema(
   const dbKeyMap = new Map<string, TemplateSchemaKey>();
   if (dbSchemaKeys && Array.isArray(dbSchemaKeys)) {
     for (const k of dbSchemaKeys) {
-      dbKeyMap.set(k.keyName, k);
+      if (k.keyName) {
+        dbKeyMap.set(k.keyName.trim(), k);
+      }
     }
   }
 

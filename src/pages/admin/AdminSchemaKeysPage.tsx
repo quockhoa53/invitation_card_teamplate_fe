@@ -68,12 +68,14 @@ export const AdminSchemaKeysPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSection, setSelectedSection] = useState<string>('ALL');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [selectedKeyForLabels, setSelectedKeyForLabels] = useState<TemplateSchemaKey | null>(null);
 
   // Modal Form State
   const [showModal, setShowModal] = useState(false);
   const [editingKey, setEditingKey] = useState<TemplateSchemaKey | null>(null);
   const [formKeyName, setFormKeyName] = useState('');
   const [formLabel, setFormLabel] = useState('');
+  const [formLabels, setFormLabels] = useState('');
   const [formFieldType, setFormFieldType] = useState<FieldType>('text');
   const [formSectionName, setFormSectionName] = useState('Nội Dung Lời Chúc');
   const [formPlaceholder, setFormPlaceholder] = useState('');
@@ -337,6 +339,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
     setEditingKey(null);
     setFormKeyName('');
     setFormLabel('');
+    setFormLabels('');
     setFormFieldType('text');
     setFormSectionName('Nội Dung Lời Chúc');
     setFormPlaceholder('');
@@ -351,6 +354,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
     setEditingKey(item);
     setFormKeyName(item.keyName);
     setFormLabel(item.label);
+    setFormLabels(item.labels && item.labels.length > 0 ? item.labels.join(', ') : item.label);
     setFormFieldType(item.fieldType);
     setFormSectionName(item.sectionName);
     setFormPlaceholder(item.placeholder || '');
@@ -363,9 +367,19 @@ export const AdminSchemaKeysPage: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const rawLabels = formLabels
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    const primaryLabel = formLabel.trim();
+    const labelsList = rawLabels.length > 0
+      ? (rawLabels.includes(primaryLabel) ? rawLabels : [primaryLabel, ...rawLabels])
+      : [primaryLabel];
+
     const payload = {
       keyName: formKeyName.trim(),
-      label: formLabel.trim(),
+      label: primaryLabel,
+      labels: labelsList,
       fieldType: formFieldType,
       sectionName: formSectionName.trim(),
       placeholder: formPlaceholder.trim(),
@@ -419,10 +433,12 @@ export const AdminSchemaKeysPage: React.FC = () => {
   // Filter keys
   const sections = Array.from(new Set(keys.map((k) => k.sectionName)));
   const filteredKeys = keys.filter((k) => {
+    const q = searchQuery.toLowerCase();
     const matchSearch =
-      k.keyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      k.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      k.sectionName.toLowerCase().includes(searchQuery.toLowerCase());
+      k.keyName.toLowerCase().includes(q) ||
+      k.label.toLowerCase().includes(q) ||
+      (Array.isArray(k.labels) && k.labels.some((l) => l.toLowerCase().includes(q))) ||
+      k.sectionName.toLowerCase().includes(q);
     const matchSection = selectedSection === 'ALL' || k.sectionName === selectedSection;
     return matchSearch && matchSection;
   });
@@ -597,7 +613,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
                         </span>
                       </td>
 
-                      {/* Key Name with Click-to-copy */}
+                      {/* Key Name (Mã Key duy nhất trong code/JSON) */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
                           <code className={`font-mono font-bold text-xs px-2.5 py-1 rounded-lg border tracking-tight ${
@@ -626,21 +642,54 @@ export const AdminSchemaKeysPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Label & Description */}
+                      {/* Label & Diverse Labels */}
                       <td className="py-3.5 px-4">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-start gap-1">
                           <span className={`text-xs font-bold leading-snug ${
                             isDark ? 'text-white' : 'text-stone-900'
                           }`}>
                             {item.label}
                           </span>
                           {item.description ? (
-                            <span className={`text-[11px] mt-0.5 line-clamp-1 ${
+                            <span className={`text-[11px] line-clamp-1 ${
                               isDark ? 'text-slate-400' : 'text-stone-500'
                             }`} title={item.description}>
                               {item.description}
                             </span>
                           ) : null}
+
+                          {/* Nút Xem nhãn hiển thị đa dạng */}
+                          <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedKeyForLabels(item)}
+                              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-bold border transition active:scale-95 ${
+                                isDark
+                                  ? 'bg-sky-950/60 hover:bg-sky-900/80 text-sky-300 border-sky-800/80 shadow-2xs'
+                                  : 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200 shadow-2xs'
+                              }`}
+                              title="Xem danh sách các tên nhãn hiển thị cho người dùng"
+                            >
+                              <Tag className="w-3 h-3 text-sky-500 shrink-0" />
+                              <span>Xem nhãn</span>
+                              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                                isDark ? 'bg-sky-900 text-sky-200' : 'bg-sky-200 text-sky-900'
+                              }`}>
+                                {item.labels && item.labels.length > 0 ? item.labels.length : 1}
+                              </span>
+                            </button>
+
+                            {item.labels && item.labels.length > 1 && (
+                              <span
+                                className={`text-[10px] font-medium truncate max-w-[140px] ${
+                                  isDark ? 'text-slate-400' : 'text-stone-500'
+                                }`}
+                                title={item.labels.join(', ')}
+                              >
+                                ({item.labels.slice(1, 3).join(', ')}{item.labels.length > 3 ? '...' : ''})
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
 
@@ -757,10 +806,10 @@ export const AdminSchemaKeysPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSave} className="space-y-3.5 text-xs">
-              {/* Key Name */}
+              {/* Key Name (Duy nhất 1 canonical key) */}
               <div>
                 <label className="block font-semibold mb-1 text-xs">
-                  Mã Key Trong Code/JSON * (Ví dụ: <code className="text-amber-400">recipientName</code>)
+                  Mã Key Trong Code/JSON * (Ví dụ: <code className="text-amber-400 font-mono">recipientName</code>)
                 </label>
                 <input
                   type="text"
@@ -775,12 +824,14 @@ export const AdminSchemaKeysPage: React.FC = () => {
                       : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                   }`}
                 />
-                <p className="text-[10px] text-stone-500 mt-0.5">Chỉ viết liền không dấu, chữ cái hoặc gạch dưới.</p>
+                <p className="text-[10px] text-stone-500 mt-1">
+                  Tên field kỹ thuật duy nhất trong hệ thống & JSON template (chỉ gồm chữ cái, số, gạch dưới).
+                </p>
               </div>
 
-              {/* Label */}
+              {/* Primary Label */}
               <div>
-                <label className="block font-semibold mb-1 text-xs">Nhãn Hiển Thị Cho Người Dùng *</label>
+                <label className="block font-semibold mb-1 text-xs">Nhãn Hiển Thị Chính Cho Người Dùng *</label>
                 <input
                   type="text"
                   required
@@ -793,6 +844,27 @@ export const AdminSchemaKeysPage: React.FC = () => {
                       : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
                   }`}
                 />
+              </div>
+
+              {/* Diverse Labels List */}
+              <div>
+                <label className="block font-semibold mb-1 text-xs">
+                  Các Nhãn Hiển Thị Gợi Ý (Đa Dạng Hóa Tên Gọi)
+                </label>
+                <input
+                  type="text"
+                  value={formLabels}
+                  onChange={(e) => setFormLabels(e.target.value)}
+                  placeholder="Tên Người Nhận, Tên Cô Dâu, Tên Bạn Gái, Tên Người Thương"
+                  className={`w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none transition ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-sky-300 focus:border-orange-500'
+                      : 'bg-stone-50 border-stone-200 text-stone-900 focus:border-orange-500'
+                  }`}
+                />
+                <p className="text-[10px] text-stone-500 mt-1">
+                  Nhập các tên nhãn hiển thị cho người dùng, cách nhau bằng dấu phẩy.
+                </p>
               </div>
 
               {/* Grid: Type & Section */}
@@ -1132,6 +1204,122 @@ export const AdminSchemaKeysPage: React.FC = () => {
                   )}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Xem Danh Sách Nhãn Hiển Thị (Labels) */}
+      {selectedKeyForLabels && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className={`max-w-md w-full rounded-3xl border p-6 shadow-2xl space-y-4 transition-colors ${
+            isDark ? 'bg-[#121824] border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
+          }`}>
+            <div className={`flex items-start justify-between border-b pb-3 ${isDark ? 'border-slate-800' : 'border-stone-200'}`}>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-sky-500" />
+                  <h3 className="font-editorial text-base font-bold">
+                    Danh Sách Nhãn Hiển Thị (Labels)
+                  </h3>
+                </div>
+                <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
+                  Mã key hệ thống: <code className="font-mono font-bold text-amber-400">{selectedKeyForLabels.keyName}</code> ({selectedKeyForLabels.fieldType})
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedKeyForLabels(null)}
+                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className={`text-xs leading-relaxed p-3 rounded-2xl border ${
+              isDark ? 'bg-slate-900/80 border-slate-800 text-slate-300' : 'bg-sky-50 border-sky-200 text-sky-900'
+            }`}>
+              💡 Đây là các tên gọi gợi ý đa dạng để hiển thị cho người dùng trên form tùy biến (ví dụ cùng mã key <code className="font-mono font-bold text-amber-500">{selectedKeyForLabels.keyName}</code> nhưng mẫu đám cưới có thể ghi nhãn là "Tên Cô Dâu", mẫu tình yêu ghi "Tên Bạn Gái").
+            </p>
+
+            {/* List of labels */}
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+              {(selectedKeyForLabels.labels && selectedKeyForLabels.labels.length > 0
+                ? selectedKeyForLabels.labels
+                : [selectedKeyForLabels.label]
+              ).map((l, index) => {
+                const isPrimary = index === 0 || l === selectedKeyForLabels.label;
+                return (
+                  <div
+                    key={l}
+                    className={`p-2.5 rounded-2xl border flex items-center justify-between transition ${
+                      isDark
+                        ? 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                        : 'bg-stone-50 border-stone-200 hover:border-sky-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs">
+                        {l}
+                      </span>
+                      {isPrimary && (
+                        <span className="px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-[10px] font-bold border border-orange-500/30">
+                          Nhãn Mặc Định
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(l)}
+                      className={`p-1.5 rounded-lg border transition ${
+                        isDark
+                          ? 'border-slate-700 bg-slate-800 text-slate-300 hover:text-white'
+                          : 'border-stone-200 bg-white text-stone-600 hover:text-stone-900 shadow-2xs'
+                      }`}
+                      title="Sao chép tên nhãn này"
+                    >
+                      {copiedKey === l ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const all = (selectedKeyForLabels.labels && selectedKeyForLabels.labels.length > 0)
+                    ? selectedKeyForLabels.labels
+                    : [selectedKeyForLabels.label];
+                  navigator.clipboard.writeText(all.join(', '));
+                  toast.success('Đã sao chép tất cả các nhãn!');
+                }}
+                className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition ${
+                  isDark
+                    ? 'border-slate-700 hover:bg-slate-800 text-slate-300'
+                    : 'border-stone-200 hover:bg-stone-100 text-stone-700'
+                }`}
+              >
+                <Copy className="w-3.5 h-3.5" /> Sao chép tất cả
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const target = selectedKeyForLabels;
+                  setSelectedKeyForLabels(null);
+                  openEditModal(target);
+                }}
+                className="px-4 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+              >
+                <Edit2 className="w-3.5 h-3.5" /> Chỉnh sửa nhãn
+              </button>
             </div>
           </div>
         </div>
