@@ -11,7 +11,6 @@ import {
   Search,
   Copy,
   Check,
-  RotateCcw,
   Layers,
   Type,
   AlignLeft,
@@ -34,18 +33,18 @@ import {
 } from 'lucide-react';
 import { KNOWN_FIELD_META } from '../../utils/templateSchema';
 
-const FIELD_TYPE_CONFIG: Record<FieldType, { label: string; icon: any; color: string }> = {
-  text: { label: 'Văn bản ngắn', icon: Type, color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-  textarea: { label: 'Đoạn văn dài', icon: AlignLeft, color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' },
-  date: { label: 'Ngày tháng', icon: Calendar, color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-  datetime: { label: 'Ngày & Giờ', icon: Calendar, color: 'bg-teal-500/10 text-teal-400 border-teal-500/20' },
-  number: { label: 'Số / Khoảng cách', icon: Hash, color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-  image: { label: 'Ảnh đơn URL', icon: Image, color: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-  gallery: { label: 'Album ảnh', icon: Image, color: 'bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20' },
-  music: { label: 'Nhạc nền', icon: Music, color: 'bg-rose-500/10 text-rose-400 border-rose-500/20' },
-  keywords: { label: 'Từ khóa rơi', icon: Tag, color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20' },
-  color: { label: 'Mã màu', icon: Palette, color: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
-  select: { label: 'Lựa chọn', icon: FolderTree, color: 'bg-slate-500/10 text-slate-400 border-slate-500/20' },
+const FIELD_TYPE_CONFIG: Record<FieldType, { label: string; icon: any; color: string; lightColor: string }> = {
+  text: { label: 'Văn bản ngắn', icon: Type, color: 'bg-blue-500/15 text-blue-400 border-blue-500/30', lightColor: 'bg-blue-50 text-blue-800 border-blue-200 shadow-2xs' },
+  textarea: { label: 'Đoạn văn dài', icon: AlignLeft, color: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30', lightColor: 'bg-indigo-50 text-indigo-800 border-indigo-200 shadow-2xs' },
+  date: { label: 'Ngày tháng', icon: Calendar, color: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', lightColor: 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs' },
+  datetime: { label: 'Ngày & Giờ', icon: Calendar, color: 'bg-teal-500/15 text-teal-400 border-teal-500/30', lightColor: 'bg-teal-50 text-teal-800 border-teal-200 shadow-2xs' },
+  number: { label: 'Số / Điểm %', icon: Hash, color: 'bg-amber-500/15 text-amber-400 border-amber-500/30', lightColor: 'bg-amber-50 text-amber-900 border-amber-200 shadow-2xs' },
+  image: { label: 'Ảnh đơn URL', icon: Image, color: 'bg-purple-500/15 text-purple-400 border-purple-500/30', lightColor: 'bg-purple-50 text-purple-800 border-purple-200 shadow-2xs' },
+  gallery: { label: 'Album ảnh', icon: Image, color: 'bg-fuchsia-500/15 text-fuchsia-400 border-fuchsia-500/30', lightColor: 'bg-fuchsia-50 text-fuchsia-800 border-fuchsia-200 shadow-2xs' },
+  music: { label: 'Nhạc nền', icon: Music, color: 'bg-rose-500/15 text-rose-400 border-rose-500/30', lightColor: 'bg-rose-50 text-rose-800 border-rose-200 shadow-2xs' },
+  keywords: { label: 'Từ khóa rơi', icon: Tag, color: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30', lightColor: 'bg-cyan-50 text-cyan-800 border-cyan-200 shadow-2xs' },
+  color: { label: 'Mã màu', icon: Palette, color: 'bg-orange-500/15 text-orange-400 border-orange-500/30', lightColor: 'bg-orange-50 text-orange-800 border-orange-200 shadow-2xs' },
+  select: { label: 'Lựa chọn', icon: FolderTree, color: 'bg-slate-500/15 text-slate-400 border-slate-500/30', lightColor: 'bg-stone-100 text-stone-800 border-stone-200 shadow-2xs' },
 };
 
 const COMMON_SECTIONS = [
@@ -417,22 +416,6 @@ export const AdminSchemaKeysPage: React.FC = () => {
     }
   };
 
-  const handleSeedDefaults = () => {
-    confirmModal({
-      title: 'Khôi Phục Danh Sách Keys Chuẩn',
-      message: 'Hệ thống sẽ nạp lại các key tiêu chuẩn (recipientName, senderName, photos, musicUrl...) vào từ điển. Bạn có muốn tiếp tục?',
-      onConfirm: async () => {
-        try {
-          await api.seedAdminSchemaKeys();
-          toast.success('Khôi phục danh sách key chuẩn thành công!');
-          fetchKeys();
-        } catch (err: any) {
-          toast.error('Lỗi khi khôi phục key', err.message);
-        }
-      },
-    });
-  };
-
   // Filter keys
   const sections = Array.from(new Set(keys.map((k) => k.sectionName)));
   const filteredKeys = keys.filter((k) => {
@@ -462,27 +445,14 @@ export const AdminSchemaKeysPage: React.FC = () => {
           <button
             type="button"
             onClick={openImportModal}
-            className={`px-3.5 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-1.5 transition ${
+            className={`px-4 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-2 transition ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-sky-400'
-                : 'bg-white hover:bg-stone-50 border-stone-200 text-sky-600 shadow-sm'
+                : 'bg-white hover:bg-sky-50 border-stone-200 text-sky-700 shadow-sm'
             }`}
             title="Import các schema keys bằng file JSON hoặc dán JSON cấu hình"
           >
             <Upload className="w-4 h-4 text-sky-500" /> Import Bằng JSON
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSeedDefaults}
-            className={`px-3.5 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-1.5 transition ${
-              isDark
-                ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
-                : 'bg-white hover:bg-stone-50 border-stone-200 text-stone-700 shadow-sm'
-            }`}
-            title="Khôi phục danh sách các trường chuẩn mặc định"
-          >
-            <RotateCcw className="w-4 h-4 text-amber-500" /> Khôi Phục Key Chuẩn
           </button>
 
           <button
@@ -497,17 +467,17 @@ export const AdminSchemaKeysPage: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'}`}>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Tổng Số Key Hợp Lệ</span>
+        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'}`}>
+          <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Tổng Số Key Hợp Lệ</span>
           <p className="text-2xl font-black text-orange-500 mt-1">{keys.length}</p>
         </div>
-        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'}`}>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Key Đang Kích Hoạt</span>
-          <p className="text-2xl font-black text-emerald-400 mt-1">{keys.filter((k) => k.isActive).length}</p>
+        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'}`}>
+          <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Key Đang Kích Hoạt</span>
+          <p className={`text-2xl font-black mt-1 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{keys.filter((k) => k.isActive).length}</p>
         </div>
-        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'}`}>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">Số Nhóm Mục Form</span>
-          <p className="text-2xl font-black text-blue-400 mt-1">{sections.length}</p>
+        <div className={`p-4 rounded-3xl border ${isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200 shadow-sm'}`}>
+          <span className={`text-[11px] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>Số Nhóm Mục Form</span>
+          <p className={`text-2xl font-black mt-1 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{sections.length}</p>
         </div>
       </div>
 
@@ -587,53 +557,68 @@ export const AdminSchemaKeysPage: React.FC = () => {
           isDark ? 'bg-[#121824] border-slate-800' : 'bg-white border-stone-200'
         }`}>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs border-collapse">
               <thead className={`border-b text-[11px] font-bold uppercase tracking-wider ${
-                isDark ? 'bg-slate-900/60 border-slate-800 text-slate-400' : 'bg-stone-50 border-stone-200 text-stone-500'
+                isDark ? 'bg-slate-900/90 border-slate-800 text-slate-300' : 'bg-stone-50 border-stone-200 text-stone-700'
               }`}>
                 <tr>
-                  <th className="p-4">#</th>
-                  <th className="p-4">Mã Key (Dùng trong JSON)</th>
-                  <th className="p-4">Nhãn Hiển Thị</th>
-                  <th className="p-4">Kiểu Nhập Liệu</th>
-                  <th className="p-4">Nhóm Mục</th>
-                  <th className="p-4">Gợi Ý (Placeholder)</th>
-                  <th className="p-4 text-center">Trạng Thái</th>
-                  <th className="p-4 text-right">Thao Tác</th>
+                  <th className="py-3.5 px-4 w-12 text-center">#</th>
+                  <th className="py-3.5 px-4 min-w-[200px]">Mã Key (Dùng trong JSON)</th>
+                  <th className="py-3.5 px-4 min-w-[220px]">Nhãn Hiển Thị</th>
+                  <th className="py-3.5 px-4 min-w-[150px]">Kiểu Nhập Liệu</th>
+                  <th className="py-3.5 px-4 min-w-[180px]">Nhóm Mục</th>
+                  <th className="py-3.5 px-4 min-w-[200px]">Gợi Ý (Placeholder)</th>
+                  <th className="py-3.5 px-4 text-center w-28">Trạng Thái</th>
+                  <th className="py-3.5 px-4 text-right w-24">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className={`divide-y ${isDark ? 'divide-slate-800/60' : 'divide-stone-100'}`}>
                 {filteredKeys.map((item, idx) => {
                   const typeConf = FIELD_TYPE_CONFIG[item.fieldType] || {
                     label: item.fieldType,
                     icon: Type,
-                    color: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+                    color: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+                    lightColor: 'bg-stone-100 text-stone-700 border-stone-200',
                   };
                   const Icon = typeConf.icon;
+                  const badgeStyle = isDark ? typeConf.color : (typeConf.lightColor || typeConf.color);
 
                   return (
                     <tr
                       key={item.id}
                       className={`transition-colors ${
-                        isDark ? 'hover:bg-slate-800/30' : 'hover:bg-stone-50/70'
+                        isDark ? 'hover:bg-slate-800/40' : 'hover:bg-orange-50/20'
                       }`}
                     >
-                      <td className="p-4 text-slate-500 font-mono text-[11px]">{idx + 1}</td>
+                      {/* Index */}
+                      <td className="py-3.5 px-4 text-center">
+                        <span className={`text-[11px] font-mono font-semibold ${isDark ? 'text-slate-500' : 'text-stone-400'}`}>
+                          {idx + 1}
+                        </span>
+                      </td>
 
                       {/* Key Name with Click-to-copy */}
-                      <td className="p-4">
+                      <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <code className="font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 text-xs">
+                          <code className={`font-mono font-bold text-xs px-2.5 py-1 rounded-lg border tracking-tight ${
+                            isDark
+                              ? 'bg-amber-500/10 text-amber-300 border-amber-500/25 shadow-2xs'
+                              : 'bg-amber-50/90 text-amber-900 border-amber-200/90 shadow-2xs'
+                          }`}>
                             {item.keyName}
                           </code>
                           <button
                             type="button"
                             onClick={() => handleCopy(item.keyName)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                            title="Sao chép cú pháp key"
+                            className={`p-1.5 rounded-lg transition ${
+                              isDark
+                                ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                                : 'text-stone-400 hover:text-stone-800 hover:bg-stone-100'
+                            }`}
+                            title="Sao chép tên key"
                           >
                             {copiedKey === item.keyName ? (
-                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <Check className="w-3.5 h-3.5 text-emerald-500" />
                             ) : (
                               <Copy className="w-3.5 h-3.5" />
                             )}
@@ -641,61 +626,101 @@ export const AdminSchemaKeysPage: React.FC = () => {
                         </div>
                       </td>
 
-                      {/* Label */}
-                      <td className="p-4 font-bold text-stone-200">{item.label}</td>
+                      {/* Label & Description */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex flex-col">
+                          <span className={`text-xs font-bold leading-snug ${
+                            isDark ? 'text-white' : 'text-stone-900'
+                          }`}>
+                            {item.label}
+                          </span>
+                          {item.description ? (
+                            <span className={`text-[11px] mt-0.5 line-clamp-1 ${
+                              isDark ? 'text-slate-400' : 'text-stone-500'
+                            }`} title={item.description}>
+                              {item.description}
+                            </span>
+                          ) : null}
+                        </div>
+                      </td>
 
                       {/* Field Type */}
-                      <td className="p-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${typeConf.color}`}>
-                          <Icon className="w-3 h-3" />
+                      <td className="py-3.5 px-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${badgeStyle}`}>
+                          <Icon className="w-3.5 h-3.5 shrink-0" />
                           {typeConf.label}
                         </span>
                       </td>
 
                       {/* Section */}
-                      <td className="p-4">
-                        <span className={`px-2.5 py-1 rounded-lg text-[11px] font-medium ${
-                          isDark ? 'bg-slate-800/80 text-slate-300' : 'bg-stone-100 text-stone-700'
+                      <td className="py-3.5 px-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium border ${
+                          isDark
+                            ? 'bg-slate-800/90 text-slate-200 border-slate-700/60'
+                            : 'bg-stone-100/90 text-stone-800 border-stone-200'
                         }`}>
+                          <FolderTree className="w-3 h-3 opacity-60 shrink-0" />
                           {item.sectionName}
                         </span>
                       </td>
 
                       {/* Placeholder */}
-                      <td className="p-4 text-slate-400 italic text-[11px] max-w-[200px] truncate">
-                        {item.placeholder || '—'}
+                      <td className="py-3.5 px-4 max-w-[220px]">
+                        {item.placeholder ? (
+                          <span className={`italic text-[11px] truncate block ${
+                            isDark ? 'text-slate-400' : 'text-stone-600 font-normal'
+                          }`} title={item.placeholder}>
+                            {item.placeholder}
+                          </span>
+                        ) : (
+                          <span className={`text-[11px] ${isDark ? 'text-slate-600' : 'text-stone-300'}`}>—</span>
+                        )}
                       </td>
 
                       {/* Status */}
-                      <td className="p-4 text-center">
+                      <td className="py-3.5 px-4 text-center">
                         <button
                           type="button"
                           onClick={() => handleToggleStatus(item.id)}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border transition ${
                             item.isActive
-                              ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                              : 'bg-slate-800 text-slate-500 border-slate-700'
+                              ? isDark
+                                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25'
+                                : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/80 shadow-2xs'
+                              : isDark
+                              ? 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700/60'
+                              : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200/70'
                           }`}
+                          title={item.isActive ? 'Đang bật, nhấn để tắt' : 'Đang tắt, nhấn để bật'}
                         >
+                          <span className={`w-1.5 h-1.5 rounded-full ${item.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                           {item.isActive ? 'Hoạt Động' : 'Tạm Tắt'}
                         </button>
                       </td>
 
                       {/* Actions */}
-                      <td className="p-4 text-right">
+                      <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => openEditModal(item)}
-                            className="p-1.5 rounded-lg border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 transition"
+                            className={`p-1.5 rounded-xl border transition ${
+                              isDark
+                                ? 'border-slate-800 bg-slate-800/60 text-amber-400 hover:bg-amber-500/15 hover:border-amber-500/40'
+                                : 'border-stone-200 bg-white text-amber-600 hover:bg-amber-50 hover:border-amber-300 shadow-2xs'
+                            }`}
                             title="Chỉnh sửa key"
                           >
-                            <Edit2 className="w-3.5 h-3.5 text-amber-400" />
+                            <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDelete(item)}
-                            className="p-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition"
+                            className={`p-1.5 rounded-xl border transition ${
+                              isDark
+                                ? 'border-slate-800 bg-slate-800/60 text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 hover:border-rose-500/40'
+                                : 'border-stone-200 bg-white text-stone-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-300 shadow-2xs'
+                            }`}
                             title="Xóa key này"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -717,7 +742,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
           <div className={`max-w-lg w-full rounded-3xl border p-6 shadow-2xl space-y-4 transition-colors ${
             isDark ? 'bg-[#121824] border-slate-800 text-white' : 'bg-white border-stone-200 text-stone-900'
           }`}>
-            <div className="flex items-center justify-between border-b pb-3 border-slate-800">
+            <div className={`flex items-center justify-between border-b pb-3 ${isDark ? 'border-slate-800' : 'border-stone-200'}`}>
               <h3 className="font-editorial text-lg font-bold flex items-center gap-2">
                 <KeyRound className="w-5 h-5 text-orange-500" />
                 {editingKey ? 'Chỉnh Sửa Schema Key' : 'Thêm Schema Key Mới'}
@@ -838,7 +863,7 @@ export const AdminSchemaKeysPage: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+              <div className={`flex items-center justify-end gap-2.5 pt-3 border-t ${isDark ? 'border-slate-800' : 'border-stone-200'}`}>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
