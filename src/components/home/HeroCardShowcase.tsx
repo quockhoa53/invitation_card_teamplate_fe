@@ -317,7 +317,7 @@ export const HeroCardShowcase: React.FC<HeroCardShowcaseProps> = ({ templates, i
               transition={{ duration: 0.22, ease: 'easeOut' }}
               className="w-full flex justify-center items-center"
             >
-              <div className={`relative w-[285px] sm:w-[305px] h-[510px] sm:h-[540px] rounded-[40px] border-[7px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
+              <div className={`relative w-[260px] xs:w-[280px] sm:w-[305px] h-[350px] xs:h-[390px] sm:h-[540px] rounded-[28px] sm:rounded-[40px] border-[5px] sm:border-[7px] shadow-2xl overflow-hidden flex flex-col transition-all duration-300 ${
                 isDark
                   ? 'border-slate-800 bg-slate-950 ring-1 ring-slate-700/60 shadow-black'
                   : 'border-stone-800 bg-white ring-1 ring-stone-300 shadow-stone-400/40'
