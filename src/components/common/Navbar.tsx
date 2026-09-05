@@ -232,7 +232,7 @@ export const Navbar: React.FC = () => {
                           isDark ? 'hover:bg-slate-800/80 text-amber-400' : 'hover:bg-stone-50 text-amber-700'
                         }`}
                       >
-                        <Shield className="w-4 h-4 text-amber-500" /> Trang Quản Trị (2FA)
+                        <Shield className="w-4 h-4 text-amber-500" /> Trang Quản Trị
                       </Link>
                     )}
 

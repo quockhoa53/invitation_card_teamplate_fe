@@ -35,7 +35,6 @@ import {
   Filter,
   RefreshCw,
 } from 'lucide-react';
-import { AdminTwoFactorModal } from './admin/AdminTwoFactorPage';
 import { SetPasswordModal } from '../components/auth/SetPasswordModal';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -129,10 +128,8 @@ export const Dashboard: React.FC = () => {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
 
   // QR Modal
+  const [showQrModal, setShowQrModal] = useState(false);
   const [qrModalData, setQrModalData] = useState<{ title: string; publicUrl: string; qrCodeBase64: string } | null>(null);
-
-  // 2FA Setup Modal
-  const [show2FASetup, setShow2FASetup] = useState(false);
 
   // Set Password Modal for Google users
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
@@ -321,19 +318,6 @@ export const Dashboard: React.FC = () => {
                 Lời chúc
               </span>
             </div>
-
-            <button
-              onClick={() => setShow2FASetup(true)}
-              className={`p-3 rounded-2xl border transition flex items-center gap-2 text-xs font-bold ${
-                isDark
-                  ? 'bg-slate-900 hover:bg-slate-800 text-amber-300 border-amber-500/30'
-                  : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-              }`}
-              title="Cài đặt bảo mật 2 bước qua Gmail (2FA)"
-            >
-              <ShieldCheck className="w-4 h-4 text-orange-500" />
-              <span className="hidden sm:inline">2FA Gmail</span>
-            </button>
           </div>
         </div>
 
@@ -1172,17 +1156,6 @@ export const Dashboard: React.FC = () => {
           title={qrModalData.title}
           publicUrl={qrModalData.publicUrl}
           qrCodeBase64={qrModalData.qrCodeBase64}
-        />
-      )}
-
-      {/* 2FA Setup Modal */}
-      {show2FASetup && (
-        <AdminTwoFactorModal
-          isOpen={show2FASetup}
-          onClose={() => {
-            setShow2FASetup(false);
-            refreshUser();
-          }}
         />
       )}
 

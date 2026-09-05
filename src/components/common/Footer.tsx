@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
 
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-medium border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-slate-600 dark:text-slate-400">Hệ thống bảo mật 2FA hoạt động ổn định</span>
+              <span className="text-slate-600 dark:text-slate-400">Hệ thống bảo mật hoạt động ổn định</span>
             </div>
           </div>
 

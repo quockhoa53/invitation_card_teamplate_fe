@@ -153,7 +153,7 @@ export const Home: React.FC = () => {
                 <span className={`font-editorial text-base sm:text-lg font-bold block ${
                   isDark ? 'text-white' : 'text-slate-900'
                 }`}>
-                  Bảo Mật 2FA
+                  Bảo Mật Cao
                 </span>
                 <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Khóa mật khẩu riêng tư

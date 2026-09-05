@@ -19,7 +19,6 @@ import {
   Tag,
   KeyRound,
 } from 'lucide-react';
-import { AdminTwoFactorModal } from './AdminTwoFactorPage';
 
 export const AdminLayout: React.FC = () => {
   const { user, isAdmin, logout } = useAuth();
@@ -28,8 +27,6 @@ export const AdminLayout: React.FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const [show2FAModal, setShow2FAModal] = useState(false);
-
   if (!isAdmin) {
     return (
       <div className={`min-h-screen flex flex-col items-center justify-center p-4 text-center space-y-4 ${
@@ -40,7 +37,7 @@ export const AdminLayout: React.FC = () => {
         </div>
         <h2 className="font-editorial text-3xl font-bold">Khu Vực Dành Riêng Cho Quản Trị Viên</h2>
         <p className={`text-xs max-w-sm ${isDark ? 'text-slate-400' : 'text-stone-500'}`}>
-          Bạn cần đăng nhập bằng tài khoản Quản trị viên (Admin) và xác thực 2 bước để truy cập.
+          Bạn cần đăng nhập bằng tài khoản Quản trị viên (Admin) để truy cập.
         </p>
         <Link
           to="/"
@@ -82,7 +79,7 @@ export const AdminLayout: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-editorial text-sm font-bold tracking-tight">Admin Portal</h3>
-                <span className="text-[10px] text-amber-500 font-bold block -mt-0.5">2FA Protected</span>
+                <span className="text-[10px] text-orange-500 font-bold block -mt-0.5">Bảng Quản Trị</span>
               </div>
             </div>
 
@@ -129,18 +126,6 @@ export const AdminLayout: React.FC = () => {
               );
             })}
 
-            {/* 2FA Setup button in menu */}
-            <button
-              onClick={() => setShow2FAModal(true)}
-              className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition border mt-2 ${
-                isDark
-                  ? 'text-amber-300 bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20'
-                  : 'text-amber-800 bg-amber-50 border-amber-200 hover:bg-amber-100'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4 text-amber-500" />
-              <span>Cài Đặt 2FA (Google Auth)</span>
-            </button>
           </nav>
         </div>
 
@@ -178,9 +163,6 @@ export const AdminLayout: React.FC = () => {
       <main className="flex-1 p-6 sm:p-10 overflow-y-auto max-h-screen">
         <Outlet />
       </main>
-
-      {/* 2FA Setup Modal */}
-      <AdminTwoFactorModal isOpen={show2FAModal} onClose={() => setShow2FAModal(false)} />
     </div>
   );
 };
